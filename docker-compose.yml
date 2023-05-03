@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+  db:
+    container_name: pg-gis-docker
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: gis_db_user
+      POSTGRES_PASSWORD: skibidiwapapa
+      POSTGRES_DB: gis_db
+    ports:
+      - "5430:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:
