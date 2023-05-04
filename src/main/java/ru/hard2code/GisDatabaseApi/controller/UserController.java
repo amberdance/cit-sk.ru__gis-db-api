@@ -1,9 +1,6 @@
 package ru.hard2code.GisDatabaseApi.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.hard2code.GisDatabaseApi.model.User;
 import ru.hard2code.GisDatabaseApi.service.UserService;
 
@@ -20,13 +17,18 @@ public class UserController {
     }
 
     @GetMapping("{id}")
-    public User getUserById(@PathVariable(name = "id") long id) {
+    public User getUserById(@PathVariable("id") long id) {
         return userService.findById(id);
     }
 
     @GetMapping
     public List<User> getAllUsers() {
         return userService.findAll();
+    }
+
+    @DeleteMapping("{id}")
+    public void deleteUser(@PathVariable("id") long id) {
+        userService.delete(id);
     }
 
 }
