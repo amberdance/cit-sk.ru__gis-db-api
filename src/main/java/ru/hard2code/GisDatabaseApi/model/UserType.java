@@ -8,18 +8,21 @@ import lombok.*;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 @ToString
 public class UserType {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private final long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-    @Column(name = "type", nullable = false, length = 20)
+    @Column(name = "type", nullable = false, unique = true, length = 20)
     @Enumerated(EnumType.STRING)
-    private final Type type;
+    private Type type = Type.CITIZEN;
 
+    public UserType(Type type) {
+        this.type = type;
+    }
 
     public enum Type {
         CITIZEN,

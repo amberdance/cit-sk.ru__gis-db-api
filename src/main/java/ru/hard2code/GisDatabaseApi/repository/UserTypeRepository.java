@@ -1,7 +1,10 @@
 package ru.hard2code.GisDatabaseApi.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.hard2code.GisDatabaseApi.model.UserType;
 
-public interface UserTypeRepository extends CrudRepository<UserType, Long> {
+import java.util.Optional;
+
+public interface UserTypeRepository extends JpaRepository<UserType, Long> {
+    Optional<UserType> findByType(UserType.Type type);
 }
