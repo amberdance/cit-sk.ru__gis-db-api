@@ -4,6 +4,9 @@ import org.springframework.stereotype.Service;
 import ru.hard2code.GisDatabaseApi.model.User;
 import ru.hard2code.GisDatabaseApi.repository.UserRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -21,6 +24,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public User save(User user) {
         return userRepository.save(user);
+    }
+
+    @Override
+    public List<User> saveAll(List<User> users) {
+        List<User> result = new ArrayList<>();
+        userRepository.saveAll(users).forEach(result::add);
+
+        return result;
+    }
+
+    @Override
+    public List<User> findAll() {
+        List<User> users = new ArrayList<>();
+        userRepository.findAll().forEach(users::add);
+
+        return users;
     }
 
 }
