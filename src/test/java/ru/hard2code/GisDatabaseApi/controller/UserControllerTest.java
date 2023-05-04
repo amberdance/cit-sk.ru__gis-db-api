@@ -33,11 +33,6 @@ class UserControllerTest {
 
         userService.save(expectedUser);
 
-        System.out.println("--------------------------");
-        System.out.println(objectMapper.writeValueAsString(expectedUser));
-        System.out.println("--------------------------");
-        System.out.println(expectedUser);
-
         mvc.perform(get("/api/users/{id}", 1L).accept("application/json; charset=utf-8"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(objectMapper.writeValueAsString(expectedUser)));
