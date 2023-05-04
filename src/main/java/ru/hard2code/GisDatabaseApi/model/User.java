@@ -19,9 +19,8 @@ public class User {
     @Column(name = "chat_id", nullable = false, unique = true, length = 30)
     private String chatId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(name = "user_type_id")
     private UserType userType;
-
 
 }
