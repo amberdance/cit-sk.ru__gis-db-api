@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.hard2code.GisDatabaseApi.model.User;
 import ru.hard2code.GisDatabaseApi.model.UserType;
@@ -17,23 +16,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
 class UserControllerTest {
 
+    private final static ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     private MockMvc mvc;
-
     @Autowired
     private UserService userService;
 
     @Test
     void shouldReturnUserById() throws Exception {
         var expectedUser = new User(null, "chatId", new UserType(null, UserType.Type.CITIZEN));
-        var objectMapper = new ObjectMapper();
 
         userService.save(expectedUser);
 
-        mvc.perform(get("/api/users/{id}", 1L).accept("application/json; charset=utf-8"))
+        mvc.perform(get("/users/{id}", expectedUser.getId()).accept("application/json; charset=utf-8"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(objectMapper.writeValueAsString(expectedUser)));
     }

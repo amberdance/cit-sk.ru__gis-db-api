@@ -13,10 +13,10 @@ import lombok.*;
 public class UserType {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private final Long id;
 
-    @Column(name = "type", nullable = false, length = 20)
+    @Column(name = "type", nullable = false, unique = true, length = 20)
     @Enumerated(EnumType.STRING)
     private final Type type;
 
