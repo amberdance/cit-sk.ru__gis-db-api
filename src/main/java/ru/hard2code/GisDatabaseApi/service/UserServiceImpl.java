@@ -28,12 +28,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findById(Long id) {
+    public User findById(long id) {
         return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User with id " + id + " did not found"));
     }
 
     @Override
-    public User save(User user) {
+    public User create(User user) {
         var userType = user.getUserType();
 
         try {
@@ -47,9 +47,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User update(long id, User newUser) {
+        try {
+            var user = findById(id);
+            //TODO: https://www.baeldung.com/spring-data-partial-update
+            if (newUser.getUserType() != null) {
+                var type = userTypeRepository.findByType(newUser.getUserType().getType())
+                        .orElseGet(() -> userTypeRepository.save(newUser.getUserType()));
+
+                user.setUserType(type);
+            }
+
+            if (newUser.getChatId() != null) user.setChatId(newUser.getChatId());
+
+            return userRepository.save(user);
+        } catch (EntityNotFoundException e) {
+            return create(newUser);
+        }
+    }
+
+    @Override
     public List<User> saveAll(List<User> users) {
         List<User> result = new ArrayList<>();
-        users.forEach(user -> result.add(save(user)));
+        users.forEach(user -> result.add(create(user)));
 
         return result;
     }

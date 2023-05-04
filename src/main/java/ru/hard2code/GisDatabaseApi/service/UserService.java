@@ -5,9 +5,11 @@ import ru.hard2code.GisDatabaseApi.model.User;
 import java.util.List;
 
 public interface UserService {
-    User findById(Long id);
+    User findById(long id);
 
-    User save(User user);
+    User create(User user);
+
+    User update(long id, User newUser);
 
     List<User> saveAll(List<User> users);
 
