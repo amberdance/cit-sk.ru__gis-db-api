@@ -1,15 +1,15 @@
 package ru.hard2code.GisDatabaseApi.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "user_types")
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
-@Data
+@ToString
 public class UserType {
 
     @Id
@@ -17,7 +17,15 @@ public class UserType {
     private final Long id;
 
     @Column(name = "type", nullable = false, length = 20)
-    private final String type = "employee";
+    @Enumerated(EnumType.STRING)
+    private final Type type;
+
+
+    public enum Type {
+        CITIZEN,
+        EMPLOYEE;
+
+    }
 
 
 }
