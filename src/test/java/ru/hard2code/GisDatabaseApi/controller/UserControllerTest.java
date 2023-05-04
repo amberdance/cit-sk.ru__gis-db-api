@@ -7,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.hard2code.GisDatabaseApi.model.User;
-import ru.hard2code.GisDatabaseApi.model.UserType;
 import ru.hard2code.GisDatabaseApi.service.UserService;
 
 import java.util.List;
@@ -31,10 +30,9 @@ class UserControllerTest {
 
     @Test
     void shouldReturnUserById() throws Exception {
-        var expectedUser = new User(0, "chatId", new UserType(0, UserType.Type.CITIZEN));
+        var expectedUser = new User("chatId");
 
         userService.save(expectedUser);
-
         mvc.perform(get("/users/{id}", expectedUser.getId()).accept(MEDIA_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(content().string(objectMapper.writeValueAsString(expectedUser)));
@@ -43,9 +41,9 @@ class UserControllerTest {
     @Test
     void shouldReturnListOfUsers() throws Exception {
         var users = List.of(
-                new User(0, "1", new UserType(0, UserType.Type.CITIZEN)),
-                new User(0, "2", new UserType(0, UserType.Type.EMPLOYEE)),
-                new User(0, "3", new UserType(0, UserType.Type.CITIZEN))
+                new User("1"),
+                new User("2"),
+                new User("3")
         );
 
         userService.saveAll(users);
@@ -57,10 +55,9 @@ class UserControllerTest {
 
     @Test
     void shouldDeleteUserById() throws Exception {
-        var user = new User(0, "1", new UserType(0, UserType.Type.CITIZEN));
+        var user = new User("1");
+
         userService.save(user);
-
-
         mvc.perform(delete("/users/{id}", user.getId()).accept(MEDIA_TYPE))
                 .andExpect(status().isOk());
 
