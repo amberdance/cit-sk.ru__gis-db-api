@@ -1,11 +1,10 @@
 package ru.hard2code.GisDatabaseApi.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.web.servlet.MockMvc;
 import ru.hard2code.GisDatabaseApi.model.User;
 import ru.hard2code.GisDatabaseApi.service.UserService;
 
@@ -19,12 +18,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class UserControllerTest {
+class UserControllerTest extends ControllerTestConfig {
 
-    private final static ObjectMapper objectMapper = new ObjectMapper();
-    private final static String MEDIA_TYPE = "application/json; charset=utf-8";
-    @Autowired
-    private MockMvc mvc;
+
     @Autowired
     private UserService userService;
 
@@ -33,9 +29,9 @@ class UserControllerTest {
         var expectedUser = new User("chatId");
 
         userService.save(expectedUser);
-        mvc.perform(get("/users/{id}", expectedUser.getId()).accept(MEDIA_TYPE))
+        mvc.perform(get("/users/{id}", expectedUser.getId()).accept(HEADERS))
                 .andExpect(status().isOk())
-                .andExpect(content().string(objectMapper.writeValueAsString(expectedUser)));
+                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(expectedUser)));
     }
 
     @Test
@@ -48,9 +44,9 @@ class UserControllerTest {
 
         userService.saveAll(users);
 
-        mvc.perform(get("/users").accept(MEDIA_TYPE))
+        mvc.perform(get("/users").accept(HEADERS))
                 .andExpect(status().isOk())
-                .andExpect(content().string(objectMapper.writeValueAsString(users)));
+                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(users)));
     }
 
     @Test
@@ -58,10 +54,10 @@ class UserControllerTest {
         var user = new User("1");
 
         userService.save(user);
-        mvc.perform(delete("/users/{id}", user.getId()).accept(MEDIA_TYPE))
+        mvc.perform(delete("/users/{id}", user.getId()).accept(HEADERS))
                 .andExpect(status().isOk());
 
-        assertThrows(RuntimeException.class, () -> userService.findById(user.getId()));
+        assertThrows(EntityNotFoundException.class, () -> userService.findById(user.getId()));
     }
 
 
