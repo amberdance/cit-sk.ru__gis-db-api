@@ -1,0 +1,13 @@
+package ru.hard2code.GisDatabaseApi.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.servlet.MockMvc;
+
+public class ControllerTestConfig {
+    protected final static ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+    protected final static String HEADERS = "application/json; charset=utf-8";
+    @Autowired
+    protected MockMvc mvc;
+
+}
