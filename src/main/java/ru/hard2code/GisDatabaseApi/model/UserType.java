@@ -14,7 +14,7 @@ public class UserType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private final Long id;
+    private final long id;
 
     @Column(name = "type", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)

@@ -12,6 +12,8 @@ import ru.hard2code.GisDatabaseApi.service.UserService;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -21,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserControllerTest {
 
     private final static ObjectMapper objectMapper = new ObjectMapper();
+    private final static String MEDIA_TYPE = "application/json; charset=utf-8";
     @Autowired
     private MockMvc mvc;
     @Autowired
@@ -28,11 +31,11 @@ class UserControllerTest {
 
     @Test
     void shouldReturnUserById() throws Exception {
-        var expectedUser = new User(null, "chatId", new UserType(null, UserType.Type.CITIZEN));
+        var expectedUser = new User(0, "chatId", new UserType(0, UserType.Type.CITIZEN));
 
         userService.save(expectedUser);
 
-        mvc.perform(get("/users/{id}", expectedUser.getId()).accept("application/json; charset=utf-8"))
+        mvc.perform(get("/users/{id}", expectedUser.getId()).accept(MEDIA_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(content().string(objectMapper.writeValueAsString(expectedUser)));
     }
@@ -40,15 +43,29 @@ class UserControllerTest {
     @Test
     void shouldReturnListOfUsers() throws Exception {
         var users = List.of(
-                new User(null, "1", new UserType(null, UserType.Type.CITIZEN)),
-                new User(null, "2", new UserType(null, UserType.Type.EMPLOYEE)),
-                new User(null, "3", new UserType(null, UserType.Type.CITIZEN))
+                new User(0, "1", new UserType(0, UserType.Type.CITIZEN)),
+                new User(0, "2", new UserType(0, UserType.Type.EMPLOYEE)),
+                new User(0, "3", new UserType(0, UserType.Type.CITIZEN))
         );
 
         userService.saveAll(users);
 
-        mvc.perform(get("/users").accept("application/json; charset=utf-8"))
+        mvc.perform(get("/users").accept(MEDIA_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(content().string(objectMapper.writeValueAsString(users)));
     }
+
+    @Test
+    void shouldDeleteUserById() throws Exception {
+        var user = new User(0, "1", new UserType(0, UserType.Type.CITIZEN));
+        userService.save(user);
+
+
+        mvc.perform(delete("/users/{id}", user.getId()).accept(MEDIA_TYPE))
+                .andExpect(status().isOk());
+
+        assertThrows(RuntimeException.class, () -> userService.findById(user.getId()));
+    }
+
+
 }
