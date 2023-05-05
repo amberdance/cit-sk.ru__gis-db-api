@@ -14,5 +14,9 @@ spring:
     properties:
       hibernate.format_sql: true
 
+spring-doc:
+  swagger-ui:
+    path: /swagger-ui
+
 server:
   servlet.context-path: /api
