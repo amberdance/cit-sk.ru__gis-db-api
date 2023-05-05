@@ -23,18 +23,30 @@ class OrganizationControllerTest extends ControllerTestConfig {
     private OrganizationService organizationService;
 
     @Test
-    void shouldReturnListOfSystems() throws Exception {
+    void shouldFindAll() throws Exception {
         var gisList = List.of(
                 new Organization(0, "test1", "test1", "test1", "test1"),
                 new Organization(0, "test2", "test2", "test2", "test2"),
                 new Organization(0, "test3", "test3", "test3", "test3")
         );
 
-        organizationService.saveAll(gisList);
+        organizationService.create(gisList);
 
-        mvc.perform(get("/gis").accept(CONTENT_TYPE))
+        mvc.perform(get("/organizations").accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(gisList)))
                 .andReturn();
     }
+
+    @Test
+    void shouldFindById() throws Exception {
+        var org = new Organization(0, "org1", "org1", "org1", "org1");
+        organizationService.create(org);
+
+        mvc.perform(get("/organizations/{id}", org.getId()).accept(CONTENT_TYPE))
+                .andExpect(status().isOk())
+                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(org)))
+                .andReturn();
+    }
+
 }

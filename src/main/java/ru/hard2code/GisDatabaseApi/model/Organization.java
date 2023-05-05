@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "gis")
+@Table(name = "organizations")
 @Getter
 @Setter
 @AllArgsConstructor

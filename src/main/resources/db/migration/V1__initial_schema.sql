@@ -1,11 +1,11 @@
  alter table if exists users 
        drop constraint if exists FKp0utx8kvsuc78nb39dgyg6oko;
 
-drop table if exists gis cascade;
+drop table if exists organizations cascade;
 drop table if exists user_types cascade;
 drop table if exists users cascade;
 
-create table gis (
+create table organizations (
    id bigserial not null,
     address varchar(255) not null,
     full_name varchar(255) not null,
@@ -29,16 +29,16 @@ create table users (
     primary key (id)
 );
 
-alter table if exists gis
+alter table if exists organizations
    add constraint UK_qx8wup2ds7yfo1sc70uvxhke7 unique (address);
 
-alter table if exists gis
+alter table if exists organizations
    add constraint UK_t2biihtqyq19ah12tfmy26c38 unique (short_name);
 
-alter table if exists gis
+alter table if exists organizations
    add constraint UK_npjx5h9nle19qme23u7o27df unique (full_name);
 
-alter table if exists gis
+alter table if exists organizations
    add constraint UK_sevkwy47p75bq0ssmguqo5u5x unique (requisites);
 
 alter table if exists user_types
