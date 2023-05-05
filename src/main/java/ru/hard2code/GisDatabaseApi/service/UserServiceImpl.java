@@ -59,6 +59,8 @@ public class UserServiceImpl implements UserService {
             }
 
             if (newUser.getChatId() != null) user.setChatId(newUser.getChatId());
+            if (newUser.getEmail() != null) user.setEmail(newUser.getEmail());
+            if (newUser.getPhone() != null) user.setPhone(newUser.getPhone());
 
             return userRepository.save(user);
         } catch (EntityNotFoundException e) {
