@@ -1,18 +1,8 @@
 spring:
-  datasource:
-    platform: postgres
-    driver-class-name: org.postgresql.Driver
-    initialization-mode: always
-    url: jdbc:postgresql://localhost:5430/gis_db
-    username: gis_db_user
-    password: skibidiwapapa
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate.format_sql: true
+  main:
+    banner-mode: off
+  profiles:
+    active: dev
 
 spring-doc:
   swagger-ui:

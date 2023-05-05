@@ -1,6 +1,8 @@
 package ru.hard2code.GisDatabaseApi.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 @Entity
@@ -17,8 +19,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "chat_id", nullable = false, unique = true, length = 30)
+    @Column(name = "chat_id", nullable = false, unique = true, length = 50)
     private String chatId;
+
+    @Column(name = "email", unique = true, length = 50)
+    @Email(message = "Invalid email")
+    private String email;
+
+    @Column(name = "phone", unique = true, length = 12)
+    @Pattern(regexp = "^(\\+7|7|8)?(9){1}?[\\d]{9}")
+    private String phone;
 
     @ManyToOne
     @JoinColumn(name = "user_type_id", nullable = false)
