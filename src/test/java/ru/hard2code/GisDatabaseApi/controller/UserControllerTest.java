@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import ru.hard2code.GisDatabaseApi.model.User;
 import ru.hard2code.GisDatabaseApi.model.UserType;
-import ru.hard2code.GisDatabaseApi.service.UserService;
+import ru.hard2code.GisDatabaseApi.service.user.UserService;
 
 import java.util.List;
 

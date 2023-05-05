@@ -1,8 +1,9 @@
-package ru.hard2code.GisDatabaseApi.service;
+package ru.hard2code.GisDatabaseApi.service.organization;
 
 import org.springframework.stereotype.Service;
 import ru.hard2code.GisDatabaseApi.model.Organization;
 import ru.hard2code.GisDatabaseApi.repository.OrganizationRepository;
+import ru.hard2code.GisDatabaseApi.service.organization.OrganizationService;
 
 import java.util.ArrayList;
 import java.util.List;
