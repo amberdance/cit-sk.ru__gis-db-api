@@ -23,6 +23,8 @@ create table user_types (
 create table users (
    id bigserial not null,
     chat_id varchar(50) not null,
+    username varchar(255) not null,
+    first_name varchar(255) not null,
     email varchar(50),
     phone varchar(12),
     user_type_id bigint not null,
@@ -49,6 +51,9 @@ alter table if exists users
 
 alter table if exists users
    add constraint UK_du5v5sr43g5bfnji4vb8hg5s3 unique (phone);
+
+alter table if exists users
+   add constraint UK_username unique (username);
 
 alter table if exists users 
    add constraint FKp0utx8kvsuc78nb39dgyg6oko 
