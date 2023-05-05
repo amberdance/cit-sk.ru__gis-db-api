@@ -30,9 +30,6 @@ create table users (
 );
 
 alter table if exists organizations
-   add constraint UK_qx8wup2ds7yfo1sc70uvxhke7 unique (address);
-
-alter table if exists organizations
    add constraint UK_t2biihtqyq19ah12tfmy26c38 unique (short_name);
 
 alter table if exists organizations
