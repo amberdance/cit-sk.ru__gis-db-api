@@ -7,7 +7,7 @@ import ru.hard2code.GisDatabaseApi.service.user.UserService;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/users")
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;

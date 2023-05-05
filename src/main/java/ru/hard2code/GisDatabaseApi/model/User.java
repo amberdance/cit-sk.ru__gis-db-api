@@ -30,13 +30,22 @@ public class User {
     @Pattern(regexp = "^(\\+7|7|8)?(9){1}?[\\d]{9}")
     private String phone;
 
+    @Column(name = "username", nullable = false, unique = true)
+    private String userName;
+
+    @Column(name = "first_name", nullable = false)
+    private String firstName;
+
     @ManyToOne
     @JoinColumn(name = "user_type_id", nullable = false)
     private UserType userType = new UserType();
 
-    public User(String chatId) {
+    public User(String chatId, String firstName, String userName) {
         this.chatId = chatId;
+        this.firstName = firstName;
+        this.userName = userName;
     }
+
 
     public User(String chatId, UserType userType) {
         this.chatId = chatId;
