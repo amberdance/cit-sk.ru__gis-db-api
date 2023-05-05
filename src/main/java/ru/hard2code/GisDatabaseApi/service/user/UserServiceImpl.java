@@ -1,4 +1,4 @@
-package ru.hard2code.GisDatabaseApi.service;
+package ru.hard2code.GisDatabaseApi.service.user;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;

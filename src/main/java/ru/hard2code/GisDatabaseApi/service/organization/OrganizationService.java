@@ -1,4 +1,4 @@
-package ru.hard2code.GisDatabaseApi.service;
+package ru.hard2code.GisDatabaseApi.service.organization;
 
 import ru.hard2code.GisDatabaseApi.model.Organization;
 

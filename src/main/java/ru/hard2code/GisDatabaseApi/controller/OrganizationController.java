@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.hard2code.GisDatabaseApi.model.Organization;
-import ru.hard2code.GisDatabaseApi.service.OrganizationService;
+import ru.hard2code.GisDatabaseApi.service.organization.OrganizationService;
 
 import java.util.List;
 

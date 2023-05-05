@@ -6,7 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import ru.hard2code.GisDatabaseApi.model.Organization;
-import ru.hard2code.GisDatabaseApi.service.OrganizationService;
+import ru.hard2code.GisDatabaseApi.service.organization.OrganizationService;
 
 import java.util.List;
 
