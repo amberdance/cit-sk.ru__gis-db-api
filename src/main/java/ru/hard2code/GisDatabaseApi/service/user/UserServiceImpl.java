@@ -1,4 +1,4 @@
-package ru.hard2code.GisDatabaseApi.service;
+package ru.hard2code.GisDatabaseApi.service.user;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -59,6 +59,8 @@ public class UserServiceImpl implements UserService {
             }
 
             if (newUser.getChatId() != null) user.setChatId(newUser.getChatId());
+            if (newUser.getEmail() != null) user.setEmail(newUser.getEmail());
+            if (newUser.getPhone() != null) user.setPhone(newUser.getPhone());
 
             return userRepository.save(user);
         } catch (EntityNotFoundException e) {
