@@ -23,6 +23,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserControllerTest extends ControllerTestConfig {
 
 
+    private final static String SOME_EMAIL = "test@test.ru";
+    private final static String SOME_PHONE = "+79999999999";
     @Autowired
     private UserService userService;
 
@@ -67,7 +69,7 @@ class UserControllerTest extends ControllerTestConfig {
     @Test
     @Transactional
     void shouldCreateUser() throws Exception {
-        var userJson = OBJECT_MAPPER.writeValueAsString(new User("981283", new UserType(UserType.Type.EMPLOYEE)));
+        var userJson = OBJECT_MAPPER.writeValueAsString(new User(0, "981283", SOME_EMAIL, SOME_PHONE, new UserType(UserType.Type.EMPLOYEE)));
 
         mvc.perform(post("/users")
                         .contentType(CONTENT_TYPE)
@@ -79,7 +81,7 @@ class UserControllerTest extends ControllerTestConfig {
 
     @Test
     void shouldUpdateUser() throws Exception {
-        var user = userService.create(new User("OLD_CHAT_ID", new UserType(UserType.Type.CITIZEN)));
+        var user = userService.create(new User(0, "OLD_CHAT_ID", SOME_EMAIL, SOME_PHONE, new UserType(UserType.Type.CITIZEN)));
 
         user.setChatId("NEW_CHAT_ID");
         user.setUserType(new UserType(UserType.Type.EMPLOYEE));
