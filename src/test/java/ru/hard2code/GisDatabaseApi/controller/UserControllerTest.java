@@ -2,11 +2,12 @@ package ru.hard2code.GisDatabaseApi.controller;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.jdbc.core.JdbcTemplate;
 import ru.hard2code.GisDatabaseApi.model.User;
 import ru.hard2code.GisDatabaseApi.model.UserType;
 import ru.hard2code.GisDatabaseApi.service.user.UserService;
@@ -19,14 +20,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Sql(scripts = "classpath:/clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class UserControllerTest extends ControllerTestConfig {
-
 
     private final User TEST_USER = new User(0, "981283", "test@test.ru", "+79994446655", "username", "firstName", new UserType(UserType.Type.EMPLOYEE));
 
     @Autowired
     private UserService userService;
+
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @AfterEach
+    void cleanup() {
+        jdbcTemplate.execute("delete from users");
+    }
 
     @Test
     void shouldReturnUserById() throws Exception {
