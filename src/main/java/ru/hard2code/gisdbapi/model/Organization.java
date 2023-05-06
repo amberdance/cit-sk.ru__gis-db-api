@@ -19,17 +19,20 @@ public class Organization {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "short_name", nullable = false, unique = true)
-    private String shortName;
+    @Column(name = "name", nullable = false, unique = true)
+    private String name;
 
-    @Column(name = "full_name", nullable = false, unique = true)
-    private String fullName;
-
-    @Column(name = "address", nullable = false)
+    @Column(name = "address")
     private String address;
 
-    @Column(name = "requisites", unique = true)
-    private String requisites;
+    @Column(name = "is_government", nullable = false)
+    private boolean isGovernment = false;
+
+    public Organization(String name, String address) {
+        this.name = name;
+        this.address = address;
+    }
+
 
     @Override
     public boolean equals(Object o) {

@@ -7,9 +7,9 @@ import java.util.List;
 public interface OrganizationService {
     List<Organization> findAll();
 
-    Organization createOrganization(Organization org);
+    Organization createOrganization(Organization organization);
 
-    List<Organization> createOrganization(List<Organization> gisList);
+    List<Organization> createOrganization(List<Organization> organizations);
 
     Organization findById(long id);
 

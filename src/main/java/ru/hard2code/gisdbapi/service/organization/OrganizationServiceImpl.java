@@ -13,8 +13,8 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     private final OrganizationRepository organizationRepository;
 
-    public OrganizationServiceImpl(OrganizationRepository organizationRepository) {
-        this.organizationRepository = organizationRepository;
+    public OrganizationServiceImpl(OrganizationRepository governmentOrganizationRepository) {
+        this.organizationRepository = governmentOrganizationRepository;
     }
 
     @Override
@@ -29,26 +29,24 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public List<Organization> createOrganization(List<Organization> gisList) {
+    public List<Organization> createOrganization(List<Organization> organizations) {
         List<Organization> result = new ArrayList<>();
-        gisList.forEach(org -> result.add(createOrganization(org)));
+        organizations.forEach(org -> result.add(createOrganization(org)));
 
         return result;
     }
 
     @Override
     public Organization findById(long id) {
-        return organizationRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Organization with id " + id + " was not found"));
+        return organizationRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Cannot find organization with id " + id));
     }
 
     @Override
     public Organization update(long id, Organization organization) {
         var org = organizationRepository.findById(id).orElseGet(() -> createOrganization(organization));
-
+        org.setName(organization.getName());
         org.setAddress(organization.getAddress());
-        org.setFullName(organization.getFullName());
-        org.setRequisites(organization.getRequisites());
-        org.setShortName(organization.getShortName());
+        org.setGovernment(org.isGovernment());
 
         return org;
     }

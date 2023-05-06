@@ -2,7 +2,7 @@ package ru.hard2code.gisdbapi.controller;
 
 import org.springframework.web.bind.annotation.*;
 import ru.hard2code.gisdbapi.model.Organization;
-import ru.hard2code.gisdbapi.service.organization.OrganizationService;
+import ru.hard2code.gisdbapi.service.organization.OrganizationServiceImpl;
 
 import java.util.List;
 
@@ -10,34 +10,34 @@ import java.util.List;
 @RequestMapping("/organizations")
 public class OrganizationController {
 
-    private final OrganizationService organizationService;
+    private final OrganizationServiceImpl organizationServiceImpl;
 
-    OrganizationController(OrganizationService organizationService) {
-        this.organizationService = organizationService;
+    OrganizationController(OrganizationServiceImpl organizationServiceImpl) {
+        this.organizationServiceImpl = organizationServiceImpl;
     }
 
     @GetMapping
     public List<Organization> getAllOrganizations() {
-        return organizationService.findAll();
+        return organizationServiceImpl.findAll();
     }
 
     @GetMapping("{id}")
     public Organization getOrganizationById(@PathVariable("id") long id) {
-        return organizationService.findById(id);
+        return organizationServiceImpl.findById(id);
     }
 
     @PostMapping
     public Organization createOrganization(@RequestBody Organization organization) {
-        return organizationService.createOrganization(organization);
+        return organizationServiceImpl.createOrganization(organization);
     }
 
     @PutMapping("{id}")
     public Organization updateOrganization(@PathVariable("id") long id, @RequestBody Organization organization) {
-        return organizationService.update(id, organization);
+        return organizationServiceImpl.update(id, organization);
     }
 
     @DeleteMapping("{id}")
     public void updateOrganization(@PathVariable("id") long id) {
-        organizationService.delete(id);
+        organizationServiceImpl.delete(id);
     }
 }
