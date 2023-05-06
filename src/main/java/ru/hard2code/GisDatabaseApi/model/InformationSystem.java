@@ -24,4 +24,7 @@ public class InformationSystem {
     private String name;
 
 
+    public InformationSystem(String name) {
+        this.name = name;
+    }
 }
