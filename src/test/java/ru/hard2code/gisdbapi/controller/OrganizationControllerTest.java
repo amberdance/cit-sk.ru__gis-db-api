@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.hard2code.gisdbapi.model.Organization;
-import ru.hard2code.gisdbapi.service.organization.OrganizationService;
+import ru.hard2code.gisdbapi.service.organization.OrganizationServiceImpl;
 
 import java.util.List;
 
@@ -20,10 +20,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class OrganizationControllerTest extends ControllerTestConfig {
 
-    private final Organization ORGANIZATION = new Organization(0, "org1", "org1", "org1", "org1");
+    private final Organization TEST_ORGANIZATION = new Organization("name", "address");
 
     @Autowired
-    private OrganizationService organizationService;
+    private OrganizationServiceImpl governmentOrganizationServiceServiceImpl;
 
     @AfterEach
     void cleanup() {
@@ -33,12 +33,12 @@ class OrganizationControllerTest extends ControllerTestConfig {
     @Test
     void shouldFindAllOrganizations() throws Exception {
         var gisList = List.of(
-                new Organization(0, "test1", "test1", "test1", "test1"),
-                new Organization(0, "test2", "test2", "test2", "test2"),
-                new Organization(0, "test3", "test3", "test3", "test3")
+                new Organization("name1", "name1"),
+                new Organization("name2", "name2"),
+                new Organization("name3", "name3")
         );
 
-        organizationService.createOrganization(gisList);
+        governmentOrganizationServiceServiceImpl.createOrganization(gisList);
 
         mvc.perform(get("/organizations").accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
@@ -48,11 +48,11 @@ class OrganizationControllerTest extends ControllerTestConfig {
 
     @Test
     void shouldFinOrganizationdById() throws Exception {
-        organizationService.createOrganization(ORGANIZATION);
+        governmentOrganizationServiceServiceImpl.createOrganization(TEST_ORGANIZATION);
 
-        mvc.perform(get("/organizations/{id}", ORGANIZATION.getId()).accept(CONTENT_TYPE))
+        mvc.perform(get("/organizations/{id}", TEST_ORGANIZATION.getId()).accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
-                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(ORGANIZATION)))
+                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION)))
                 .andReturn();
     }
 
@@ -60,7 +60,7 @@ class OrganizationControllerTest extends ControllerTestConfig {
     void shouldCreateOrganization() throws Exception {
         mvc.perform(post("/organizations")
                         .contentType(CONTENT_TYPE)
-                        .content(OBJECT_MAPPER.writeValueAsString(ORGANIZATION))
+                        .content(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION))
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -68,29 +68,28 @@ class OrganizationControllerTest extends ControllerTestConfig {
 
     @Test
     void shouldUpdateOrganization() throws Exception {
-        organizationService.createOrganization(ORGANIZATION);
-        ORGANIZATION.setShortName("1");
-        ORGANIZATION.setRequisites("2");
-        ORGANIZATION.setAddress("3");
-        ORGANIZATION.setFullName("4");
+        governmentOrganizationServiceServiceImpl.createOrganization(TEST_ORGANIZATION);
 
-        mvc.perform(put("/organizations/{id}", ORGANIZATION.getId())
+        TEST_ORGANIZATION.setName("NEW_NAME");
+        TEST_ORGANIZATION.setAddress("NEW_ADDRESS");
+
+        mvc.perform(put("/organizations/{id}", TEST_ORGANIZATION.getId())
                         .contentType(CONTENT_TYPE)
-                        .content(OBJECT_MAPPER.writeValueAsString(ORGANIZATION))
+                        .content(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION))
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
-                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(ORGANIZATION)))
+                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION)))
                 .andReturn();
     }
 
     @Test
     void shouldDeleteOrganizationById() throws Exception {
-        organizationService.createOrganization(ORGANIZATION);
+        governmentOrganizationServiceServiceImpl.createOrganization(TEST_ORGANIZATION);
 
-        mvc.perform(delete("/organizations/{id}", ORGANIZATION.getId()).accept(CONTENT_TYPE))
+        mvc.perform(delete("/organizations/{id}", TEST_ORGANIZATION.getId()).accept(CONTENT_TYPE))
                 .andExpect(status().isOk());
 
-        assertThrows(EntityNotFoundException.class, () -> organizationService.findById(ORGANIZATION.getId()));
+        assertThrows(EntityNotFoundException.class, () -> governmentOrganizationServiceServiceImpl.findById(TEST_ORGANIZATION.getId()));
     }
 
 }
