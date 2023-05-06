@@ -7,8 +7,6 @@ import java.util.List;
 public interface InformationSystemService {
     InformationSystem createInformationSystem(InformationSystem gis);
 
-    List<InformationSystem> createInformationSystem(List<InformationSystem> systems);
-
     List<InformationSystem> findAll();
 
     InformationSystem findById(long id);

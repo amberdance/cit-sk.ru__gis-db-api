@@ -7,7 +7,6 @@ import ru.hard2code.gisdbapi.model.UserType;
 import ru.hard2code.gisdbapi.repository.UserRepository;
 import ru.hard2code.gisdbapi.repository.UserTypeRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -29,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(long id) {
-        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User with id " + id + " did not found"));
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Cannot find User with id " + id));
     }
 
     @Override
@@ -58,9 +57,9 @@ public class UserServiceImpl implements UserService {
                 user.setUserType(type);
             }
 
-            if (newUser.getChatId() != null) user.setChatId(newUser.getChatId());
-            if (newUser.getEmail() != null) user.setEmail(newUser.getEmail());
-            if (newUser.getPhone() != null) user.setPhone(newUser.getPhone());
+            user.setChatId(newUser.getChatId());
+            user.setEmail(newUser.getEmail());
+            user.setPhone(newUser.getPhone());
 
             return userRepository.save(user);
         } catch (EntityNotFoundException e) {
@@ -68,23 +67,10 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public List<User> saveAll(List<User> users) {
-        List<User> result = new ArrayList<>();
-        users.forEach(user -> result.add(create(user)));
-
-        return result;
-    }
-
 
     @Override
-    public void delete(long id) {
+    public void deleteById(long id) {
         userRepository.deleteById(id);
-    }
-
-    @Override
-    public void delete(User user) {
-        userRepository.delete(user);
     }
 
 }

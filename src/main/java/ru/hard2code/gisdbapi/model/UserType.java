@@ -6,18 +6,19 @@ import org.hibernate.Hibernate;
 
 import java.util.Objects;
 
-@Entity
-@Table(name = "user_types")
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Entity
+@Table(name = "user_types")
 public class UserType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "type", nullable = false, unique = true, length = 20)
     @Enumerated(EnumType.STRING)
@@ -29,8 +30,8 @@ public class UserType {
 
     public enum Type {
         CITIZEN,
-        EMPLOYEE
-
+        GOVERNMENT_EMPLOYEE,
+        MUNICIPAL_EMPLOYEE
     }
 
     @Override
@@ -38,7 +39,7 @@ public class UserType {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         UserType userType = (UserType) o;
-        return getId() != 0 && Objects.equals(getId(), userType.getId());
+        return getId() != null && Objects.equals(getId(), userType.getId());
     }
 
     @Override

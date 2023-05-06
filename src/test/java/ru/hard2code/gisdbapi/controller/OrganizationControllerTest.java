@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.hard2code.gisdbapi.model.Organization;
-import ru.hard2code.gisdbapi.service.organization.OrganizationServiceImpl;
+import ru.hard2code.gisdbapi.service.organization.OrganizationService;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ class OrganizationControllerTest extends ControllerTestConfig {
     private final Organization TEST_ORGANIZATION = new Organization("name", "address");
 
     @Autowired
-    private OrganizationServiceImpl governmentOrganizationServiceServiceImpl;
+    private OrganizationService organizationService;
 
     @AfterEach
     void cleanup() {
@@ -32,28 +32,28 @@ class OrganizationControllerTest extends ControllerTestConfig {
 
     @Test
     void shouldFindAllOrganizations() throws Exception {
-        var gisList = List.of(
+        var orgs = List.of(
                 new Organization("name1", "name1"),
                 new Organization("name2", "name2"),
                 new Organization("name3", "name3")
         );
 
-        governmentOrganizationServiceServiceImpl.createOrganization(gisList);
+        organizationService.createOrganization(orgs.get(0));
+        organizationService.createOrganization(orgs.get(1));
+        organizationService.createOrganization(orgs.get(2));
 
         mvc.perform(get("/organizations").accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
-                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(gisList)))
-                .andReturn();
+                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(orgs)));
     }
 
     @Test
     void shouldFinOrganizationdById() throws Exception {
-        governmentOrganizationServiceServiceImpl.createOrganization(TEST_ORGANIZATION);
+        organizationService.createOrganization(TEST_ORGANIZATION);
 
         mvc.perform(get("/organizations/{id}", TEST_ORGANIZATION.getId()).accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
-                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION)))
-                .andReturn();
+                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION)));
     }
 
     @Test
@@ -62,13 +62,12 @@ class OrganizationControllerTest extends ControllerTestConfig {
                         .contentType(CONTENT_TYPE)
                         .content(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION))
                         .accept(CONTENT_TYPE))
-                .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(status().isOk());
     }
 
     @Test
     void shouldUpdateOrganization() throws Exception {
-        governmentOrganizationServiceServiceImpl.createOrganization(TEST_ORGANIZATION);
+        organizationService.createOrganization(TEST_ORGANIZATION);
 
         TEST_ORGANIZATION.setName("NEW_NAME");
         TEST_ORGANIZATION.setAddress("NEW_ADDRESS");
@@ -78,18 +77,17 @@ class OrganizationControllerTest extends ControllerTestConfig {
                         .content(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION))
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
-                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION)))
-                .andReturn();
+                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION)));
     }
 
     @Test
     void shouldDeleteOrganizationById() throws Exception {
-        governmentOrganizationServiceServiceImpl.createOrganization(TEST_ORGANIZATION);
+        organizationService.createOrganization(TEST_ORGANIZATION);
 
         mvc.perform(delete("/organizations/{id}", TEST_ORGANIZATION.getId()).accept(CONTENT_TYPE))
                 .andExpect(status().isOk());
 
-        assertThrows(EntityNotFoundException.class, () -> governmentOrganizationServiceServiceImpl.findById(TEST_ORGANIZATION.getId()));
+        assertThrows(EntityNotFoundException.class, () -> organizationService.findById(TEST_ORGANIZATION.getId()));
     }
 
 }

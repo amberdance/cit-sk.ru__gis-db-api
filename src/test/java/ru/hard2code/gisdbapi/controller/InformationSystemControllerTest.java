@@ -46,7 +46,9 @@ class InformationSystemControllerTest extends ControllerTestConfig {
     void shouldFindAllInformationSystems() throws Exception {
         var systems = List.of(new InformationSystem("1"), new InformationSystem("2"), new InformationSystem("3"));
 
-        informationSystemService.createInformationSystem(systems);
+        informationSystemService.createInformationSystem(systems.get(0));
+        informationSystemService.createInformationSystem(systems.get(1));
+        informationSystemService.createInformationSystem(systems.get(2));
 
         mvc.perform(get("/information-systems")
                         .contentType(CONTENT_TYPE)

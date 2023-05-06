@@ -26,12 +26,12 @@ public class InformationSystemController {
         return informationSystemService.findAll();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     InformationSystem getById(@PathVariable("id") long id) {
         return informationSystemService.findById(id);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("{id}")
     InformationSystem update(@PathVariable("id") long id, @RequestBody InformationSystem informationSystem) {
         return informationSystemService.update(id, informationSystem);
     }
