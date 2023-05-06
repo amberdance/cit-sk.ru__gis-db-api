@@ -8,18 +8,19 @@ import org.hibernate.Hibernate;
 
 import java.util.Objects;
 
-@Entity
-@Table(name = "users")
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Entity
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "chat_id", nullable = false, unique = true, length = 50)
     private String chatId;
@@ -49,17 +50,12 @@ public class User {
     }
 
 
-    public User(String chatId, UserType userType) {
-        this.chatId = chatId;
-        this.userType = userType;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         User user = (User) o;
-        return getId() != 0 && Objects.equals(getId(), user.getId());
+        return getId() != null && Objects.equals(getId(), user.getId());
     }
 
     @Override

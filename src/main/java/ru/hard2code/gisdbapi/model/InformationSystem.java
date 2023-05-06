@@ -6,13 +6,13 @@ import org.hibernate.Hibernate;
 
 import java.util.Objects;
 
-@Entity
-@Table(name = "information_systems")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString
+@Entity
+@Table(name = "information_systems")
 public class InformationSystem {
 
     @Id
