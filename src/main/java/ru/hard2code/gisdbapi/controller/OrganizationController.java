@@ -2,7 +2,7 @@ package ru.hard2code.gisdbapi.controller;
 
 import org.springframework.web.bind.annotation.*;
 import ru.hard2code.gisdbapi.model.Organization;
-import ru.hard2code.gisdbapi.service.organization.OrganizationServiceImpl;
+import ru.hard2code.gisdbapi.service.organization.OrganizationService;
 
 import java.util.List;
 
@@ -10,34 +10,34 @@ import java.util.List;
 @RequestMapping("/organizations")
 public class OrganizationController {
 
-    private final OrganizationServiceImpl organizationServiceImpl;
+    private final OrganizationService organizationService;
 
-    OrganizationController(OrganizationServiceImpl organizationServiceImpl) {
-        this.organizationServiceImpl = organizationServiceImpl;
+    OrganizationController(OrganizationService organizationService) {
+        this.organizationService = organizationService;
     }
 
     @GetMapping
-    public List<Organization> getAllOrganizations() {
-        return organizationServiceImpl.findAll();
+    public List<Organization> getAllOrganizations(@RequestParam(value = "isGovernment", required = false) Boolean isGovernment) {
+        return isGovernment == null ? organizationService.findAll() : organizationService.findByType(isGovernment);
     }
 
     @GetMapping("{id}")
     public Organization getOrganizationById(@PathVariable("id") long id) {
-        return organizationServiceImpl.findById(id);
+        return organizationService.findById(id);
     }
 
     @PostMapping
     public Organization createOrganization(@RequestBody Organization organization) {
-        return organizationServiceImpl.createOrganization(organization);
+        return organizationService.createOrganization(organization);
     }
 
     @PutMapping("{id}")
     public Organization updateOrganization(@PathVariable("id") long id, @RequestBody Organization organization) {
-        return organizationServiceImpl.update(id, organization);
+        return organizationService.update(id, organization);
     }
 
     @DeleteMapping("{id}")
     public void updateOrganization(@PathVariable("id") long id) {
-        organizationServiceImpl.delete(id);
+        organizationService.delete(id);
     }
 }
