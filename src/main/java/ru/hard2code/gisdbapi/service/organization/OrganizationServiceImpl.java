@@ -55,4 +55,9 @@ public class OrganizationServiceImpl implements OrganizationService {
     public void delete(long id) {
         organizationRepository.deleteById(id);
     }
+
+    @Override
+    public List<Organization> findByType(boolean isGovernment) {
+        return organizationRepository.findByIsGovernment(isGovernment);
+    }
 }
