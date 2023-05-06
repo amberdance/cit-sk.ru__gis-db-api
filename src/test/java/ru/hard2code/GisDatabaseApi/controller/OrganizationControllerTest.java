@@ -1,11 +1,11 @@
 package ru.hard2code.GisDatabaseApi.controller;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
 import ru.hard2code.GisDatabaseApi.model.Organization;
 import ru.hard2code.GisDatabaseApi.service.organization.OrganizationService;
 
@@ -18,12 +18,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Sql(scripts = "classpath:/clean.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class OrganizationControllerTest extends ControllerTestConfig {
 
     private final Organization ORGANIZATION = new Organization(0, "org1", "org1", "org1", "org1");
     @Autowired
     private OrganizationService organizationService;
+
+    @AfterEach
+    void cleanup() {
+        jdbcTemplate.execute("delete from organizations");
+    }
 
     @Test
     void shouldFindAllOrganizations() throws Exception {

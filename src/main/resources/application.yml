@@ -5,8 +5,7 @@ spring:
     active: dev
 
 spring-doc:
-  swagger-ui:
-    path: /swagger-ui
+  swagger-ui.path: /swagger-ui
 
 server:
   servlet.context-path: /api
