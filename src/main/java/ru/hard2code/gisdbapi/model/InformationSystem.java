@@ -18,7 +18,7 @@ public class InformationSystem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private long id;
+    private Long id;
 
 
     @Column(name = "name", nullable = false, unique = true)
@@ -34,7 +34,7 @@ public class InformationSystem {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         InformationSystem that = (InformationSystem) o;
-        return getId() != 0 && Objects.equals(getId(), that.getId());
+        return getId() != null && Objects.equals(getId(), that.getId());
     }
 
     @Override
