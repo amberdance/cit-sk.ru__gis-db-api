@@ -4,7 +4,7 @@
     <persistence-units>
       <persistence-unit name="Default">
         <packages>
-          <package value="ru.hard2code.GisDatabaseApi" />
+          <package value="ru.hard2code.gisdbapi" />
         </packages>
       </persistence-unit>
     </persistence-units>
