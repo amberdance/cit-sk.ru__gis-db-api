@@ -16,4 +16,6 @@ public interface OrganizationService {
     Organization update(long id, Organization organization);
 
     void delete(long id);
+
+    List<Organization> findByType(boolean isGovernment);
 }
