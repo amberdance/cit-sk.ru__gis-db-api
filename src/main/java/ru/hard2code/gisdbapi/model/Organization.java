@@ -6,18 +6,19 @@ import org.hibernate.Hibernate;
 
 import java.util.Objects;
 
-@Entity
-@Table(name = "organizations")
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Entity
+@Table(name = "organizations")
 public class Organization {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "name", nullable = false, unique = true)
     private String name;
@@ -39,7 +40,7 @@ public class Organization {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Organization that = (Organization) o;
-        return getId() != 0 && Objects.equals(getId(), that.getId());
+        return getId() != null && Objects.equals(getId(), that.getId());
     }
 
     @Override

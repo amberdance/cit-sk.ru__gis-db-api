@@ -22,8 +22,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class UserControllerTest extends ControllerTestConfig {
 
-    private final User TEST_USER = new User(0, "981283", "test@test.ru", "+79994446655",
-            "username", "firstName", new UserType(UserType.Type.EMPLOYEE));
+    private final User TEST_USER = new User(null, "981283", "test@test.ru", "+79994446655",
+            "username", "firstName", new UserType(UserType.Type.GOVERNMENT_EMPLOYEE));
 
     @Autowired
     private UserService userService;
@@ -42,8 +42,7 @@ class UserControllerTest extends ControllerTestConfig {
         userService.create(TEST_USER);
         mvc.perform(get("/users/{id}", TEST_USER.getId()).accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
-                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(TEST_USER)))
-                .andReturn();
+                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(TEST_USER)));
     }
 
     @Test
@@ -55,7 +54,9 @@ class UserControllerTest extends ControllerTestConfig {
                 new User("3", "userName3", "firstName3")
         );
 
-        userService.saveAll(users);
+        userService.create(users.get(0));
+        userService.create(users.get(1));
+        userService.create(users.get(2));
 
         mvc.perform(get("/users").accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
@@ -80,8 +81,7 @@ class UserControllerTest extends ControllerTestConfig {
                         .contentType(CONTENT_TYPE)
                         .content(userJson)
                         .accept(CONTENT_TYPE))
-                .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -89,7 +89,7 @@ class UserControllerTest extends ControllerTestConfig {
         var user = userService.create(TEST_USER);
 
         user.setChatId("NEW_CHAT_ID");
-        user.setUserType(new UserType(UserType.Type.EMPLOYEE));
+        user.setUserType(new UserType(UserType.Type.GOVERNMENT_EMPLOYEE));
 
         mvc.perform(put("/users/{id}", user.getId())
                         .contentType(CONTENT_TYPE)

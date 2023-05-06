@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.hard2code.gisdbapi.model.Organization;
 import ru.hard2code.gisdbapi.repository.OrganizationRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -13,8 +12,8 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     private final OrganizationRepository organizationRepository;
 
-    public OrganizationServiceImpl(OrganizationRepository governmentOrganizationRepository) {
-        this.organizationRepository = governmentOrganizationRepository;
+    public OrganizationServiceImpl(OrganizationRepository organizationRepository) {
+        this.organizationRepository = organizationRepository;
     }
 
     @Override
@@ -24,16 +23,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public Organization createOrganization(Organization org) {
-        System.out.println(org);
         return organizationRepository.save(org);
-    }
-
-    @Override
-    public List<Organization> createOrganization(List<Organization> organizations) {
-        List<Organization> result = new ArrayList<>();
-        organizations.forEach(org -> result.add(createOrganization(org)));
-
-        return result;
     }
 
     @Override
@@ -48,7 +38,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         org.setAddress(organization.getAddress());
         org.setGovernment(org.isGovernment());
 
-        return org;
+        return organizationRepository.save(org);
     }
 
     @Override

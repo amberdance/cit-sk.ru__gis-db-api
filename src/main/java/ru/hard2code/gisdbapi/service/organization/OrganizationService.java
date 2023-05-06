@@ -9,8 +9,6 @@ public interface OrganizationService {
 
     Organization createOrganization(Organization organization);
 
-    List<Organization> createOrganization(List<Organization> organizations);
-
     Organization findById(long id);
 
     Organization update(long id, Organization organization);
