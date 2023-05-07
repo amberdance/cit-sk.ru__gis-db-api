@@ -26,8 +26,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: sr7%f/+=bXjvRoQ
       SPRING_PROFILES_ACTIVE: prod
     volumes:
-      - app-log:/var/log/gis-db
+      - /var/log/gis-api:/var/log/gis-api
 
 volumes:
   db-data:
-  app-log:
