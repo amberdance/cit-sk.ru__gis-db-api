@@ -14,19 +14,12 @@ import java.util.Objects;
 @ToString
 @Entity
 @Table(name = "user_types")
-public class UserType {
+public class UserType extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
     @Column(name = "type", nullable = false, unique = true, length = 20)
     @Enumerated(EnumType.STRING)
     private Type type = Type.CITIZEN;
-
-    public UserType(Type type) {
-        this.type = type;
-    }
 
     public enum Type {
         CITIZEN,
@@ -42,9 +35,5 @@ public class UserType {
         return getId() != null && Objects.equals(getId(), userType.getId());
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }
 

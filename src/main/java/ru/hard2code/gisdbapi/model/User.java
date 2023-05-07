@@ -16,11 +16,7 @@ import java.util.Objects;
 @ToString
 @Entity
 @Table(name = "users")
-public class User {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class User extends AbstractEntity {
 
     @Column(name = "chat_id", nullable = false, unique = true, length = 50)
     private String chatId;
@@ -58,8 +54,4 @@ public class User {
         return getId() != null && Objects.equals(getId(), user.getId());
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }

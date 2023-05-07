@@ -15,12 +15,8 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity
 @Table(name = "questions")
-public class Question {
+public class Question extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
 
     @Column(name = "label", nullable = false)
     private String label;
@@ -34,12 +30,6 @@ public class Question {
     private InformationSystem informationSystem;
 
 
-    public Question(String label, String answer, InformationSystem informationSystem) {
-        this.label = label;
-        this.answer = answer;
-        this.informationSystem = informationSystem;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -48,8 +38,4 @@ public class Question {
         return getId() != null && Objects.equals(getId(), question.getId());
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }

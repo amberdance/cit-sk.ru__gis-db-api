@@ -20,6 +20,6 @@ public class UserTypeServiceImpl implements UserTypeService {
 
     @Override
     public UserType findByType(UserType.Type name) {
-        return userTypeRepository.findByType(name).orElseThrow(() -> new EntityNotFoundException("Cannot find UserType with name " + name));
+        return userTypeRepository.findByType(name).orElseThrow(EntityNotFoundException::new);
     }
 }

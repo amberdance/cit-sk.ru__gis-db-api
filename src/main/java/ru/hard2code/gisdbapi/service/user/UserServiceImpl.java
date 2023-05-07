@@ -1,7 +1,8 @@
 package ru.hard2code.gisdbapi.service.user;
 
-import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.stereotype.Service;
+import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.model.User;
 import ru.hard2code.gisdbapi.model.UserType;
 import ru.hard2code.gisdbapi.repository.UserRepository;
@@ -28,7 +29,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findById(long id) {
-        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Cannot find User with id " + id));
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(User.class, id));
     }
 
     @Override
