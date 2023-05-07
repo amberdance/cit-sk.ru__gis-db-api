@@ -98,7 +98,7 @@ class UserControllerTest extends ControllerTestConfig {
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.chatId").value(user.getChatId()))
-                .andExpect(jsonPath("$.userType.type").value(user.getUserType().getType().toString()))
+                .andExpect(jsonPath("$.userType.type").value(user.getUserType().getType().getValue()))
                 .andReturn();
     }
 

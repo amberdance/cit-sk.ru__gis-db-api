@@ -1,5 +1,6 @@
 package ru.hard2code.gisdbapi.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -19,12 +20,24 @@ public class UserType extends AbstractEntity {
 
     @Column(name = "type", nullable = false, unique = true, length = 20)
     @Enumerated(EnumType.STRING)
+
     private Type type = Type.CITIZEN;
 
     public enum Type {
-        CITIZEN,
-        GOVERNMENT_EMPLOYEE,
-        MUNICIPAL_EMPLOYEE
+        CITIZEN("Гражданин"),
+        GOVERNMENT_EMPLOYEE("Сотрудник ОГВ"),
+        MUNICIPAL_EMPLOYEE("Сотрудник ОМСУ");
+
+        private final String type;
+
+        Type(String type) {
+            this.type = type;
+        }
+
+        @JsonValue
+        public String getValue() {
+            return type;
+        }
     }
 
     @Override
