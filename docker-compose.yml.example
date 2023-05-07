@@ -2,19 +2,19 @@ version: '3'
 
 services:
   db:
-    container_name: pg-gis-docker
+    container_name: postgresql-container
     image: postgres:13
     restart: always
     environment:
-      POSTGRES_USER: gis_db_user
-      POSTGRES_PASSWORD: sr7%f/+=bXjvRoQ
-      POSTGRES_DB: gis_db
+      POSTGRES_USER: usr
+      POSTGRES_PASSWORD: pwd
+      POSTGRES_DB: test_db
     ports:
       - "5430:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
   app:
-    container_name: spring-gis-docker
+    container_name: app-container
     build: .
     ports:
       - "9090:8080"
@@ -22,11 +22,11 @@ services:
       - db
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/gis_db
-      SPRING_DATASOURCE_USERNAME: gis_db_user
-      SPRING_DATASOURCE_PASSWORD: sr7%f/+=bXjvRoQ
+      SPRING_DATASOURCE_USERNAME: usr
+      SPRING_DATASOURCE_PASSWORD: pwd
       SPRING_PROFILES_ACTIVE: prod
     volumes:
-      - app-log:/var/log/gis-db
+      - app-log:/var/log/app
 
 volumes:
   db-data:
