@@ -1,6 +1,6 @@
 package ru.hard2code.gisdbapi.controller;
 
-import jakarta.persistence.EntityNotFoundException;
+
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.model.User;
 import ru.hard2code.gisdbapi.model.UserType;
 import ru.hard2code.gisdbapi.service.user.UserService;
@@ -22,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class UserControllerTest extends ControllerTestConfig {
 
-    private final User TEST_USER = new User(null, "981283", "test@test.ru", "+79994446655",
+    private final User TEST_USER = new User("981283", "test@test.ru", "+79994446655",
             "username", "firstName", new UserType(UserType.Type.GOVERNMENT_EMPLOYEE));
 
     @Autowired

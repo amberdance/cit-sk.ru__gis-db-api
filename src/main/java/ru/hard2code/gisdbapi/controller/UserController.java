@@ -16,6 +16,11 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/error")
+    public void test() {
+        throw new RuntimeException("SOMETHING");
+    }
+
     @GetMapping("{id}")
     public User getUserById(@PathVariable("id") long id) {
         return userService.findById(id);

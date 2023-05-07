@@ -1,7 +1,8 @@
 package ru.hard2code.gisdbapi.service.question;
 
-import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.stereotype.Service;
+import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.model.Question;
 import ru.hard2code.gisdbapi.repository.InformationSystemRepository;
 import ru.hard2code.gisdbapi.repository.QuestionRepository;
@@ -26,7 +27,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Question findQuestionById(long id) {
-        return questionRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Cannot find question with id " + id));
+        return questionRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Question.class, id));
     }
 
     @Override
