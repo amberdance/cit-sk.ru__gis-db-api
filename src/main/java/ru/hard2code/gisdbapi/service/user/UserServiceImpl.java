@@ -4,7 +4,6 @@ package ru.hard2code.gisdbapi.service.user;
 import org.springframework.stereotype.Service;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.model.User;
-import ru.hard2code.gisdbapi.model.UserType;
 import ru.hard2code.gisdbapi.repository.UserRepository;
 import ru.hard2code.gisdbapi.repository.UserTypeRepository;
 
@@ -36,36 +35,43 @@ public class UserServiceImpl implements UserService {
     public User create(User user) {
         var userType = user.getUserType();
 
-        try {
-            var userTypeFromDb = userTypeRepository.findByType(userType.getType()).orElseThrow(NullPointerException::new);
-            user.setUserType(userTypeFromDb);
-        } catch (NullPointerException e) {
-            user.setUserType(userTypeRepository.save(new UserType(userType == null ? UserType.Type.CITIZEN : userType.getType())));
+        if (userType != null) {
+            var existingUserType = userTypeRepository.findByType(userType.getType());
+
+            if (existingUserType.isPresent()) {
+                user.setUserType(existingUserType.get());
+            } else {
+                userTypeRepository.save(userType);
+            }
         }
+
 
         return userRepository.save(user);
     }
 
     @Override
     public User update(long id, User newUser) {
-        try {
-            var user = findById(id);
-            //TODO: https://www.baeldung.com/spring-data-partial-update
-            if (newUser.getUserType() != null) {
-                var type = userTypeRepository.findByType(newUser.getUserType().getType())
-                        .orElseGet(() -> userTypeRepository.save(newUser.getUserType()));
+        var user = userRepository.findById(id).orElseGet(() -> userRepository.save(newUser));
+        var userType = user.getUserType();
 
-                user.setUserType(type);
+        user.setUserName(newUser.getUserName());
+        user.setFirstName(newUser.getFirstName());
+        user.setPhone(newUser.getPhone());
+        user.setEmail(newUser.getEmail());
+        user.setChatId(newUser.getChatId());
+
+
+        if (userType != null) {
+            var existingUserType = userTypeRepository.findByType(userType.getType());
+
+            if (existingUserType.isPresent()) {
+                user.setUserType(existingUserType.get());
+            } else {
+                userTypeRepository.save(userType);
             }
-
-            user.setChatId(newUser.getChatId());
-            user.setEmail(newUser.getEmail());
-            user.setPhone(newUser.getPhone());
-
-            return userRepository.save(user);
-        } catch (EntityNotFoundException e) {
-            return create(newUser);
         }
+
+        return userRepository.save(user);
     }
 
 
