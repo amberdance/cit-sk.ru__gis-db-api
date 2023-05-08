@@ -20,8 +20,8 @@ public class UserType extends AbstractEntity {
 
     @Column(name = "type", nullable = false, unique = true, length = 20)
     @Enumerated(EnumType.STRING)
-
     private Type type = Type.CITIZEN;
+
 
     public enum Type {
         CITIZEN("Гражданин"),

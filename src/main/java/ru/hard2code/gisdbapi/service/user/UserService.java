@@ -5,13 +5,13 @@ import ru.hard2code.gisdbapi.model.User;
 import java.util.List;
 
 public interface UserService {
-    User findById(long id);
+    User findUserById(long id);
 
-    User create(User user);
+    User createUser(User user);
 
     User update(long id, User newUser);
 
-    List<User> findAll();
+    List<User> findAllUsers();
 
     void deleteById(long id);
 

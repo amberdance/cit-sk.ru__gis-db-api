@@ -1,8 +1,10 @@
 package ru.hard2code.gisdbapi.controller;
 
 
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
@@ -14,14 +16,13 @@ import java.util.Map;
 public class GlobalDefaultExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleResourceNotFoundException(EntityNotFoundException e) {
+    public ResponseEntity<Map<String, Object>> handleNotFoundException(EntityNotFoundException e) {
         return new ResponseEntity<>(new ErrorInfo(e, HttpStatus.NOT_FOUND).getError(), HttpStatus.NOT_FOUND);
     }
 
-
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler({ConstraintViolationException.class, HttpMessageNotReadableException.class})
     public ResponseEntity<Map<String, Object>> handleBadRequest(Exception e) {
-        return new ResponseEntity<>(new ErrorInfo(e, HttpStatus.INTERNAL_SERVER_ERROR).getError(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new ErrorInfo(e, HttpStatus.BAD_REQUEST).getError(), HttpStatus.BAD_REQUEST);
     }
 
 
