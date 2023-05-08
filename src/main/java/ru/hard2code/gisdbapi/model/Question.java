@@ -1,6 +1,7 @@
 package ru.hard2code.gisdbapi.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -15,30 +16,23 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity
 @Table(name = "questions")
-public class Question {
+public class Question extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
 
     @Column(name = "label", nullable = false)
+    @NotNull
     private String label;
 
     @Column(name = "answer", nullable = false)
     @JdbcTypeCode(SqlTypes.LONGVARCHAR)
+    @NotNull
     private String answer;
 
     @ManyToOne
     @JoinColumn(name = "information_system_id")
+    @NotNull
     private InformationSystem informationSystem;
 
-
-    public Question(String label, String answer, InformationSystem informationSystem) {
-        this.label = label;
-        this.answer = answer;
-        this.informationSystem = informationSystem;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -48,8 +42,4 @@ public class Question {
         return getId() != null && Objects.equals(getId(), question.getId());
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }

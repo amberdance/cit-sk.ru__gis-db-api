@@ -2,6 +2,7 @@ package ru.hard2code.gisdbapi.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -16,38 +17,34 @@ import java.util.Objects;
 @ToString
 @Entity
 @Table(name = "users")
-public class User {
+public class User extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "chat_id", nullable = false, unique = true, length = 50)
+    @Column(name = "chat_id", nullable = false, unique = true, length = 10)
+    @Pattern(regexp = "^\\d{9,10}$")
+    @NotNull
     private String chatId;
 
     @Column(name = "email", unique = true, length = 50)
-    @Email(message = "Invalid email")
+    @Email
+    @NotNull
     private String email;
 
     @Column(name = "phone", unique = true, length = 12)
-    @Pattern(regexp = "^(\\+7|7|8)?(9){1}?[\\d]{9}")
+    @Pattern(regexp = "^(\\+7|7|8)?(9)?\\d{9}")
     private String phone;
 
     @Column(name = "username", nullable = false, unique = true)
+    @NotNull
     private String userName;
 
     @Column(name = "first_name", nullable = false)
+    @NotNull
     private String firstName;
 
     @ManyToOne
     @JoinColumn(name = "user_type_id", nullable = false)
-    private UserType userType = new UserType();
-
-    public User(String chatId, String firstName, String userName) {
-        this.chatId = chatId;
-        this.firstName = firstName;
-        this.userName = userName;
-    }
+    @NotNull
+    private UserType userType;
 
 
     @Override
@@ -58,8 +55,4 @@ public class User {
         return getId() != null && Objects.equals(getId(), user.getId());
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }

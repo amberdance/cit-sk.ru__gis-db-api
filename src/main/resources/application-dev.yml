@@ -1,12 +1,12 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5430/gis_db
-    username: gis_db_user
-    password: skibidiwapapa
+    url: jdbc:postgresql://localhost:5430/test_db
+    username: usr
+    password: pwd
 
   flyway:
-    enabled: true
+    enabled: false
     locations: classpath:db/migration
     baseline-on-migrate: true
 

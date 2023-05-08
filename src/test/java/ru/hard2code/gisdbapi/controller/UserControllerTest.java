@@ -1,16 +1,17 @@
 package ru.hard2code.gisdbapi.controller;
 
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
+
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
+import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.model.User;
 import ru.hard2code.gisdbapi.model.UserType;
 import ru.hard2code.gisdbapi.service.user.UserService;
+import ru.hard2code.gisdbapi.service.userType.UserTypeService;
 
 import java.util.List;
 
@@ -22,41 +23,48 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class UserControllerTest extends ControllerTestConfig {
 
-    private final User TEST_USER = new User(null, "981283", "test@test.ru", "+79994446655",
-            "username", "firstName", new UserType(UserType.Type.GOVERNMENT_EMPLOYEE));
+    private final UserType CITIZEN = new UserType(UserType.Type.CITIZEN.getValue());
+    private final UserType EMPLOYEE = new UserType(UserType.Type.GOVERNMENT_EMPLOYEE.getValue());
+    private final User TEST_USER = new User("123456789", "test@test.ru", "+79994446655",
+            "username", "firstName", CITIZEN);
 
     @Autowired
     private UserService userService;
 
-
     @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private UserTypeService userTypeService;
+
+    @BeforeEach
+    void beforeEach() {
+        userTypeService.createUserType(CITIZEN);
+        userTypeService.createUserType(EMPLOYEE);
+    }
 
     @AfterEach
     void cleanup() {
         jdbcTemplate.execute("delete from users");
+        jdbcTemplate.execute("delete from user_types");
     }
 
     @Test
     void shouldReturnUserById() throws Exception {
-        userService.create(TEST_USER);
+        userService.createUser(TEST_USER);
         mvc.perform(get("/users/{id}", TEST_USER.getId()).accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(TEST_USER)));
     }
 
     @Test
-    @Transactional
     void shouldReturnListOfUsers() throws Exception {
         var users = List.of(
-                new User("1", "userName1", "firstName1"),
-                new User("2", "userName2", "firstName2"),
-                new User("3", "userName3", "firstName3")
+                new User("123123123", "test@test1.ru", "+79994446651",
+                        "username1", "firstName1", CITIZEN),
+                new User("432432432", "test@test2.ru", "+79994446652",
+                        "username2", "firstName2", EMPLOYEE)
         );
 
-        userService.create(users.get(0));
-        userService.create(users.get(1));
-        userService.create(users.get(2));
+        userService.createUser(users.get(0));
+        userService.createUser(users.get(1));
 
         mvc.perform(get("/users").accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
@@ -65,15 +73,14 @@ class UserControllerTest extends ControllerTestConfig {
 
     @Test
     void shouldDeleteUserById() throws Exception {
-        userService.create(TEST_USER);
+        userService.createUser(TEST_USER);
         mvc.perform(delete("/users/{id}", TEST_USER.getId()).accept(CONTENT_TYPE))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
-        assertThrows(EntityNotFoundException.class, () -> userService.findById(TEST_USER.getId()));
+        assertThrows(EntityNotFoundException.class, () -> userService.findUserById(TEST_USER.getId()));
     }
 
     @Test
-    @Transactional
     void shouldCreateUser() throws Exception {
         var userJson = OBJECT_MAPPER.writeValueAsString(TEST_USER);
 
@@ -86,10 +93,14 @@ class UserControllerTest extends ControllerTestConfig {
 
     @Test
     void shouldUpdateUser() throws Exception {
-        var user = userService.create(TEST_USER);
+        var user = userService.createUser(TEST_USER);
 
-        user.setChatId("NEW_CHAT_ID");
-        user.setUserType(new UserType(UserType.Type.GOVERNMENT_EMPLOYEE));
+        user.setChatId("999999999");
+        user.setUserType(EMPLOYEE);
+        user.setUserName("newUserName");
+        user.setPhone("+79994443399");
+        user.setEmail("newemail@test.com");
+        user.setFirstName("firstNameNew");
 
         mvc.perform(put("/users/{id}", user.getId())
                         .contentType(CONTENT_TYPE)
@@ -97,7 +108,7 @@ class UserControllerTest extends ControllerTestConfig {
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.chatId").value(user.getChatId()))
-                .andExpect(jsonPath("$.userType.type").value(user.getUserType().getType().toString()))
+                .andExpect(jsonPath("$.userType.name").value(user.getUserType().getName()))
                 .andReturn();
     }
 

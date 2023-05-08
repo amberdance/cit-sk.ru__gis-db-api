@@ -1,9 +1,16 @@
 package ru.hard2code.gisdbapi.model;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.Hibernate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -14,24 +21,37 @@ import java.util.Objects;
 @ToString
 @Entity
 @Table(name = "user_types")
-public class UserType {
+public class UserType extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @Column(name = "type", nullable = false, unique = true, length = 20)
-    @Enumerated(EnumType.STRING)
-    private Type type = Type.CITIZEN;
+    @Column(name = "name", nullable = false, unique = true, length = 100)
+    @NotNull
+    private String name = Type.CITIZEN.getValue();
 
-    public UserType(Type type) {
-        this.type = type;
+    @OneToMany(mappedBy = "userType")
+    @ToString.Exclude
+    @JsonIgnore
+    private List<User> questions = new ArrayList<>();
+
+    public UserType(String name) {
+        this.name = name;
     }
 
+
     public enum Type {
-        CITIZEN,
-        GOVERNMENT_EMPLOYEE,
-        MUNICIPAL_EMPLOYEE
+        CITIZEN("Гражданин"),
+        GOVERNMENT_EMPLOYEE("Сотрудник ОГВ"),
+        MUNICIPAL_EMPLOYEE("Сотрудник ОМСУ");
+
+        private final String type;
+
+        Type(String type) {
+            this.type = type;
+        }
+
+        public String getValue() {
+            return type;
+        }
     }
 
     @Override
@@ -42,9 +62,5 @@ public class UserType {
         return getId() != null && Objects.equals(getId(), userType.getId());
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }
 

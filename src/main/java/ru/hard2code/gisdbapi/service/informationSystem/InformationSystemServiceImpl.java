@@ -1,7 +1,7 @@
 package ru.hard2code.gisdbapi.service.informationSystem;
 
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
+import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.model.InformationSystem;
 import ru.hard2code.gisdbapi.repository.InformationSystemRepository;
 
@@ -28,7 +28,7 @@ public class InformationSystemServiceImpl implements InformationSystemService {
 
     @Override
     public InformationSystem findById(long id) {
-        return informationSystemRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Cannot find information system with id " + id));
+        return informationSystemRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(InformationSystem.class, id));
     }
 
     @Override

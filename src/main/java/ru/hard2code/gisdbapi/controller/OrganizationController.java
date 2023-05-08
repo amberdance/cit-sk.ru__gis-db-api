@@ -1,5 +1,6 @@
 package ru.hard2code.gisdbapi.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.hard2code.gisdbapi.model.Organization;
 import ru.hard2code.gisdbapi.service.organization.OrganizationService;
@@ -37,6 +38,7 @@ public class OrganizationController {
     }
 
     @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateOrganization(@PathVariable("id") long id) {
         organizationService.delete(id);
     }

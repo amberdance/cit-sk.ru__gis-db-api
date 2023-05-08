@@ -1,13 +1,15 @@
 package ru.hard2code.gisdbapi.service.user;
 
-import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.stereotype.Service;
+import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.model.User;
-import ru.hard2code.gisdbapi.model.UserType;
 import ru.hard2code.gisdbapi.repository.UserRepository;
 import ru.hard2code.gisdbapi.repository.UserTypeRepository;
+import ru.hard2code.gisdbapi.service.userType.UserTypeService;
 
 import java.util.List;
+
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -16,55 +18,43 @@ public class UserServiceImpl implements UserService {
 
     private final UserTypeRepository userTypeRepository;
 
-    public UserServiceImpl(UserRepository userRepository, UserTypeRepository userTypeRepository) {
+
+    private final UserTypeService userTypeService;
+
+    public UserServiceImpl(UserRepository userRepository, UserTypeRepository userTypeRepository, UserTypeService userTypeService) {
         this.userRepository = userRepository;
         this.userTypeRepository = userTypeRepository;
+        this.userTypeService = userTypeService;
     }
 
     @Override
-    public List<User> findAll() {
+    public List<User> findAllUsers() {
         return userRepository.findAll();
     }
 
     @Override
-    public User findById(long id) {
-        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Cannot find User with id " + id));
+    public User findUserById(long id) {
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(User.class, id));
     }
 
     @Override
-    public User create(User user) {
-        var userType = user.getUserType();
-
-        try {
-            var userTypeFromDb = userTypeRepository.findByType(userType.getType()).orElseThrow(NullPointerException::new);
-            user.setUserType(userTypeFromDb);
-        } catch (NullPointerException e) {
-            user.setUserType(userTypeRepository.save(new UserType(userType == null ? UserType.Type.CITIZEN : userType.getType())));
-        }
-
+    public User createUser(User user) {
         return userRepository.save(user);
     }
 
     @Override
     public User update(long id, User newUser) {
-        try {
-            var user = findById(id);
-            //TODO: https://www.baeldung.com/spring-data-partial-update
-            if (newUser.getUserType() != null) {
-                var type = userTypeRepository.findByType(newUser.getUserType().getType())
-                        .orElseGet(() -> userTypeRepository.save(newUser.getUserType()));
+        var user = userRepository.findById(id).orElseGet(() -> userRepository.save(newUser));
+        var userType = newUser.getUserType();
 
-                user.setUserType(type);
-            }
+        user.setUserName(newUser.getUserName());
+        user.setFirstName(newUser.getFirstName());
+        user.setPhone(newUser.getPhone());
+        user.setEmail(newUser.getEmail());
+        user.setChatId(newUser.getChatId());
+        user.setUserType(userTypeRepository.findById(userType.getId()).orElseThrow(() -> new EntityNotFoundException(userType)));
 
-            user.setChatId(newUser.getChatId());
-            user.setEmail(newUser.getEmail());
-            user.setPhone(newUser.getPhone());
-
-            return userRepository.save(user);
-        } catch (EntityNotFoundException e) {
-            return create(newUser);
-        }
+        return userRepository.save(user);
     }
 
 

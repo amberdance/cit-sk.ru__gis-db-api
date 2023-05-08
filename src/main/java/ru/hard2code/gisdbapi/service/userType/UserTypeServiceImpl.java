@@ -13,13 +13,14 @@ public class UserTypeServiceImpl implements UserTypeService {
         this.userTypeRepository = userTypeRepository;
     }
 
+
     @Override
-    public UserType save(UserType userType) {
-        return userTypeRepository.save(userType);
+    public UserType findByName(String name) {
+        return userTypeRepository.findByNameIgnoreCase(name).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
-    public UserType findByType(UserType.Type name) {
-        return userTypeRepository.findByType(name).orElseThrow(() -> new EntityNotFoundException("Cannot find UserType with name " + name));
+    public UserType createUserType(UserType type) {
+        return userTypeRepository.save(type);
     }
 }

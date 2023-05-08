@@ -1,7 +1,8 @@
 package ru.hard2code.gisdbapi.service.question;
 
-import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.stereotype.Service;
+import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.model.Question;
 import ru.hard2code.gisdbapi.repository.InformationSystemRepository;
 import ru.hard2code.gisdbapi.repository.QuestionRepository;
@@ -26,7 +27,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Question findQuestionById(long id) {
-        return questionRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Cannot find question with id " + id));
+        return questionRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Question.class, id));
     }
 
     @Override
@@ -36,18 +37,6 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Question createQuestion(Question question) {
-        var is = question.getInformationSystem();
-
-        if (is != null) {
-            var existingInformationSystem = informationSystemRepository.findByName(is.getName());
-
-            if (existingInformationSystem.isPresent()) {
-                question.setInformationSystem(existingInformationSystem.get());
-            } else {
-                informationSystemRepository.save(is);
-            }
-        }
-
         return questionRepository.save(question);
     }
 
@@ -58,20 +47,7 @@ public class QuestionServiceImpl implements QuestionService {
 
         q.setLabel(question.getLabel());
         q.setAnswer(question.getAnswer());
-
-        //TODO: dirty case
-        if (question.getInformationSystem() != null) {
-            var existingInformationSystem = informationSystemRepository.findByName(is.getName());
-
-            if (existingInformationSystem.isPresent()) {
-                question.setInformationSystem(existingInformationSystem.get());
-            } else {
-                informationSystemRepository.save(is);
-            }
-
-            q.setInformationSystem(question.getInformationSystem());
-        }
-
+        q.setInformationSystem(informationSystemRepository.findById(is.getId()).orElseThrow(() -> new EntityNotFoundException(is)));
 
         return questionRepository.save(q);
     }

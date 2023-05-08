@@ -1,9 +1,13 @@
 package ru.hard2code.gisdbapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.Hibernate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @NoArgsConstructor
@@ -13,21 +17,21 @@ import java.util.Objects;
 @ToString
 @Entity
 @Table(name = "information_systems")
-public class InformationSystem {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
-
-    @Column(name = "name", nullable = false, unique = true)
-    private String name;
+public class InformationSystem extends AbstractEntity {
 
 
     public InformationSystem(String name) {
         this.name = name;
     }
+
+    @Column(name = "name", nullable = false, unique = true)
+    @NotNull
+    private String name;
+
+    @OneToMany(mappedBy = "informationSystem", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @ToString.Exclude
+    @JsonIgnore
+    private List<Question> questions = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
@@ -37,8 +41,4 @@ public class InformationSystem {
         return getId() != null && Objects.equals(getId(), that.getId());
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }

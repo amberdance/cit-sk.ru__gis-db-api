@@ -1,6 +1,9 @@
 package ru.hard2code.gisdbapi.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -14,19 +17,17 @@ import java.util.Objects;
 @ToString
 @Entity
 @Table(name = "organizations")
-public class Organization {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Organization extends AbstractEntity {
 
     @Column(name = "name", nullable = false, unique = true)
+    @NotNull
     private String name;
 
     @Column(name = "address")
     private String address;
 
     @Column(name = "is_government", nullable = false)
+    @NotNull
     private boolean isGovernment = false;
 
     public Organization(String name, String address) {
@@ -43,8 +44,4 @@ public class Organization {
         return getId() != null && Objects.equals(getId(), that.getId());
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }
