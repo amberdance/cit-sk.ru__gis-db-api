@@ -6,7 +6,7 @@ spring:
     password: pwd
 
   flyway:
-    enabled: true
+    enabled: false
     locations: classpath:db/migration
     baseline-on-migrate: true
 
@@ -21,8 +21,3 @@ spring:
     init:
       platform: postgres
       mode: always
-
-  security:
-    user:
-      name: user
-      password: password
