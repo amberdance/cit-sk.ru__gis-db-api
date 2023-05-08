@@ -42,6 +42,7 @@ class UserControllerTest extends ControllerTestConfig {
     }
 
     @AfterEach
+    @SuppressWarnings("all")
     void cleanup() {
         jdbcTemplate.execute("delete from users");
         jdbcTemplate.execute("delete from user_types");

@@ -28,6 +28,7 @@ class OrganizationControllerTest extends ControllerTestConfig {
     private OrganizationService organizationService;
 
     @AfterEach
+    @SuppressWarnings("all")
     void cleanup() {
         jdbcTemplate.execute("delete from organizations");
     }

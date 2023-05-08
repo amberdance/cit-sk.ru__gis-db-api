@@ -29,6 +29,7 @@ class InformationSystemControllerTest extends ControllerTestConfig {
     private final InformationSystem TEST_INFORMATION_SYSTEM = new InformationSystem("someName");
 
     @AfterEach
+    @SuppressWarnings("all")
     void cleanup() {
         jdbcTemplate.execute("delete from information_systems");
     }

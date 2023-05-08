@@ -11,9 +11,11 @@ public class ControllerTestConfig {
     protected static final String TEST_USER_ROLE = "testUser";
 
     @Autowired
+    @SuppressWarnings("all")
     protected MockMvc mvc;
 
     @Autowired
+    @SuppressWarnings("all")
     protected JdbcTemplate jdbcTemplate;
 
 }

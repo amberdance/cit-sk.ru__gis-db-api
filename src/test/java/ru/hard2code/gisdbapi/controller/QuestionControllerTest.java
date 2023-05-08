@@ -43,6 +43,7 @@ class QuestionControllerTest extends ControllerTestConfig {
     }
 
     @AfterEach
+    @SuppressWarnings("all")
     void cleanUp() {
         jdbcTemplate.execute("delete from questions");
         jdbcTemplate.execute("delete from information_systems");
