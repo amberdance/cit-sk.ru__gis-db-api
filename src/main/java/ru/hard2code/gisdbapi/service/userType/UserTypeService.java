@@ -4,7 +4,7 @@ import ru.hard2code.gisdbapi.model.UserType;
 
 public interface UserTypeService {
 
-    UserType findByType(UserType.Type type);
+    UserType findByName(String name);
 
-    UserType findOrCreateUserType(UserType userType);
+    UserType createUserType(UserType type);
 }

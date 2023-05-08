@@ -2,6 +2,7 @@ package ru.hard2code.gisdbapi.controller;
 
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -9,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.model.InformationSystem;
 import ru.hard2code.gisdbapi.model.Question;
+import ru.hard2code.gisdbapi.service.informationSystem.InformationSystemService;
 import ru.hard2code.gisdbapi.service.question.QuestionService;
 
 import java.util.List;
@@ -25,19 +27,30 @@ class QuestionControllerTest extends ControllerTestConfig {
     @Autowired
     private QuestionService questionService;
 
-    private final InformationSystem TEST_INFORMATION_SYSTEM = new InformationSystem("GOSWEB");
+    @Autowired
+    private InformationSystemService informationSystemService;
 
-    private final Question TEST_QUESTION = new Question("q1", "a1", TEST_INFORMATION_SYSTEM);
+    private final InformationSystem GOS_WEB_IS = new InformationSystem("GOSWEB");
+    private final InformationSystem POS_WIDGET_IS = new InformationSystem("POS_WIDGET");
+
+    private final Question TEST_QUESTION = new Question("q1", "a1", GOS_WEB_IS);
+
+    @BeforeEach
+    void beforeEach() {
+        informationSystemService.createInformationSystem(GOS_WEB_IS);
+        informationSystemService.createInformationSystem(POS_WIDGET_IS);
+    }
 
     @AfterEach
     void cleanUp() {
         jdbcTemplate.execute("delete from questions");
+        jdbcTemplate.execute("delete from information_systems");
     }
 
     @Test
     void getAllQuestions() throws Exception {
-        var q1 = new Question("q1", "1", TEST_INFORMATION_SYSTEM);
-        var q2 = new Question("q2", "2", new InformationSystem("POSWIDGET"));
+        var q1 = new Question("q1", "1", POS_WIDGET_IS);
+        var q2 = new Question("q2", "2", GOS_WEB_IS);
 
         questionService.createQuestion(q1);
         questionService.createQuestion(q2);
@@ -78,7 +91,7 @@ class QuestionControllerTest extends ControllerTestConfig {
         questionService.createQuestion(TEST_QUESTION);
         TEST_QUESTION.setLabel("NEW_LABEL");
         TEST_QUESTION.setAnswer("NEW_ANSWER");
-        TEST_QUESTION.setInformationSystem(new InformationSystem("NEW_IS"));
+        TEST_QUESTION.setInformationSystem(POS_WIDGET_IS);
 
         mvc.perform(put("/questions/{id}", TEST_QUESTION.getId())
                         .contentType(CONTENT_TYPE)

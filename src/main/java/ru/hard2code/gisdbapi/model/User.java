@@ -30,7 +30,7 @@ public class User extends AbstractEntity {
     private String email;
 
     @Column(name = "phone", unique = true, length = 12)
-    @Pattern(regexp = "^(\\+7|7|8)?(9){1}?[\\d]{9}")
+    @Pattern(regexp = "^(\\+7|7|8)?(9)?\\d{9}")
     private String phone;
 
     @Column(name = "username", nullable = false, unique = true)
@@ -44,7 +44,7 @@ public class User extends AbstractEntity {
     @ManyToOne
     @JoinColumn(name = "user_type_id", nullable = false)
     @NotNull
-    private UserType userType = new UserType();
+    private UserType userType;
 
 
     @Override
