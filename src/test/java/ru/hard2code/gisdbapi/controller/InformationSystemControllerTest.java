@@ -14,6 +14,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -35,6 +36,7 @@ class InformationSystemControllerTest extends ControllerTestConfig {
     @Test
     void shouldCreateInformationSystem() throws Exception {
         mvc.perform(post("/information-systems")
+                        .with(user(TEST_USER_ROLE))
                         .contentType(CONTENT_TYPE)
                         .content(OBJECT_MAPPER.writeValueAsString(TEST_INFORMATION_SYSTEM))
                         .accept(CONTENT_TYPE))
@@ -53,6 +55,7 @@ class InformationSystemControllerTest extends ControllerTestConfig {
         informationSystemService.createInformationSystem(systems.get(2));
 
         mvc.perform(get("/information-systems")
+                        .with(user(TEST_USER_ROLE))
                         .contentType(CONTENT_TYPE)
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk()).andExpect(content().string(OBJECT_MAPPER.writeValueAsString(systems)));
@@ -63,6 +66,7 @@ class InformationSystemControllerTest extends ControllerTestConfig {
         informationSystemService.createInformationSystem(TEST_INFORMATION_SYSTEM);
 
         mvc.perform(get("/information-systems/{id}", TEST_INFORMATION_SYSTEM.getId())
+                        .with(user(TEST_USER_ROLE))
                         .contentType(CONTENT_TYPE)
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
@@ -74,6 +78,7 @@ class InformationSystemControllerTest extends ControllerTestConfig {
         informationSystemService.createInformationSystem(TEST_INFORMATION_SYSTEM);
 
         mvc.perform(delete("/information-systems/{id}", TEST_INFORMATION_SYSTEM.getId())
+                        .with(user(TEST_USER_ROLE))
                         .contentType(CONTENT_TYPE)
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isNoContent());
@@ -88,6 +93,7 @@ class InformationSystemControllerTest extends ControllerTestConfig {
         TEST_INFORMATION_SYSTEM.setName("NEW_NAME");
 
         mvc.perform(put("/information-systems/{id}", TEST_INFORMATION_SYSTEM.getId())
+                        .with(user(TEST_USER_ROLE))
                         .contentType(CONTENT_TYPE)
                         .content(OBJECT_MAPPER.writeValueAsString(TEST_INFORMATION_SYSTEM)).accept(CONTENT_TYPE))
                 .andExpect(status().isOk())

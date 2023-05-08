@@ -16,6 +16,7 @@ import ru.hard2code.gisdbapi.service.userType.UserTypeService;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -49,7 +50,9 @@ class UserControllerTest extends ControllerTestConfig {
     @Test
     void shouldReturnUserById() throws Exception {
         userService.createUser(TEST_USER);
-        mvc.perform(get("/users/{id}", TEST_USER.getId()).accept(CONTENT_TYPE))
+        mvc.perform(get("/users/{id}", TEST_USER.getId())
+                        .with(user(TEST_USER_ROLE))
+                        .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(TEST_USER)));
     }
@@ -66,7 +69,9 @@ class UserControllerTest extends ControllerTestConfig {
         userService.createUser(users.get(0));
         userService.createUser(users.get(1));
 
-        mvc.perform(get("/users").accept(CONTENT_TYPE))
+        mvc.perform(get("/users")
+                        .with(user(TEST_USER_ROLE))
+                        .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(users)));
     }
@@ -74,7 +79,10 @@ class UserControllerTest extends ControllerTestConfig {
     @Test
     void shouldDeleteUserById() throws Exception {
         userService.createUser(TEST_USER);
-        mvc.perform(delete("/users/{id}", TEST_USER.getId()).accept(CONTENT_TYPE))
+
+        mvc.perform(delete("/users/{id}", TEST_USER.getId())
+                        .with(user(TEST_USER_ROLE))
+                        .accept(CONTENT_TYPE))
                 .andExpect(status().isNoContent());
 
         assertThrows(EntityNotFoundException.class, () -> userService.findUserById(TEST_USER.getId()));
@@ -85,6 +93,7 @@ class UserControllerTest extends ControllerTestConfig {
         var userJson = OBJECT_MAPPER.writeValueAsString(TEST_USER);
 
         mvc.perform(post("/users")
+                        .with(user(TEST_USER_ROLE))
                         .contentType(CONTENT_TYPE)
                         .content(userJson)
                         .accept(CONTENT_TYPE))
@@ -103,6 +112,7 @@ class UserControllerTest extends ControllerTestConfig {
         user.setFirstName("firstNameNew");
 
         mvc.perform(put("/users/{id}", user.getId())
+                        .with(user(TEST_USER_ROLE))
                         .contentType(CONTENT_TYPE)
                         .content(OBJECT_MAPPER.writeValueAsString(user))
                         .accept(CONTENT_TYPE))

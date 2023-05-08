@@ -17,6 +17,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -56,6 +57,7 @@ class QuestionControllerTest extends ControllerTestConfig {
         questionService.createQuestion(q2);
 
         mvc.perform(get("/questions")
+                        .with(user(TEST_USER_ROLE))
                         .contentType(CONTENT_TYPE)
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
@@ -67,6 +69,7 @@ class QuestionControllerTest extends ControllerTestConfig {
         questionService.createQuestion(TEST_QUESTION);
 
         mvc.perform(get("/questions/{id}", TEST_QUESTION.getId())
+                        .with(user(TEST_USER_ROLE))
                         .contentType(CONTENT_TYPE)
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
@@ -78,6 +81,7 @@ class QuestionControllerTest extends ControllerTestConfig {
         questionService.createQuestion(TEST_QUESTION);
 
         mvc.perform(post("/questions")
+                        .with(user(TEST_USER_ROLE))
                         .contentType(CONTENT_TYPE)
                         .content(OBJECT_MAPPER.writeValueAsString(TEST_QUESTION))
                         .accept(CONTENT_TYPE))
@@ -94,6 +98,7 @@ class QuestionControllerTest extends ControllerTestConfig {
         TEST_QUESTION.setInformationSystem(POS_WIDGET_IS);
 
         mvc.perform(put("/questions/{id}", TEST_QUESTION.getId())
+                        .with(user(TEST_USER_ROLE))
                         .contentType(CONTENT_TYPE)
                         .content(OBJECT_MAPPER.writeValueAsString(TEST_QUESTION))
                         .accept(CONTENT_TYPE))
@@ -106,6 +111,7 @@ class QuestionControllerTest extends ControllerTestConfig {
         var id = TEST_QUESTION.getId();
 
         mvc.perform(delete("/questions/{id}", id)
+                        .with(user(TEST_USER_ROLE))
                         .contentType(CONTENT_TYPE)
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isNoContent());

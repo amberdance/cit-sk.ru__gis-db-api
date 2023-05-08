@@ -13,6 +13,7 @@ import ru.hard2code.gisdbapi.service.organization.OrganizationService;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,7 +44,9 @@ class OrganizationControllerTest extends ControllerTestConfig {
         organizationService.createOrganization(orgs.get(1));
         organizationService.createOrganization(orgs.get(2));
 
-        mvc.perform(get("/organizations").accept(CONTENT_TYPE))
+        mvc.perform(get("/organizations")
+                        .with(user(TEST_USER_ROLE))
+                        .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(orgs)));
     }
@@ -52,7 +55,9 @@ class OrganizationControllerTest extends ControllerTestConfig {
     void shouldFinOrganizationdById() throws Exception {
         organizationService.createOrganization(TEST_ORGANIZATION);
 
-        mvc.perform(get("/organizations/{id}", TEST_ORGANIZATION.getId()).accept(CONTENT_TYPE))
+        mvc.perform(get("/organizations/{id}", TEST_ORGANIZATION.getId())
+                        .with(user(TEST_USER_ROLE))
+                        .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION)));
     }
@@ -60,6 +65,7 @@ class OrganizationControllerTest extends ControllerTestConfig {
     @Test
     void shouldCreateOrganization() throws Exception {
         mvc.perform(post("/organizations")
+                        .with(user(TEST_USER_ROLE))
                         .contentType(CONTENT_TYPE)
                         .content(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION))
                         .accept(CONTENT_TYPE))
@@ -74,6 +80,7 @@ class OrganizationControllerTest extends ControllerTestConfig {
         TEST_ORGANIZATION.setAddress("NEW_ADDRESS");
 
         mvc.perform(put("/organizations/{id}", TEST_ORGANIZATION.getId())
+                        .with(user(TEST_USER_ROLE))
                         .contentType(CONTENT_TYPE)
                         .content(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION))
                         .accept(CONTENT_TYPE))
@@ -85,7 +92,9 @@ class OrganizationControllerTest extends ControllerTestConfig {
     void shouldDeleteOrganizationById() throws Exception {
         organizationService.createOrganization(TEST_ORGANIZATION);
 
-        mvc.perform(delete("/organizations/{id}", TEST_ORGANIZATION.getId()).accept(CONTENT_TYPE))
+        mvc.perform(delete("/organizations/{id}", TEST_ORGANIZATION.getId())
+                        .with(user(TEST_USER_ROLE))
+                        .accept(CONTENT_TYPE))
                 .andExpect(status().isNoContent());
 
         assertThrows(EntityNotFoundException.class, () -> organizationService.findById(TEST_ORGANIZATION.getId()));
