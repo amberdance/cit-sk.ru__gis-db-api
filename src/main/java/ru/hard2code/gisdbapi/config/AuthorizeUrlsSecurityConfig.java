@@ -17,7 +17,7 @@ public class AuthorizeUrlsSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.httpBasic(withDefaults()).authorizeHttpRequests().anyRequest().authenticated();
+        http.csrf().disable().httpBasic(withDefaults()).authorizeHttpRequests().anyRequest().authenticated();
 
         return http.build();
     }

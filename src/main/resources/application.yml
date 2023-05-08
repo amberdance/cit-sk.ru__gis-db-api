@@ -14,7 +14,9 @@ spring-doc:
 server:
   servlet.context-path: /api
   error:
+    include-stacktrace: never
     whitelabel:
       enabled: false
+
 
 
