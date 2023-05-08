@@ -1,10 +1,16 @@
 package ru.hard2code.gisdbapi.model;
 
-import com.fasterxml.jackson.annotation.JsonValue;
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.Hibernate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -18,9 +24,18 @@ import java.util.Objects;
 public class UserType extends AbstractEntity {
 
 
-    @Column(name = "type", nullable = false, unique = true, length = 20)
-    @Enumerated(EnumType.STRING)
-    private Type type = Type.CITIZEN;
+    @Column(name = "name", nullable = false, unique = true, length = 100)
+    @NotNull
+    private String name = Type.CITIZEN.getValue();
+
+    @OneToMany(mappedBy = "userType")
+    @ToString.Exclude
+    @JsonIgnore
+    private List<User> questions = new ArrayList<>();
+
+    public UserType(String name) {
+        this.name = name;
+    }
 
 
     public enum Type {
@@ -34,7 +49,6 @@ public class UserType extends AbstractEntity {
             this.type = type;
         }
 
-        @JsonValue
         public String getValue() {
             return type;
         }

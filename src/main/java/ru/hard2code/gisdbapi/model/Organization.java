@@ -3,6 +3,7 @@ package ru.hard2code.gisdbapi.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -19,12 +20,14 @@ import java.util.Objects;
 public class Organization extends AbstractEntity {
 
     @Column(name = "name", nullable = false, unique = true)
+    @NotNull
     private String name;
 
     @Column(name = "address")
     private String address;
 
     @Column(name = "is_government", nullable = false)
+    @NotNull
     private boolean isGovernment = false;
 
     public Organization(String name, String address) {

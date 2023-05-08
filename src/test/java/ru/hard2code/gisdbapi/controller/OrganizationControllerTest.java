@@ -86,7 +86,7 @@ class OrganizationControllerTest extends ControllerTestConfig {
         organizationService.createOrganization(TEST_ORGANIZATION);
 
         mvc.perform(delete("/organizations/{id}", TEST_ORGANIZATION.getId()).accept(CONTENT_TYPE))
-                .andExpect(status().isOk());
+                .andExpect(status().isNoContent());
 
         assertThrows(EntityNotFoundException.class, () -> organizationService.findById(TEST_ORGANIZATION.getId()));
     }

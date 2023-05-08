@@ -1,11 +1,13 @@
 package ru.hard2code.gisdbapi.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.Hibernate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @NoArgsConstructor
@@ -18,9 +20,18 @@ import java.util.Objects;
 public class InformationSystem extends AbstractEntity {
 
 
+    public InformationSystem(String name) {
+        this.name = name;
+    }
+
     @Column(name = "name", nullable = false, unique = true)
+    @NotNull
     private String name;
 
+    @OneToMany(mappedBy = "informationSystem", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @ToString.Exclude
+    @JsonIgnore
+    private List<Question> questions = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
