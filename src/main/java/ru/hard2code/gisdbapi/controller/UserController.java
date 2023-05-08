@@ -1,5 +1,6 @@
 package ru.hard2code.gisdbapi.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.hard2code.gisdbapi.model.User;
 import ru.hard2code.gisdbapi.service.user.UserService;
@@ -18,17 +19,17 @@ public class UserController {
 
     @GetMapping("{id}")
     public User getUserById(@PathVariable("id") long id) {
-        return userService.findById(id);
+        return userService.findUserById(id);
     }
 
     @GetMapping
     public List<User> getAllUsers() {
-        return userService.findAll();
+        return userService.findAllUsers();
     }
 
     @PostMapping
     public User createUser(@RequestBody User user) {
-        return userService.create(user);
+        return userService.createUser(user);
     }
 
     @PutMapping("/{id}")
@@ -37,6 +38,7 @@ public class UserController {
     }
 
     @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable("id") long id) {
         userService.deleteById(id);
     }
