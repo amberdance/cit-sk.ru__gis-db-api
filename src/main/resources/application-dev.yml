@@ -21,3 +21,8 @@ spring:
     init:
       platform: postgres
       mode: always
+
+  security:
+    user:
+      name: user
+      password: password
