@@ -4,8 +4,17 @@ spring:
   profiles:
     active: dev
 
+  web:
+    resources:
+      add-mappings: false
+
 spring-doc:
   swagger-ui.path: /swagger-ui
 
 server:
   servlet.context-path: /api
+  error:
+    whitelabel:
+      enabled: false
+
+
