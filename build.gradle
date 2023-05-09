@@ -2,8 +2,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.0.6'
     id 'io.spring.dependency-management' version '1.1.0'
+    id 'com.google.cloud.tools.jib' version '3.3.1'
 }
-
 
 group = 'ru.hard2code'
 version = '1.1'
@@ -54,10 +54,20 @@ tasks.withType(JavaCompile).configureEach {
     }
 }
 
-jar {
-    enabled = false
-}
+jib {
+    container.creationTime = 'USE_CURRENT_TIMESTAMP'
 
-bootBuildImage {
-    imageName = "hard2code/${rootProject.name}:${version}"
+    from {
+        image = 'bellsoft/liberica-openjdk-alpine-musl:20'
+    }
+
+    to {
+        tags = [project.version.toString()]
+        image = 'registry.gitlab.com/hard2code/gis-api'
+
+        auth {
+            username = CI_REGISTRY_USERNAME
+            password = CI_REGISTRY_PASSWORD
+        }
+    }
 }
