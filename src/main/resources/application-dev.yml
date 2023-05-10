@@ -21,3 +21,14 @@ spring:
     init:
       platform: postgres
       mode: always
+
+app:
+  rest:
+    basic-auth:
+      user:
+        name: usr
+        password: pwd
+
+      admin:
+        name: admin
+        password: pwd
