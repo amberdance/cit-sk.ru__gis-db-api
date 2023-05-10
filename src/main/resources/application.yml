@@ -9,14 +9,16 @@ spring:
       add-mappings: false
 
 spring-doc:
-  swagger-ui.path: /swagger-ui
+  swagger-ui.path: /api/swagger-ui
 
 server:
-  servlet.context-path: /api
   error:
     include-stacktrace: never
     whitelabel:
       enabled: false
 
-
+app:
+  rest:
+    api:
+      prefix: /api/v1
 

@@ -43,7 +43,7 @@ public class RestErrorResponse {
     }
 
     public ResponseEntity<Map<String, Object>> validationError(ConstraintViolationException ex) {
-        error.put(MESSAGE_KEY, getValidationErrorString(ex.getConstraintViolations()));
+        error.put(MESSAGE_KEY, ValidationTemplate.getValidationErrorString(ex.getConstraintViolations()));
         fillRequiredFields();
 
         return new ResponseEntity<>(error, httpStatus);
@@ -54,19 +54,6 @@ public class RestErrorResponse {
         error.put(ERROR_KEY, httpStatus.getReasonPhrase());
         error.put(PATH_KEY, request.getRequestURI());
         error.put(STATUS_KEY, httpStatus.value());
-    }
-
-    private String getValidationErrorString(Set<ConstraintViolation<?>> constraintViolations) {
-        var validationErrorMessage = new StringBuilder("Validation failed for: ");
-
-        constraintViolations.forEach(cs -> validationErrorMessage.append(cs.getPropertyPath())
-                .append("-")
-                .append(cs.getMessage())
-                .append(";"));
-
-        validationErrorMessage.deleteCharAt(validationErrorMessage.length() - 1);
-
-        return validationErrorMessage.toString();
     }
 
 
