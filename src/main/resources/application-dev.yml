@@ -7,14 +7,12 @@ spring:
 
   flyway:
     enabled: true
-    locations: classpath:db/migration
     baseline-on-migrate: true
 
   jpa:
     show-sql: true
     hibernate:
       ddl-auto: validate
-
     properties:
       hibernate.format_sql: true
       enable-lazy-load-no-trans: false

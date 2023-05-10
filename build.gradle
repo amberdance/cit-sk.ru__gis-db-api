@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'ru.hard2code'
-version = '1.2'
+version = '1.0.2'
 sourceCompatibility = '17'
 archivesBaseName = rootProject.name
 
