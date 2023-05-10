@@ -51,7 +51,7 @@ class UserControllerTest extends ControllerTestConfig {
     @Test
     void shouldReturnUserById() throws Exception {
         userService.createUser(TEST_USER);
-        mvc.perform(get("/users/{id}", TEST_USER.getId())
+        mvc.perform(get(apiPrefix + "/users/{id}", TEST_USER.getId())
                         .with(user(TEST_USER_ROLE))
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())

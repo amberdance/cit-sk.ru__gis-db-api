@@ -6,7 +6,7 @@ spring:
     password: pwd
 
   flyway:
-    enabled: false
+    enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
 
@@ -14,8 +14,10 @@ spring:
     hibernate:
       ddl-auto: validate
     show-sql: true
+
     properties:
       hibernate.format_sql: true
+      enable-lazy-load-no-trans: false
 
   sql:
     init:

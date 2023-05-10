@@ -14,4 +14,7 @@ public interface InformationSystemService {
     void delete(long id);
 
     InformationSystem update(long id, InformationSystem informationSystem);
+
+
+    void deleteAllInformationSystems();
 }

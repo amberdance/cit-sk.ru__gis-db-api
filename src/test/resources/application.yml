@@ -13,8 +13,17 @@ spring:
 
   jpa:
     show-sql: true
+    properties:
+      hibernate:
+        enable-lazy-load-no-trans: false
+        generate-statistics: true
 
 logging:
   level:
     root: info
+
+app:
+  rest:
+    api:
+      prefix: /api/v1
 

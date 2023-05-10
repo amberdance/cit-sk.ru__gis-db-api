@@ -43,4 +43,9 @@ public class InformationSystemServiceImpl implements InformationSystemService {
 
         return informationSystemRepository.save(is);
     }
+
+    @Override
+    public void deleteAllInformationSystems() {
+        informationSystemRepository.deleteAll();
+    }
 }
