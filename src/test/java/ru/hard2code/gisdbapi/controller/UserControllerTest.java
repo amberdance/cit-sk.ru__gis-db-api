@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
-import ru.hard2code.gisdbapi.model.User;
-import ru.hard2code.gisdbapi.model.UserType;
+import ru.hard2code.gisdbapi.model.user.Role;
+import ru.hard2code.gisdbapi.model.user.User;
+import ru.hard2code.gisdbapi.service.user.UserRoleService;
 import ru.hard2code.gisdbapi.service.user.UserService;
-import ru.hard2code.gisdbapi.service.userType.UserTypeService;
 
 import java.util.List;
 
@@ -22,8 +22,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserControllerTest extends AbstractControllerTest {
 
     private static final String API_PATH = "/api/users";
-    private final UserType CITIZEN = new UserType(UserType.Type.CITIZEN.getValue());
-    private final UserType EMPLOYEE = new UserType(UserType.Type.GOVERNMENT_EMPLOYEE.getValue());
+    private final Role CITIZEN = new Role(Role.Type.CITIZEN.getValue());
+    private final Role EMPLOYEE = new Role(Role.Type.GOVERNMENT_EMPLOYEE.getValue());
     private final User TEST_USER = new User("123456789", "test@test.ru",
             "+79994446655",
             "username", "firstName", CITIZEN);
@@ -32,18 +32,18 @@ class UserControllerTest extends AbstractControllerTest {
     private UserService userService;
 
     @Autowired
-    private UserTypeService userTypeService;
+    private UserRoleService userRoleService;
 
     @BeforeEach
     void beforeEach() {
-        userTypeService.createRole(CITIZEN);
-        userTypeService.createRole(EMPLOYEE);
+        userRoleService.createRole(CITIZEN);
+        userRoleService.createRole(EMPLOYEE);
     }
 
     @AfterEach
     void cleanup() {
         userService.deleteAllUsers();
-        userTypeService.deleteAllRoles();
+        userRoleService.deleteAllRoles();
     }
 
     @Test
@@ -93,7 +93,7 @@ class UserControllerTest extends AbstractControllerTest {
         var user = userService.createUser(TEST_USER);
 
         user.setChatId("999999999");
-        user.setUserType(EMPLOYEE);
+        user.setRole(EMPLOYEE);
         user.setUserName("newUserName");
         user.setPhone("+79994443399");
         user.setEmail("newemail@test.com");
@@ -105,7 +105,7 @@ class UserControllerTest extends AbstractControllerTest {
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.chatId").value(user.getChatId()))
-                .andExpect(jsonPath("$.userType.name").value(user.getUserType()
+                .andExpect(jsonPath("$.role.name").value(user.getRole()
                         .getName()))
                 .andExpect(jsonPath("$.userName").value(user.getUserName()))
                 .andExpect(jsonPath("$.firstName").value(user.getFirstName()))

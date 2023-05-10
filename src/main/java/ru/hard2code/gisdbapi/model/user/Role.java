@@ -1,4 +1,4 @@
-package ru.hard2code.gisdbapi.model;
+package ru.hard2code.gisdbapi.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
@@ -8,6 +8,7 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.Hibernate;
+import ru.hard2code.gisdbapi.model.AbstractEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,26 +21,27 @@ import java.util.Objects;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "user_types")
-public class UserType extends AbstractEntity {
+@Table(name = "user_roles")
+public class Role extends AbstractEntity {
 
 
     @Column(name = "name", nullable = false, unique = true, length = 100)
     @NotNull
     private String name = Type.CITIZEN.getValue();
 
-    @OneToMany(mappedBy = "userType")
+    @OneToMany(mappedBy = "role")
     @ToString.Exclude
     @JsonIgnore
-    private List<User> questions = new ArrayList<>();
+    private List<User> users = new ArrayList<>();
 
-    public UserType(String name) {
+    public Role(String name) {
         this.name = name;
     }
 
 
     public enum Type {
         CITIZEN("Гражданин"),
+        STAFF("Куратор вопросов"),
         GOVERNMENT_EMPLOYEE("Сотрудник ОГВ"),
         MUNICIPAL_EMPLOYEE("Сотрудник ОМСУ");
 
@@ -56,11 +58,14 @@ public class UserType extends AbstractEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        UserType userType = (UserType) o;
-        return getId() != null && Objects.equals(getId(), userType.getId());
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
+        Role role = (Role) o;
+        return getId() != null && Objects.equals(getId(), role.getId());
     }
 
 }
-

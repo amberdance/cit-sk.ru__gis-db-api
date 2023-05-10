@@ -1,7 +1,6 @@
 package ru.hard2code.gisdbapi.util;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class RestErrorResponse {
 

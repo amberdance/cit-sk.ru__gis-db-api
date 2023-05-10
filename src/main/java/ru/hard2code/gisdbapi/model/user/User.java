@@ -1,4 +1,4 @@
-package ru.hard2code.gisdbapi.model;
+package ru.hard2code.gisdbapi.model.user;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.hibernate.Hibernate;
+import ru.hard2code.gisdbapi.model.AbstractEntity;
 
 import java.util.Objects;
 
@@ -42,9 +43,9 @@ public class User extends AbstractEntity {
     private String firstName;
 
     @ManyToOne
-    @JoinColumn(name = "user_type_id", nullable = false)
+    @JoinColumn(name = "user_role_id", nullable = false)
     @NotNull
-    private UserType userType;
+    private Role role;
 
 
     @Override

@@ -3,9 +3,9 @@ package ru.hard2code.gisdbapi.service.user;
 
 import org.springframework.stereotype.Service;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
-import ru.hard2code.gisdbapi.model.User;
+import ru.hard2code.gisdbapi.model.user.User;
 import ru.hard2code.gisdbapi.repository.UserRepository;
-import ru.hard2code.gisdbapi.repository.UserTypeRepository;
+import ru.hard2code.gisdbapi.repository.UserRoleRepository;
 
 import java.util.List;
 
@@ -15,12 +15,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    private final UserTypeRepository userTypeRepository;
+    private final UserRoleRepository userRoleRepository;
 
 
-    public UserServiceImpl(UserRepository userRepository, UserTypeRepository userTypeRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserRoleRepository userRoleRepository) {
         this.userRepository = userRepository;
-        this.userTypeRepository = userTypeRepository;
+        this.userRoleRepository = userRoleRepository;
     }
 
     @Override
@@ -40,15 +40,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(long id, User newUser) {
-        var user = userRepository.findById(id).orElseGet(() -> userRepository.save(newUser));
-        var userType = newUser.getUserType();
+        var user = userRepository.findById(id)
+                .orElseGet(() -> userRepository.save(newUser));
+        var userRole = newUser.getRole();
 
         user.setUserName(newUser.getUserName());
         user.setFirstName(newUser.getFirstName());
         user.setPhone(newUser.getPhone());
         user.setEmail(newUser.getEmail());
         user.setChatId(newUser.getChatId());
-        user.setUserType(userTypeRepository.findById(userType.getId()).orElseThrow(() -> new EntityNotFoundException(userType)));
+        user.setRole(userRoleRepository.findById(userRole.getId())
+                .orElseThrow(() -> new EntityNotFoundException(userRole)));
 
         return userRepository.save(user);
     }

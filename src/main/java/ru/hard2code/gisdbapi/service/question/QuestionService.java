@@ -5,8 +5,8 @@ import ru.hard2code.gisdbapi.model.Question;
 import java.util.List;
 
 public interface QuestionService {
-    static final String CACHE_VALUE = "questions";
-    static final String CACHE_LIST_KEY = "questionList";
+    String CACHE_VALUE = "questions";
+    String CACHE_LIST_KEY = "questionList";
 
     List<Question> findAllQuestions();
 

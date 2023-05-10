@@ -2,7 +2,7 @@ package ru.hard2code.gisdbapi.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.hard2code.gisdbapi.model.User;
+import ru.hard2code.gisdbapi.model.user.User;
 import ru.hard2code.gisdbapi.service.user.UserService;
 
 import java.util.List;
