@@ -1,6 +1,7 @@
 spring:
   main:
     banner-mode: off
+
   profiles:
     active: dev
 
@@ -14,11 +15,9 @@ spring-doc:
 server:
   error:
     include-stacktrace: never
-    whitelabel:
-      enabled: false
+    whitelabel.enabled: false
 
 app:
   rest:
-    api:
-      prefix: /api/v1
+    api-prefix: /api/v1
 

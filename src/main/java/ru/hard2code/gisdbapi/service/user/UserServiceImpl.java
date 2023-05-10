@@ -6,7 +6,6 @@ import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.model.User;
 import ru.hard2code.gisdbapi.repository.UserRepository;
 import ru.hard2code.gisdbapi.repository.UserTypeRepository;
-import ru.hard2code.gisdbapi.service.userType.UserTypeService;
 
 import java.util.List;
 
@@ -19,12 +18,9 @@ public class UserServiceImpl implements UserService {
     private final UserTypeRepository userTypeRepository;
 
 
-    private final UserTypeService userTypeService;
-
-    public UserServiceImpl(UserRepository userRepository, UserTypeRepository userTypeRepository, UserTypeService userTypeService) {
+    public UserServiceImpl(UserRepository userRepository, UserTypeRepository userTypeRepository) {
         this.userRepository = userRepository;
         this.userTypeRepository = userTypeRepository;
-        this.userTypeService = userTypeService;
     }
 
     @Override
@@ -43,7 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(long id, User newUser) {
+    public User updateUser(long id, User newUser) {
         var user = userRepository.findById(id).orElseGet(() -> userRepository.save(newUser));
         var userType = newUser.getUserType();
 
@@ -59,8 +55,13 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void deleteById(long id) {
+    public void deleteUserById(long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public void deleteAllUsers() {
+        userRepository.deleteAllInBatch();
     }
 
 }

@@ -51,4 +51,9 @@ public class OrganizationServiceImpl implements OrganizationService {
     public List<Organization> findByType(boolean isGovernment) {
         return organizationRepository.findByIsGovernment(isGovernment);
     }
+
+    @Override
+    public void deleteAll() {
+        organizationRepository.deleteAllInBatch();
+    }
 }

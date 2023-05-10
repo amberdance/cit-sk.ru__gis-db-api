@@ -11,9 +11,9 @@ spring:
     baseline-on-migrate: true
 
   jpa:
+    show-sql: true
     hibernate:
       ddl-auto: validate
-    show-sql: true
 
     properties:
       hibernate.format_sql: true
@@ -26,7 +26,7 @@ spring:
 
 app:
   rest:
-    basic-auth:
+    auth:
       user:
         name: usr
         password: pwd

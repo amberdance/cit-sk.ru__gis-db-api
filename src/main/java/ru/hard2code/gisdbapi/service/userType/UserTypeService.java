@@ -4,7 +4,9 @@ import ru.hard2code.gisdbapi.model.UserType;
 
 public interface UserTypeService {
 
-    UserType findByName(String name);
+    UserType findRoleByName(String name);
 
-    UserType createUserType(UserType type);
+    UserType createRole(UserType type);
+
+    void deleteAllRoles();
 }

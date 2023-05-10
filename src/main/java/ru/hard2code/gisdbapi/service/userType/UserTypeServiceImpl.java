@@ -15,12 +15,17 @@ public class UserTypeServiceImpl implements UserTypeService {
 
 
     @Override
-    public UserType findByName(String name) {
+    public UserType findRoleByName(String name) {
         return userTypeRepository.findByNameIgnoreCase(name).orElseThrow(EntityNotFoundException::new);
     }
 
     @Override
-    public UserType createUserType(UserType type) {
+    public UserType createRole(UserType type) {
         return userTypeRepository.save(type);
+    }
+
+    @Override
+    public void deleteAllRoles() {
+        userTypeRepository.deleteAllInBatch();
     }
 }

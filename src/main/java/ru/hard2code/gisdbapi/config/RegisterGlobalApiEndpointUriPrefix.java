@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class RegisterGlobalApiEndpointUriPrefix implements WebMvcConfigurer {
 
-    @Value("${app.rest.api.prefix}")
+    @Value("${app.rest.api-prefix:/api}")
     private String restApiPrefix;
 
 

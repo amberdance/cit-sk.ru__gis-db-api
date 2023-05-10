@@ -3,7 +3,6 @@ package ru.hard2code.gisdbapi.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -13,13 +12,10 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-import java.util.Objects;
-
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
-@Profile({"dev", "prod"})
 public class AuthorizeUrlsSecurityConfig {
 
     private final Environment env;
@@ -35,7 +31,7 @@ public class AuthorizeUrlsSecurityConfig {
         http.csrf().disable()
                 .httpBasic(withDefaults())
                 .authorizeHttpRequests((authorizeRequests) ->
-                        authorizeRequests.requestMatchers(env.getProperty("app.rest.api.prefix") + "/**")
+                        authorizeRequests.requestMatchers(env.getProperty("app.rest.api-prefix", "/api") + "/**")
                                 .hasRole("USER")
                                 .anyRequest().permitAll());
 
@@ -45,14 +41,14 @@ public class AuthorizeUrlsSecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         var user = User.builder()
-                .username(Objects.requireNonNull(env.getProperty("app.rest.basic-auth.user.name")))
-                .password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(Objects.requireNonNull(env.getProperty("app.rest.basic-auth.user.password"))))
+                .username(env.getProperty("app.rest.auth.user.name", "user"))
+                .password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(env.getProperty("app.rest.auth.user.password", "password")))
                 .roles("USER")
                 .build();
 
         var admin = User.builder()
-                .username(Objects.requireNonNull(env.getProperty("app.rest.basic-auth.admin.name")))
-                .password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(Objects.requireNonNull(env.getProperty("app.rest.basic-auth.admin.password"))))
+                .username(env.getProperty("app.rest.auth.admin.name", "admin"))
+                .password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(env.getProperty("app.rest.auth.admin.password", "password")))
                 .roles("USER, ADMIN")
                 .build();
 
