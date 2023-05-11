@@ -20,8 +20,8 @@ public class UserRoleServiceImpl implements UserRoleService {
     }
 
     @Override
-    public Role createRole(Role type) {
-        return userRoleRepository.save(type);
+    public void createRole(Role type) {
+        userRoleRepository.save(type);
     }
 
     @Override

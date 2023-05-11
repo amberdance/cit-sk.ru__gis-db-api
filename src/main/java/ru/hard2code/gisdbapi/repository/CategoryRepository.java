@@ -6,6 +6,5 @@ import ru.hard2code.gisdbapi.model.Category;
 import java.util.Optional;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-    Optional<Category> findByNameIgnoreCase(String name);
 
 }
