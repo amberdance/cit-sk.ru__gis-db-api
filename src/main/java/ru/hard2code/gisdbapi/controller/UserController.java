@@ -1,5 +1,8 @@
 package ru.hard2code.gisdbapi.controller;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.hard2code.gisdbapi.model.user.User;
@@ -9,6 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
+@Tag(name = "UserController", description = "User management API")
 public class UserController {
 
     private final UserService userService;

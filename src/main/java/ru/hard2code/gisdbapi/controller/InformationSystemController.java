@@ -1,5 +1,6 @@
 package ru.hard2code.gisdbapi.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.hard2code.gisdbapi.model.InformationSystem;
@@ -9,6 +10,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/information-systems")
+@Tag(name = "InformationSystemController", description = "Information Systems" +
+        " management API")
 public class InformationSystemController {
 
     private final InformationSystemService informationSystemService;
