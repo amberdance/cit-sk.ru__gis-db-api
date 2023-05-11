@@ -41,7 +41,7 @@ public class RestErrorResponse {
     }
 
     public ResponseEntity<Map<String, Object>> validationError(ConstraintViolationException ex) {
-        error.put(MESSAGE_KEY, ValidationTemplate.getValidationErrorString(ex.getConstraintViolations()));
+        error.put(MESSAGE_KEY, ValidationTemplate.getValidationErrorString(ex));
         fillRequiredFields();
 
         return new ResponseEntity<>(error, httpStatus);

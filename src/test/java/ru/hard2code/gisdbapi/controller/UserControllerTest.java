@@ -113,4 +113,13 @@ class UserControllerTest extends AbstractControllerTest {
                 .andExpect(jsonPath("$.email").value(user.getEmail()));
     }
 
+    @Test
+    void testValidation() throws Exception {
+        var wrongUser = new User("1", "2", "3", "4", "5", CITIZEN);
+
+        mvc.perform(post(API_PATH).contentType(CONTENT_TYPE)
+                .content(OBJECT_MAPPER.writeValueAsString(wrongUser))
+                .accept(CONTENT_TYPE)).andExpect(status().isBadRequest());
+    }
+
 }
