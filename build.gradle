@@ -6,8 +6,8 @@ plugins {
 }
 
 group = 'ru.hard2code'
-version = '1.1'
-sourceCompatibility = '19'
+version = '1.0.3'
+sourceCompatibility = '17'
 archivesBaseName = rootProject.name
 
 
@@ -58,7 +58,7 @@ jib {
     container.creationTime = 'USE_CURRENT_TIMESTAMP'
 
     from {
-        image = 'bellsoft/liberica-openjdk-alpine-musl:20'
+        image = 'bellsoft/liberica-openjdk-alpine-musl:17'
     }
 
     to {

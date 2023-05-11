@@ -1,6 +1,6 @@
 spring:
-  main:
-    banner-mode: off
+  profiles.active: default
+  main.banner-mode: off
 
   datasource:
     driver-class-name: org.h2.Driver
@@ -13,8 +13,8 @@ spring:
 
   jpa:
     show-sql: true
-
-logging:
-  level:
-    root: info
-
+    generate-ddl: false
+    properties:
+      hibernate:
+        enable-lazy-load-no-trans: false
+        generate-statistics: true

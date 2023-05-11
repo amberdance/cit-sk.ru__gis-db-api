@@ -6,5 +6,6 @@ import ru.hard2code.gisdbapi.model.Question;
 import java.util.List;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
-    List<Question> findByInformationSystem_Id(long id);
+    List<Question> findByCategory_Id(Long id);
+
 }

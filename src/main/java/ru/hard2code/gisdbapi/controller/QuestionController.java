@@ -1,5 +1,6 @@
 package ru.hard2code.gisdbapi.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.hard2code.gisdbapi.model.Question;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/questions")
+@Tag(name = "QuestionController", description = "Questions management API")
 public class QuestionController {
     private final QuestionService questionService;
 
@@ -17,8 +19,11 @@ public class QuestionController {
     }
 
     @GetMapping
-    public List<Question> getAllQuestions(@RequestParam(value = "informationSystemId", required = false) Long informationSystemId) {
-        return informationSystemId == null ? questionService.findAllQuestions() : questionService.findQuestionsByInformationSystemId(informationSystemId);
+    public List<Question> getAllQuestions(@RequestParam(value = "categoryId",
+            required = false) Long categoryId) {
+        return categoryId == null ?
+                questionService.findAllQuestions() :
+                questionService.findQuestionsByCategoryId(categoryId);
     }
 
     @GetMapping("{id}")

@@ -1,11 +1,14 @@
 package ru.hard2code.gisdbapi.config;
 
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -15,21 +18,41 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class AuthorizeUrlsSecurityConfig {
 
+    private final Environment env;
+
+
+    public AuthorizeUrlsSecurityConfig(Environment env) {
+        this.env = env;
+    }
+
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable().httpBasic(withDefaults()).authorizeHttpRequests().anyRequest().authenticated();
+        http.csrf().disable()
+                .httpBasic(withDefaults())
+                .authorizeHttpRequests((authorizeRequests) ->
+                        authorizeRequests.requestMatchers(env.getProperty("app.rest.api-prefix", "/api") + "/**")
+                                .hasRole("USER")
+                                .anyRequest().permitAll());
 
         return http.build();
     }
 
     @Bean
     public UserDetailsService userDetailsService() {
-        var user = User.withUsername("usr")
-                .password("{bcrypt}$2a$10$9Ombwas9lPZA7mqoYS9MDuCZoutCChRcaCMbcTJTOOVdD7wvfZ1XC")
+        var user = User.builder()
+                .username(env.getProperty("app.rest.auth.user.name", "user"))
+                .password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(env.getProperty("app.rest.auth.user.password", "password")))
                 .roles("USER")
                 .build();
 
-        return new InMemoryUserDetailsManager(user);
+        var admin = User.builder()
+                .username(env.getProperty("app.rest.auth.admin.name", "admin"))
+                .password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(env.getProperty("app.rest.auth.admin.password", "password")))
+                .roles("USER, ADMIN")
+                .build();
+
+        return new InMemoryUserDetailsManager(user, admin);
     }
 
 }

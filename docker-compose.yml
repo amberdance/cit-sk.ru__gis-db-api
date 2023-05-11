@@ -15,7 +15,7 @@ services:
       - db-data:/var/lib/postgresql/data
   app:
     container_name: spring-gis-docker
-    image: registry.gitlab.com/hard2code/gis-api:1.1
+    image: registry.gitlab.com/hard2code/gis-api:1.0.2
     ports:
       - "9090:8080"
     depends_on:
@@ -30,14 +30,4 @@ services:
 
 volumes:
   app-logs:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /var/log/gis-api
   db-data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /home/docker-volumes/gis-api/postgresql

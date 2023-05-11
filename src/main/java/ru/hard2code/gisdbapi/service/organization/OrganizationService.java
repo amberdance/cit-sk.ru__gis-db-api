@@ -16,4 +16,6 @@ public interface OrganizationService {
     void delete(long id);
 
     List<Organization> findByType(boolean isGovernment);
+
+    void deleteAll();
 }

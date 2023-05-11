@@ -6,18 +6,29 @@ spring:
     password: pwd
 
   flyway:
-    enabled: false
-    locations: classpath:db/migration
+    enabled: true
     baseline-on-migrate: true
 
   jpa:
+    show-sql: true
     hibernate:
       ddl-auto: validate
-    show-sql: true
     properties:
       hibernate.format_sql: true
+      enable-lazy-load-no-trans: false
 
   sql:
     init:
       platform: postgres
       mode: always
+
+app:
+  rest:
+    auth:
+      user:
+        name: usr
+        password: pwd
+
+      admin:
+        name: admin
+        password: pwd
