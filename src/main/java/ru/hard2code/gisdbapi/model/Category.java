@@ -16,11 +16,11 @@ import java.util.Objects;
 @Setter
 @ToString
 @Entity
-@Table(name = "information_systems")
-public class InformationSystem extends AbstractEntity {
+@Table(name = "categories")
+public class Category extends AbstractEntity {
 
 
-    public InformationSystem(String name) {
+    public Category(String name) {
         this.name = name;
     }
 
@@ -28,16 +28,20 @@ public class InformationSystem extends AbstractEntity {
     @NotNull
     private String name;
 
-    @OneToMany(mappedBy = "informationSystem", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @ToString.Exclude
     @JsonIgnore
     private List<Question> questions = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        InformationSystem that = (InformationSystem) o;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
+        Category that = (Category) o;
         return getId() != null && Objects.equals(getId(), that.getId());
     }
 

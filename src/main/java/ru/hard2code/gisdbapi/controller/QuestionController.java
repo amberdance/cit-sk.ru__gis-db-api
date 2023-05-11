@@ -19,8 +19,11 @@ public class QuestionController {
     }
 
     @GetMapping
-    public List<Question> getAllQuestions(@RequestParam(value = "informationSystemId", required = false) Long informationSystemId) {
-        return informationSystemId == null ? questionService.findAllQuestions() : questionService.findQuestionsByInformationSystemId(informationSystemId);
+    public List<Question> getAllQuestions(@RequestParam(value = "categoryId",
+            required = false) Long categoryId) {
+        return categoryId == null ?
+                questionService.findAllQuestions() :
+                questionService.findQuestionsByCategoryId(categoryId);
     }
 
     @GetMapping("{id}")

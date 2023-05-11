@@ -12,7 +12,7 @@ public interface QuestionService {
 
     Question findQuestionById(long id);
 
-    List<Question> findQuestionsByInformationSystemId(long id);
+    List<Question> findQuestionsByCategoryId(long id);
 
     Question createQuestion(Question question);
 

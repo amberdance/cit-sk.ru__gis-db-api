@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
-import ru.hard2code.gisdbapi.model.InformationSystem;
+import ru.hard2code.gisdbapi.model.Category;
 import ru.hard2code.gisdbapi.model.Question;
-import ru.hard2code.gisdbapi.service.informationSystem.InformationSystemService;
+import ru.hard2code.gisdbapi.service.category.CategoryService;
 import ru.hard2code.gisdbapi.service.question.QuestionService;
 
 import java.util.List;
@@ -24,30 +24,30 @@ class QuestionControllerTest extends AbstractControllerTest {
 
     private static final String API_PATH = "/api/questions";
 
-    private final InformationSystem GOS_WEB_IS = new InformationSystem(
+    private final Category GOS_WEB_IS = new Category(
             "GOSWEB");
-    private final InformationSystem POS_WIDGET_IS =
-            new InformationSystem(
+    private final Category POS_WIDGET_IS =
+            new Category(
                     "POS_WIDGET");
 
     @Autowired
     private QuestionService questionService;
 
     @Autowired
-    private InformationSystemService informationSystemService;
+    private CategoryService categoryService;
 
     private final Question TEST_QUESTION = new Question("q1", "a1",
             GOS_WEB_IS);
 
     @BeforeEach
     void beforeEach() {
-        informationSystemService.createInformationSystem(GOS_WEB_IS);
-        informationSystemService.createInformationSystem(POS_WIDGET_IS);
+        categoryService.createCategory(GOS_WEB_IS);
+        categoryService.createCategory(POS_WIDGET_IS);
     }
 
     @AfterEach
     void cleanUp() {
-        informationSystemService.deleteAllInformationSystems();
+        categoryService.deleteAllCategories();
     }
 
     @Test
@@ -86,7 +86,7 @@ class QuestionControllerTest extends AbstractControllerTest {
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(notNullValue()))
-                .andExpect(jsonPath("$.informationSystem.id").value(notNullValue()));
+                .andExpect(jsonPath("$.category.id").value(notNullValue()));
     }
 
     @Test
@@ -94,7 +94,7 @@ class QuestionControllerTest extends AbstractControllerTest {
         questionService.createQuestion(TEST_QUESTION);
         TEST_QUESTION.setLabel("NEW_LABEL");
         TEST_QUESTION.setAnswer("NEW_ANSWER");
-        TEST_QUESTION.setInformationSystem(POS_WIDGET_IS);
+        TEST_QUESTION.setCategory(POS_WIDGET_IS);
 
         mvc.perform(put(API_PATH + "/{id}", TEST_QUESTION.getId())
                         .contentType(CONTENT_TYPE)
@@ -103,7 +103,7 @@ class QuestionControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.label").value(TEST_QUESTION.getLabel()))
                 .andExpect(jsonPath("$.answer").value(TEST_QUESTION.getAnswer()))
-                .andExpect(jsonPath("$.informationSystem.name").value(TEST_QUESTION.getInformationSystem()
+                .andExpect(jsonPath("$.category.name").value(TEST_QUESTION.getCategory()
                         .getName()));
     }
 

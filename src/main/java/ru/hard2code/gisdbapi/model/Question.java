@@ -29,15 +29,19 @@ public class Question extends AbstractEntity {
     private String answer;
 
     @ManyToOne
-    @JoinColumn(name = "information_system_id")
+    @JoinColumn(name = "category_id")
     @NotNull
-    private InformationSystem informationSystem;
+    private Category category;
 
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
+            return false;
+        }
         Question question = (Question) o;
         return getId() != null && Objects.equals(getId(), question.getId());
     }

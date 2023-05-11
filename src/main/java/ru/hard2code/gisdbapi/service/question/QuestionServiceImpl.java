@@ -7,7 +7,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.model.Question;
-import ru.hard2code.gisdbapi.repository.InformationSystemRepository;
+import ru.hard2code.gisdbapi.repository.CategoryRepository;
 import ru.hard2code.gisdbapi.repository.QuestionRepository;
 
 import java.util.List;
@@ -17,11 +17,11 @@ import java.util.List;
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
-    private final InformationSystemRepository informationSystemRepository;
+    private final CategoryRepository categoryRepository;
 
-    public QuestionServiceImpl(QuestionRepository questionRepository, InformationSystemRepository informationSystemRepository) {
+    public QuestionServiceImpl(QuestionRepository questionRepository, CategoryRepository categoryRepository) {
         this.questionRepository = questionRepository;
-        this.informationSystemRepository = informationSystemRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Override
@@ -36,13 +36,14 @@ public class QuestionServiceImpl implements QuestionService {
     @Cacheable(value = QuestionService.CACHE_VALUE, key = "#id")
     public Question findQuestionById(long id) {
         log.info("Getting question by id: {}", id);
-        return questionRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Question.class, id));
+        return questionRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Question.class, id));
     }
 
     @Override
     @Cacheable(value = QuestionService.CACHE_VALUE, key = "#id")
-    public List<Question> findQuestionsByInformationSystemId(long id) {
-        return questionRepository.findByInformationSystem_Id(id);
+    public List<Question> findQuestionsByCategoryId(long id) {
+        return questionRepository.findByCategory_Id(id);
     }
 
     @Override
@@ -54,12 +55,14 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @CacheEvict(value = QuestionService.CACHE_VALUE, allEntries = true)
     public Question updateQuestion(long id, Question question) {
-        var q = questionRepository.findById(id).orElseGet(() -> questionRepository.save(question));
-        var is = question.getInformationSystem();
+        var q = questionRepository.findById(id)
+                .orElseGet(() -> questionRepository.save(question));
+        var is = question.getCategory();
 
         q.setLabel(question.getLabel());
         q.setAnswer(question.getAnswer());
-        q.setInformationSystem(informationSystemRepository.findById(is.getId()).orElseThrow(() -> new EntityNotFoundException(is)));
+        q.setCategory(categoryRepository.findById(is.getId())
+                .orElseThrow(() -> new EntityNotFoundException(is)));
 
         log.info("Creating question {}:", q);
         return questionRepository.save(q);

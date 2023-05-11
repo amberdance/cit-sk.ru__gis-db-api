@@ -43,7 +43,7 @@ CREATE TABLE users
     CONSTRAINT pk_users PRIMARY KEY (id)
 );
 
-ALTER TABLE information_systems
+ALTER TABLE categories
     ADD CONSTRAINT uc_information_systems_name UNIQUE (name);
 
 ALTER TABLE organizations
@@ -65,7 +65,7 @@ ALTER TABLE users
     ADD CONSTRAINT uc_users_username UNIQUE (username);
 
 ALTER TABLE questions
-    ADD CONSTRAINT FK_QUESTIONS_ON_INFORMATION_SYSTEM FOREIGN KEY (information_system_id) REFERENCES information_systems (id);
+    ADD CONSTRAINT FK_QUESTIONS_ON_INFORMATION_SYSTEM FOREIGN KEY (information_system_id) REFERENCES categories (id);
 
 ALTER TABLE users
     ADD CONSTRAINT FK_USERS_ON_USER_ROLE FOREIGN KEY (user_role_id) REFERENCES user_roles (id);
