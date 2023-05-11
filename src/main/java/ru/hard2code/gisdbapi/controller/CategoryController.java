@@ -36,13 +36,13 @@ public class CategoryController {
 
     @PutMapping("{id}")
     Category updateCategory(@PathVariable("id") long id, @RequestBody Category category) {
-        return categoryService.update(id, category);
+        return categoryService.updateCategory(id, category);
     }
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable("id") long id) {
-        categoryService.delete(id);
+        categoryService.deleteCategoryById(id);
     }
 
 }

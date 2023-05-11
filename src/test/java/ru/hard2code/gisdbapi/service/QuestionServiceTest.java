@@ -9,14 +9,13 @@ import ru.hard2code.gisdbapi.model.Question;
 import ru.hard2code.gisdbapi.service.category.CategoryService;
 import ru.hard2code.gisdbapi.service.question.QuestionService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
 @DisplayName("Cache test")
-class QuestionServiceTest extends AbstractServiceTest {
+class QuestionServiceTest extends AbstractServiceTest<Question> {
 
 
     @Autowired
@@ -26,28 +25,35 @@ class QuestionServiceTest extends AbstractServiceTest {
     private CategoryService categoryService;
 
 
-    private static final int QUESTIONS_COUNT = 3;
+    private void createInstances() {
+        //Cascade deleting here
+        categoryService.deleteAllCategories();
 
-    private final List<Question> QUESTIONS = new ArrayList<>();
+        for (int i = 0; i < INSTANCES_COUNT; i++) {
+            var is = categoryService.createCategory(new Category(String.valueOf(i)));
+            var savedQuestion = questionService.createQuestion(new Question(String.valueOf(i), String.valueOf(i), is));
 
+            INSTANCES.add(savedQuestion);
+        }
+    }
 
     @BeforeEach
     void setUp() {
-        createQuestions();
+        createInstances();
         questionService.findAllQuestions();
     }
 
     @Test
     @SuppressWarnings("unchecked")
     void whenFindAllQuestionsThenCacheShouldCreated() {
-        assertEquals(QUESTIONS.size(),
+        assertEquals(INSTANCES.size(),
                 ((List<Question>) cacheManager.getCache(QuestionService.CACHE_VALUE)
                         .get(QuestionService.CACHE_LIST_KEY).get()).size());
     }
 
     @Test
     void whenDeleteQuestionByIdThenCacheWillEvict() {
-        questionService.deleteQuestionById(QUESTIONS.get(0).getId());
+        questionService.deleteQuestionById(INSTANCES.get(0).getId());
 
         assertNull(cacheManager.getCache(QuestionService.CACHE_VALUE)
                 .get(QuestionService.CACHE_LIST_KEY));
@@ -67,7 +73,7 @@ class QuestionServiceTest extends AbstractServiceTest {
 
     @Test
     void whenFindQuestionByIdThenQuestionWillReturnedFromCache() {
-        var id = QUESTIONS.get(0).getId();
+        var id = INSTANCES.get(0).getId();
         questionService.findQuestionById(id);
 
         assertNotNull(cacheManager.getCache(QuestionService.CACHE_VALUE)
@@ -86,15 +92,4 @@ class QuestionServiceTest extends AbstractServiceTest {
                 .get(categoryId.getId()));
     }
 
-    private void createQuestions() {
-        //Cascade deleting here
-        categoryService.deleteAllCategories();
-
-        for (int i = 0; i < QuestionServiceTest.QUESTIONS_COUNT; i++) {
-            var is = categoryService.createCategory(new Category(String.valueOf(i)));
-            var savedQuestion = questionService.createQuestion(new Question(String.valueOf(i), String.valueOf(i), is));
-
-            QUESTIONS.add(savedQuestion);
-        }
-    }
 }

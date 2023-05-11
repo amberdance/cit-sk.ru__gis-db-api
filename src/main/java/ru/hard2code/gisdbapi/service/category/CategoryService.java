@@ -5,15 +5,19 @@ import ru.hard2code.gisdbapi.model.Category;
 import java.util.List;
 
 public interface CategoryService {
+
+    String CACHE_VALUE = "categories";
+    String CACHE_LIST_KEY = "categoriesList";
+
     Category createCategory(Category gis);
 
     List<Category> findAll();
 
     Category findById(long id);
 
-    void delete(long id);
+    void deleteCategoryById(long id);
 
-    Category update(long id, Category category);
+    Category updateCategory(long id, Category category);
 
 
     void deleteAllCategories();
