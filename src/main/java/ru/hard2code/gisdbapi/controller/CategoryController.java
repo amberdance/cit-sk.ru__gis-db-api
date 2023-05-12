@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/categories")
-@Tag(name = "CategoryController", description = "Question categories management API")
+@Tag(name = "CategoryController", description = "Categories management API")
 public class CategoryController {
 
     private final CategoryService categoryService;
