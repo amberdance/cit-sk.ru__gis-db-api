@@ -2,6 +2,7 @@ package ru.hard2code.gisdbapi.service.question;
 
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import ru.hard2code.gisdbapi.repository.QuestionRepository;
 import java.util.List;
 
 @Service
+@CacheConfig(cacheNames = QuestionService.CACHE_NAME)
 @Slf4j
 public class QuestionServiceImpl implements QuestionService {
 
@@ -25,7 +27,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    @Cacheable(value = QuestionService.CACHE_VALUE, key = "'" + QuestionService.CACHE_LIST_KEY + "'")
+    @Cacheable(key = "'" + QuestionService.CACHE_LIST_KEY + "'")
     public List<Question> findAllQuestions() {
         log.info("Getting all questions");
         return questionRepository.findAll();
@@ -33,7 +35,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    @Cacheable(value = QuestionService.CACHE_VALUE, key = "#id")
+    @Cacheable(key = "#id")
     public Question findQuestionById(long id) {
         log.info("Getting question by id: {}", id);
         return questionRepository.findById(id)
@@ -41,19 +43,21 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    @Cacheable(value = QuestionService.CACHE_VALUE, key = "#id")
+    @Cacheable(key = "#id")
     public List<Question> findQuestionsByCategoryId(long id) {
+        log.info("Getting question by category id: {}", id);
         return questionRepository.findByCategory_Id(id);
     }
 
     @Override
-    @CacheEvict(value = QuestionService.CACHE_VALUE, allEntries = true)
+    @CacheEvict(allEntries = true)
     public Question createQuestion(Question question) {
+        log.info("Creating question: {}", question);
         return questionRepository.save(question);
     }
 
     @Override
-    @CacheEvict(value = QuestionService.CACHE_VALUE, allEntries = true)
+    @CacheEvict(allEntries = true)
     public Question updateQuestion(long id, Question question) {
         var q = questionRepository.findById(id)
                 .orElseGet(() -> questionRepository.save(question));
@@ -64,19 +68,19 @@ public class QuestionServiceImpl implements QuestionService {
         q.setCategory(categoryRepository.findById(is.getId())
                 .orElseThrow(() -> new EntityNotFoundException(is)));
 
-        log.info("Creating question {}:", q);
+        log.info("Updating question {}:", q);
         return questionRepository.save(q);
     }
 
     @Override
-    @CacheEvict(value = QuestionService.CACHE_VALUE, allEntries = true)
+    @CacheEvict(allEntries = true)
     public void deleteQuestionById(long id) {
         log.info("Deleting question by id: {}", id);
         questionRepository.deleteById(id);
     }
 
     @Override
-    @CacheEvict(value = QuestionService.CACHE_VALUE, allEntries = true)
+    @CacheEvict(allEntries = true)
     public void deleteAllQuestions() {
         log.info("Deleting all questions");
         questionRepository.deleteAll();

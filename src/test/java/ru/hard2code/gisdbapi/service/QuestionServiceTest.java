@@ -47,7 +47,7 @@ class QuestionServiceTest extends AbstractServiceTest<Question> {
     @SuppressWarnings("unchecked")
     void whenFindAllQuestionsThenCacheShouldCreated() {
         assertEquals(INSTANCES.size(),
-                ((List<Question>) cacheManager.getCache(QuestionService.CACHE_VALUE)
+                ((List<Question>) cacheManager.getCache(QuestionService.CACHE_NAME)
                         .get(QuestionService.CACHE_LIST_KEY).get()).size());
     }
 
@@ -55,19 +55,19 @@ class QuestionServiceTest extends AbstractServiceTest<Question> {
     void whenDeleteQuestionByIdThenCacheWillEvict() {
         questionService.deleteQuestionById(INSTANCES.get(0).getId());
 
-        assertNull(cacheManager.getCache(QuestionService.CACHE_VALUE)
+        assertNull(cacheManager.getCache(QuestionService.CACHE_NAME)
                 .get(QuestionService.CACHE_LIST_KEY));
     }
 
     @Test
     void whenCreateQuestionThenCacheWillEvict() {
-        var cacheBefore = cacheManager.getCache(QuestionService.CACHE_VALUE)
+        var cacheBefore = cacheManager.getCache(QuestionService.CACHE_NAME)
                 .get(QuestionService.CACHE_LIST_KEY);
 
         questionService.createQuestion(new Question("test", "test",
                 categoryService.createCategory(new Category("test"))));
 
-        assertNotEquals(cacheManager.getCache(QuestionService.CACHE_VALUE)
+        assertNotEquals(cacheManager.getCache(QuestionService.CACHE_NAME)
                 .get(QuestionService.CACHE_LIST_KEY), cacheBefore);
     }
 
@@ -76,7 +76,7 @@ class QuestionServiceTest extends AbstractServiceTest<Question> {
         var id = INSTANCES.get(0).getId();
         questionService.findQuestionById(id);
 
-        assertNotNull(cacheManager.getCache(QuestionService.CACHE_VALUE)
+        assertNotNull(cacheManager.getCache(QuestionService.CACHE_NAME)
                 .get(id));
     }
 
@@ -88,7 +88,7 @@ class QuestionServiceTest extends AbstractServiceTest<Question> {
         questionService.createQuestion(new Question("test", "test", categoryId));
         questionService.findQuestionsByCategoryId(categoryId.getId());
 
-        assertNotNull(cacheManager.getCache(QuestionService.CACHE_VALUE)
+        assertNotNull(cacheManager.getCache(QuestionService.CACHE_NAME)
                 .get(categoryId.getId()));
     }
 

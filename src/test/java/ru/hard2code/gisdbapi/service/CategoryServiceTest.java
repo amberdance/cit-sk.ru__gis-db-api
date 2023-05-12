@@ -35,7 +35,7 @@ class CategoryServiceTest extends AbstractServiceTest<Category> {
     @SuppressWarnings("unchecked")
     void whenFindAllCategoriesThenCacheShouldCreated() {
         assertEquals(INSTANCES.size(),
-                ((List<Category>) cacheManager.getCache(CategoryService.CACHE_VALUE)
+                ((List<Category>) cacheManager.getCache(CategoryService.CACHE_NAME)
                         .get(CategoryService.CACHE_LIST_KEY).get()).size());
     }
 
@@ -44,17 +44,17 @@ class CategoryServiceTest extends AbstractServiceTest<Category> {
         var id = INSTANCES.get(0).getId();
         categoryService.deleteCategoryById(id);
 
-        assertNull(cacheManager.getCache(CategoryService.CACHE_VALUE).get(id));
+        assertNull(cacheManager.getCache(CategoryService.CACHE_NAME).get(id));
     }
 
     @Test
     void whenCreateCategoryThenCacheWillEvict() {
-        var cacheBefore = cacheManager.getCache(CategoryService.CACHE_VALUE)
+        var cacheBefore = cacheManager.getCache(CategoryService.CACHE_NAME)
                 .get(CategoryService.CACHE_LIST_KEY);
 
         categoryService.createCategory(new Category("test"));
 
-        assertNotEquals(cacheManager.getCache(CategoryService.CACHE_VALUE)
+        assertNotEquals(cacheManager.getCache(CategoryService.CACHE_NAME)
                 .get(CategoryService.CACHE_LIST_KEY), cacheBefore);
     }
 
@@ -63,7 +63,7 @@ class CategoryServiceTest extends AbstractServiceTest<Category> {
         var id = INSTANCES.get(0).getId();
         categoryService.findById(id);
 
-        assertNotNull(cacheManager.getCache(CategoryService.CACHE_VALUE)
+        assertNotNull(cacheManager.getCache(CategoryService.CACHE_NAME)
                 .get(id));
     }
 

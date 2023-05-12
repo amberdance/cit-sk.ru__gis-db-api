@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface CategoryService {
 
-    String CACHE_VALUE = "categories";
+    String CACHE_NAME = "categories";
     String CACHE_LIST_KEY = "categoriesList";
 
     Category createCategory(Category gis);
