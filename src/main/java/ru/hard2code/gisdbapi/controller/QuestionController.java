@@ -3,13 +3,14 @@ package ru.hard2code.gisdbapi.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.hard2code.gisdbapi.constants.Route;
 import ru.hard2code.gisdbapi.model.Question;
 import ru.hard2code.gisdbapi.service.question.QuestionService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/questions")
+@RequestMapping(Route.QUESTIONS)
 @Tag(name = "QuestionController", description = "Questions management API")
 public class QuestionController {
     private final QuestionService questionService;

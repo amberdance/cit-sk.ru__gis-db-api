@@ -3,13 +3,14 @@ package ru.hard2code.gisdbapi.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.hard2code.gisdbapi.constants.Route;
 import ru.hard2code.gisdbapi.model.Organization;
 import ru.hard2code.gisdbapi.service.organization.OrganizationService;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/organizations")
+@RequestMapping(Route.ORGANIZATIONS)
 @Tag(name = "OrganizationController", description = "Organizations management" +
         " API")
 public class OrganizationController {

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
+import ru.hard2code.gisdbapi.constants.Route;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.model.Category;
 import ru.hard2code.gisdbapi.service.category.CategoryService;
@@ -20,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CategoryControllerTest extends AbstractControllerTest {
 
 
-    private static final String API_PATH = "/api/categories";
+    private static final String API_PATH = "/api/" + Route.CATEGORIES;
 
     private final Category TEST_CATEGORY =
             new Category("someName");

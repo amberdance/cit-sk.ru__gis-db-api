@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
+import ru.hard2code.gisdbapi.constants.Route;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.model.Category;
 import ru.hard2code.gisdbapi.model.Question;
@@ -22,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser
 class QuestionControllerTest extends AbstractControllerTest {
 
-    private static final String API_PATH = "/api/questions";
+    private static final String API_PATH = "/api/" + Route.QUESTIONS;
 
     private final Category GOS_WEB_IS = new Category(
             "GOSWEB");

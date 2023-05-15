@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
+import ru.hard2code.gisdbapi.constants.Route;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.model.user.Role;
 import ru.hard2code.gisdbapi.model.user.User;
@@ -21,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser
 class UserControllerTest extends AbstractControllerTest {
 
-    private static final String API_PATH = "/api/users";
+    private static final String API_PATH = "/api/" + Route.USERS;
     private final Role CITIZEN = new Role(Role.Type.CITIZEN.getValue());
     private final Role EMPLOYEE = new Role(Role.Type.GOVERNMENT_EMPLOYEE.getValue());
     private final User TEST_USER = new User("123456789", "test@test.ru",
