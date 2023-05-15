@@ -5,16 +5,10 @@ spring:
   profiles:
     active: dev
 
-  web:
-    resources:
-      add-mappings: false
-
-
 spring-doc:
   swagger-ui:
     path: /api/swagger-ui
     disable-swagger-default-url: true
-
 
 server:
   error:
@@ -22,5 +16,6 @@ server:
     whitelabel.enabled: false
 
 app:
+  name: Government Information Systems Rest API
   rest:
     api-prefix: /api/v1
