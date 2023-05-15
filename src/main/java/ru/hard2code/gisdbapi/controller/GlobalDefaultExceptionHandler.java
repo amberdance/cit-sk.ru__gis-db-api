@@ -19,13 +19,11 @@ public class GlobalDefaultExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleNotFoundError(EntityNotFoundException e, HttpServletRequest request) {
-        log.error(e.getLocalizedMessage());
         return new RestErrorResponse(request, HttpStatus.NOT_FOUND).defaultError(e);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Map<String, Object>> handleValidationError(ConstraintViolationException e, HttpServletRequest request) {
-        log.error(e.getLocalizedMessage());
         return new RestErrorResponse(request, HttpStatus.BAD_REQUEST).validationError(e);
     }
 
