@@ -2,7 +2,6 @@ package ru.hard2code.gisdbapi.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import ru.hard2code.gisdbapi.constants.Route;
 import ru.hard2code.gisdbapi.model.Message;
@@ -14,7 +13,6 @@ import java.util.List;
 @RequestMapping(Route.MESSAGES)
 @Tag(name = "MessageController", description = "User questions management " +
         "API")
-@Secured("ROLE_ADMIN")
 public class MessageController {
 
     private final MessageService messageService;

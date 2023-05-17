@@ -1,9 +1,11 @@
 package ru.hard2code.gisdbapi.config;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -21,6 +23,9 @@ public class AuthorizeUrlsSecurityConfig {
 
     private final Environment env;
 
+    @Value("${app.rest.api-prefix:/api}")
+    private String apiPrefix;
+
 
     public AuthorizeUrlsSecurityConfig(Environment env) {
         this.env = env;
@@ -31,10 +36,20 @@ public class AuthorizeUrlsSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .httpBasic(withDefaults())
-                .authorizeHttpRequests((authorizeRequests) ->
-                        authorizeRequests.requestMatchers(env.getProperty("app.rest.api-prefix", "/api") + "/**")
-                                .hasAnyRole("USER", "ADMIN")
-                                .anyRequest().permitAll());
+                .authorizeHttpRequests((authorize) ->
+                        authorize
+                                .requestMatchers(HttpMethod.GET).hasAuthority(
+                                        "read")
+                                .requestMatchers(HttpMethod.POST).hasAuthority(
+                                        "write")
+                                .requestMatchers(HttpMethod.PUT).hasAuthority(
+                                        "write")
+                                .requestMatchers(HttpMethod.PATCH).hasAuthority(
+                                        "write")
+                                .requestMatchers(HttpMethod.DELETE).hasAuthority(
+                                        "write")
+                                .anyRequest()
+                                .authenticated());
 
         return http.build();
     }
@@ -42,15 +57,21 @@ public class AuthorizeUrlsSecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         var user = User.builder()
-                .username(env.getProperty("app.rest.auth.user.name", "user"))
-                .password(passwordEncoder().encode(env.getProperty("app.rest.auth.user.password", "password")))
+                .username(env.getProperty("app.rest.auth.user.name",
+                        "user"))
+                .password(passwordEncoder().encode(env.getProperty("app" +
+                        ".rest.auth.user.password", "password")))
                 .roles("USER")
+                .authorities("read")
                 .build();
 
         var admin = User.builder()
-                .username(env.getProperty("app.rest.auth.admin.name", "admin"))
-                .password(passwordEncoder().encode(env.getProperty("app.rest.auth.admin.password", "password")))
-                .roles("USER, ADMIN")
+                .username(env.getProperty("app.rest.auth.admin.name",
+                        "admin"))
+                .password(passwordEncoder().encode(env.getProperty("app" +
+                        ".rest.auth.admin.password", "password")))
+                .roles("ADMIN")
+                .authorities("read", "write")
                 .build();
 
         return new InMemoryUserDetailsManager(user, admin);
