@@ -64,14 +64,14 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public Message updateMessage(Message msg) {
-        var message = getMessageById(msg.getId());
-        message.setUser(msg.getUser());
-        message.setLabel(msg.getLabel());
-        message.setAnswer(msg.getAnswer());
+    public Message updateMessage(long id, Message msg) {
+        var message = getMessageById(id);
+
+        if (msg.getLabel() != null) message.setLabel(msg.getLabel());
+        if (msg.getAnswer() != null) message.setAnswer(msg.getAnswer());
+        if (msg.getUser() != null) message.setUser(msg.getUser());
 
         return message;
     }
-
 
 }

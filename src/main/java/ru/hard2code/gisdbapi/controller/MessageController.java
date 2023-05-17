@@ -41,7 +41,13 @@ public class MessageController {
     @PutMapping("{id}")
     public Message updateMessage(@PathVariable("id") long id,
                                  @RequestBody Message msg) {
-        return messageService.updateMessage(msg);
+        return messageService.updateMessage(id, msg);
+    }
+
+    @PatchMapping("{id}")
+    public Message partialUpdateMessage(@PathVariable("id") long id,
+                                        @RequestBody Message msg) {
+        return messageService.updateMessage(id, msg);
     }
 
     @DeleteMapping("{id}")

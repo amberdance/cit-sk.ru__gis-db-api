@@ -15,7 +15,7 @@ public interface MessageService {
 
     void deleteById(long id);
 
-    Message updateMessage(Message msg);
+    Message updateMessage(long id, Message msg);
 
 
 }
