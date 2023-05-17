@@ -15,7 +15,6 @@ import java.util.List;
 
 @Service
 @CacheConfig(cacheNames = QuestionService.CACHE_NAME)
-@Slf4j
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
@@ -29,7 +28,6 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Cacheable(key = "'" + QuestionService.CACHE_LIST_KEY + "'")
     public List<Question> findAllQuestions() {
-        log.info("Getting all questions");
         return questionRepository.findAll();
 
     }
@@ -37,7 +35,6 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Cacheable(key = "#id")
     public Question findQuestionById(long id) {
-        log.info("Getting question by id: {}", id);
         return questionRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Question.class, id));
     }
@@ -45,14 +42,12 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Cacheable(key = "#id")
     public List<Question> findQuestionsByCategoryId(long id) {
-        log.info("Getting question by category id: {}", id);
         return questionRepository.findByCategory_Id(id);
     }
 
     @Override
     @CacheEvict(allEntries = true)
     public Question createQuestion(Question question) {
-        log.info("Creating question: {}", question);
         return questionRepository.save(question);
     }
 
@@ -68,21 +63,18 @@ public class QuestionServiceImpl implements QuestionService {
         q.setCategory(categoryRepository.findById(is.getId())
                 .orElseThrow(() -> new EntityNotFoundException(is)));
 
-        log.info("Updating question {}:", q);
         return questionRepository.save(q);
     }
 
     @Override
     @CacheEvict(allEntries = true)
     public void deleteQuestionById(long id) {
-        log.info("Deleting question by id: {}", id);
         questionRepository.deleteById(id);
     }
 
     @Override
     @CacheEvict(allEntries = true)
     public void deleteAllQuestions() {
-        log.info("Deleting all questions");
         questionRepository.deleteAll();
     }
 }
