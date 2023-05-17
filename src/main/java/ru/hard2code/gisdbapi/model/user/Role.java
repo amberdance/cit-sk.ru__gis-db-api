@@ -24,10 +24,9 @@ import java.util.Objects;
 @Table(name = "user_roles")
 public class Role extends AbstractEntity {
 
-
     @Column(name = "name", nullable = false, unique = true, length = 100)
     @NotNull
-    private String name = Type.CITIZEN.getValue();
+    private String name;
 
     @OneToMany(mappedBy = "role")
     @ToString.Exclude

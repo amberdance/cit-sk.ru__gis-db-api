@@ -5,4 +5,5 @@ public interface Route {
     String QUESTIONS = "/questions";
     String USERS = "/users";
     String ORGANIZATIONS = "/organizations";
+    String MESSAGES = "/messages";
 }

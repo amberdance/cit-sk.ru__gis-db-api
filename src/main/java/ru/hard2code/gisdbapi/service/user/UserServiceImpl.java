@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.model.user.User;
 import ru.hard2code.gisdbapi.repository.UserRepository;
-import ru.hard2code.gisdbapi.repository.UserRoleRepository;
 
 import java.util.List;
 
@@ -15,13 +14,14 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    private final UserRoleRepository userRoleRepository;
-
-
-    public UserServiceImpl(UserRepository userRepository, UserRoleRepository userRoleRepository) {
+    public UserServiceImpl(UserRepository userRepository,
+                           UserRoleService userRoleService) {
         this.userRepository = userRepository;
-        this.userRoleRepository = userRoleRepository;
+        this.userRoleService = userRoleService;
     }
+
+    private final UserRoleService userRoleService;
+
 
     @Override
     public List<User> findAllUsers() {
@@ -35,6 +35,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
+        var userRoleId = user.getRole().getId();
+
+        if (userRoleId != null) {
+            user.setRole(userRoleService.findById(userRoleId));
+        }
+
         return userRepository.save(user);
     }
 
@@ -45,16 +51,13 @@ public class UserServiceImpl implements UserService {
         var userRole = newUser.getRole();
 
         user.setUserName(newUser.getUserName());
-        user.setFirstName(newUser.getFirstName());
         user.setPhone(newUser.getPhone());
         user.setEmail(newUser.getEmail());
         user.setChatId(newUser.getChatId());
-        user.setRole(userRoleRepository.findById(userRole.getId())
-                .orElseThrow(() -> new EntityNotFoundException(userRole)));
+        user.setRole(userRoleService.findById(userRole.getId()));
 
         return userRepository.save(user);
     }
-
 
     @Override
     public void deleteUserById(long id) {

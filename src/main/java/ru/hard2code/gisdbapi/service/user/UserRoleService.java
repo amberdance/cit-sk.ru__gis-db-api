@@ -6,7 +6,9 @@ public interface UserRoleService {
 
     Role findRoleByName(String name);
 
-    void createRole(Role type);
+    Role createRole(Role type);
 
     void deleteAllRoles();
+
+    Role findById(Long id);
 }
