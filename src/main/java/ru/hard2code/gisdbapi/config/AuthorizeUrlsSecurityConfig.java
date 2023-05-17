@@ -1,7 +1,6 @@
 package ru.hard2code.gisdbapi.config;
 
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
@@ -22,9 +21,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class AuthorizeUrlsSecurityConfig {
 
     private final Environment env;
-
-    @Value("${app.rest.api-prefix:/api}")
-    private String apiPrefix;
 
 
     public AuthorizeUrlsSecurityConfig(Environment env) {
