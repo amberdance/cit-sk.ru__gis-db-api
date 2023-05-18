@@ -1,6 +1,7 @@
 package ru.hard2code.gisdbapi.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.hard2code.gisdbapi.constants.Route;
@@ -11,19 +12,19 @@ import java.util.List;
 
 @RestController
 @RequestMapping(Route.ORGANIZATIONS)
-@Tag(name = "OrganizationController", description = "Organizations management" +
+@Tag(name = "OrganizationController", description = "Organizations " +
+        "management" +
         " API")
+@RequiredArgsConstructor
 public class OrganizationController {
 
     private final OrganizationService organizationService;
 
-    OrganizationController(OrganizationService organizationService) {
-        this.organizationService = organizationService;
-    }
-
     @GetMapping
-    public List<Organization> getAllOrganizations(@RequestParam(value = "isGovernment", required = false) Boolean isGovernment) {
-        return isGovernment == null ? organizationService.findAll() : organizationService.findByType(isGovernment);
+    public List<Organization> getAllOrganizations(@RequestParam(value =
+            "isGovernment", required = false) Boolean isGovernment) {
+        return isGovernment == null ? organizationService.findAll() :
+                organizationService.findByType(isGovernment);
     }
 
     @GetMapping("{id}")
@@ -37,7 +38,8 @@ public class OrganizationController {
     }
 
     @PutMapping("{id}")
-    public Organization updateOrganization(@PathVariable("id") long id, @RequestBody Organization organization) {
+    public Organization updateOrganization(@PathVariable("id") long id,
+                                           @RequestBody Organization organization) {
         return organizationService.update(id, organization);
     }
 

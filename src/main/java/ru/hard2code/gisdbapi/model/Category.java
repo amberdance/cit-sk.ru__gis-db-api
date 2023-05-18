@@ -19,16 +19,15 @@ import java.util.Objects;
 @Table(name = "categories")
 public class Category extends AbstractEntity {
 
-
-    public Category(String name) {
+    public Category(@NotNull String name) {
         this.name = name;
     }
 
     @Column(name = "name", nullable = false, unique = true)
-    @NotNull
     private String name;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE,
+            orphanRemoval = true)
     @ToString.Exclude
     @JsonIgnore
     private List<Question> questions = new ArrayList<>();

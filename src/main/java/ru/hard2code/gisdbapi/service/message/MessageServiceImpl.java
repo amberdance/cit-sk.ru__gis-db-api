@@ -1,30 +1,20 @@
 package ru.hard2code.gisdbapi.service.message;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.model.Message;
-import ru.hard2code.gisdbapi.model.user.Role;
 import ru.hard2code.gisdbapi.repository.MessageRepository;
-import ru.hard2code.gisdbapi.repository.UserRoleRepository;
 import ru.hard2code.gisdbapi.service.user.UserService;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class MessageServiceImpl implements MessageService {
 
     private final MessageRepository messageRepository;
-
     private final UserService userService;
-    private final UserRoleRepository userRoleRepository;
-
-    public MessageServiceImpl(MessageRepository messageRepository,
-                              UserService userService,
-                              UserRoleRepository userRoleRepository) {
-        this.messageRepository = messageRepository;
-        this.userService = userService;
-        this.userRoleRepository = userRoleRepository;
-    }
 
 
     @Override
@@ -45,11 +35,6 @@ public class MessageServiceImpl implements MessageService {
             msg.setUser(userService.findUserById(user.getId()));
         }
 
-        if (user.getRole() != null && user.getRole().getId() != null) {
-            user.setRole(userRoleRepository.findById(user.getRole().getId())
-                    .orElseThrow(() -> new EntityNotFoundException(Role.class, user.getRole().getId())));
-        }
-
         return messageRepository.save(msg);
     }
 
@@ -67,7 +52,7 @@ public class MessageServiceImpl implements MessageService {
     public Message updateMessage(long id, Message msg) {
         var message = getMessageById(id);
 
-        if (msg.getLabel() != null) message.setLabel(msg.getLabel());
+        if (msg.getQuestion() != null) message.setQuestion(msg.getQuestion());
         if (msg.getAnswer() != null) message.setAnswer(msg.getAnswer());
         if (msg.getUser() != null) message.setUser(msg.getUser());
 

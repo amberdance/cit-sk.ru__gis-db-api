@@ -1,6 +1,7 @@
 package ru.hard2code.gisdbapi.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.hard2code.gisdbapi.constants.Route;
@@ -13,13 +14,11 @@ import java.util.List;
 @RequestMapping(Route.MESSAGES)
 @Tag(name = "MessageController", description = "User questions management " +
         "API")
+@RequiredArgsConstructor
 public class MessageController {
 
     private final MessageService messageService;
 
-    public MessageController(MessageService messageService) {
-        this.messageService = messageService;
-    }
 
     @GetMapping
     public List<Message> getAllMessages() {

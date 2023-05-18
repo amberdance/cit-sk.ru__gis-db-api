@@ -1,26 +1,20 @@
 package ru.hard2code.gisdbapi.service.user;
 
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
-import ru.hard2code.gisdbapi.model.user.User;
+import ru.hard2code.gisdbapi.model.User;
 import ru.hard2code.gisdbapi.repository.UserRepository;
 
 import java.util.List;
 
 
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-
-    public UserServiceImpl(UserRepository userRepository,
-                           UserRoleService userRoleService) {
-        this.userRepository = userRepository;
-        this.userRoleService = userRoleService;
-    }
-
-    private final UserRoleService userRoleService;
 
 
     @Override
@@ -35,26 +29,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
-        var userRoleId = user.getRole().getId();
-
-        if (userRoleId != null) {
-            user.setRole(userRoleService.findById(userRoleId));
-        }
-
         return userRepository.save(user);
     }
 
     @Override
     public User updateUser(long id, User newUser) {
         var user = userRepository.findById(id)
-                .orElseGet(() -> userRepository.save(newUser));
-        var userRole = newUser.getRole();
+                                 .orElseGet(() -> userRepository.save(newUser));
 
         user.setUserName(newUser.getUserName());
-        user.setPhone(newUser.getPhone());
         user.setEmail(newUser.getEmail());
         user.setChatId(newUser.getChatId());
-        user.setRole(userRoleService.findById(userRole.getId()));
+        user.setRole(newUser.getRole());
 
         return userRepository.save(user);
     }

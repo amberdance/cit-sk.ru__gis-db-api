@@ -24,4 +24,5 @@ public class EntityNotFoundException extends RuntimeException {
                                    long id) {
         super(String.format(MESSAGE, ClassUtils.getShortName(clazz), id));
     }
+
 }

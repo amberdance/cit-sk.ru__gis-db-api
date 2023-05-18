@@ -1,4 +1,4 @@
-package ru.hard2code.gisdbapi.model.user;
+package ru.hard2code.gisdbapi.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -7,8 +7,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.hibernate.Hibernate;
-import ru.hard2code.gisdbapi.model.AbstractEntity;
-import ru.hard2code.gisdbapi.model.Message;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -37,13 +35,8 @@ public class User extends AbstractEntity {
     @Email
     private String email;
 
-    @Column(name = "phone", unique = true, length = 12)
-    @Pattern(regexp = "^(\\+7|7|8)?(9)?\\d{9}")
-    private String phone;
-
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH,
-            CascadeType.MERGE})
-    @JoinColumn(name = "user_role_id", nullable = false)
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
     @NotNull
     private Role role;
 

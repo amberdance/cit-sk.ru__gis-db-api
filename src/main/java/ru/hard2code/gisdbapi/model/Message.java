@@ -6,7 +6,6 @@ import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import ru.hard2code.gisdbapi.model.user.User;
 
 import java.util.Objects;
 
@@ -19,9 +18,9 @@ import java.util.Objects;
 @ToString
 public class Message extends AbstractEntity {
 
-    @Column(name = "label", nullable = false, length = 999)
+    @Column(name = "question", nullable = false, length = 999)
     @NotNull
-    private String label;
+    private String question;
 
     @Column(name = "answer")
     @JdbcTypeCode(SqlTypes.LONGVARCHAR)

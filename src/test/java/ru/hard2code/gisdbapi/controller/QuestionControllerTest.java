@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WithMockUser
+@WithMockUser(authorities = {"write", "read"})
 class QuestionControllerTest extends AbstractControllerTest {
 
     private static final String API_PATH = "/api/" + Route.QUESTIONS;
@@ -60,10 +60,10 @@ class QuestionControllerTest extends AbstractControllerTest {
         questionService.createQuestion(q2);
 
         mvc.perform(get(API_PATH)
-                        .contentType(CONTENT_TYPE)
-                        .accept(CONTENT_TYPE))
-                .andExpect(status().isOk())
-                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(List.of(q1, q2))));
+                   .contentType(CONTENT_TYPE)
+                   .accept(CONTENT_TYPE))
+           .andExpect(status().isOk())
+           .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(List.of(q1, q2))));
     }
 
     @Test
@@ -71,10 +71,10 @@ class QuestionControllerTest extends AbstractControllerTest {
         questionService.createQuestion(TEST_QUESTION);
 
         mvc.perform(get(API_PATH + "/{id}", TEST_QUESTION.getId())
-                        .contentType(CONTENT_TYPE)
-                        .accept(CONTENT_TYPE))
-                .andExpect(status().isOk())
-                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(TEST_QUESTION)));
+                   .contentType(CONTENT_TYPE)
+                   .accept(CONTENT_TYPE))
+           .andExpect(status().isOk())
+           .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(TEST_QUESTION)));
     }
 
     @Test
@@ -82,12 +82,12 @@ class QuestionControllerTest extends AbstractControllerTest {
         questionService.createQuestion(TEST_QUESTION);
 
         mvc.perform(post(API_PATH)
-                        .contentType(CONTENT_TYPE)
-                        .content(OBJECT_MAPPER.writeValueAsString(TEST_QUESTION))
-                        .accept(CONTENT_TYPE))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(notNullValue()))
-                .andExpect(jsonPath("$.category.id").value(notNullValue()));
+                   .contentType(CONTENT_TYPE)
+                   .content(OBJECT_MAPPER.writeValueAsString(TEST_QUESTION))
+                   .accept(CONTENT_TYPE))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$.id").value(notNullValue()))
+           .andExpect(jsonPath("$.category.id").value(notNullValue()));
     }
 
     @Test
@@ -98,14 +98,14 @@ class QuestionControllerTest extends AbstractControllerTest {
         TEST_QUESTION.setCategory(POS_WIDGET_IS);
 
         mvc.perform(put(API_PATH + "/{id}", TEST_QUESTION.getId())
-                        .contentType(CONTENT_TYPE)
-                        .content(OBJECT_MAPPER.writeValueAsString(TEST_QUESTION))
-                        .accept(CONTENT_TYPE))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.label").value(TEST_QUESTION.getLabel()))
-                .andExpect(jsonPath("$.answer").value(TEST_QUESTION.getAnswer()))
-                .andExpect(jsonPath("$.category.name").value(TEST_QUESTION.getCategory()
-                        .getName()));
+                   .contentType(CONTENT_TYPE)
+                   .content(OBJECT_MAPPER.writeValueAsString(TEST_QUESTION))
+                   .accept(CONTENT_TYPE))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$.label").value(TEST_QUESTION.getLabel()))
+           .andExpect(jsonPath("$.answer").value(TEST_QUESTION.getAnswer()))
+           .andExpect(jsonPath("$.category.name").value(TEST_QUESTION.getCategory()
+                                                                     .getName()));
     }
 
     @Test
@@ -114,9 +114,9 @@ class QuestionControllerTest extends AbstractControllerTest {
         var id = TEST_QUESTION.getId();
 
         mvc.perform(delete(API_PATH + "/{id}", id)
-                        .contentType(CONTENT_TYPE)
-                        .accept(CONTENT_TYPE))
-                .andExpect(status().isNoContent());
+                   .contentType(CONTENT_TYPE)
+                   .accept(CONTENT_TYPE))
+           .andExpect(status().isNoContent());
 
         assertThrows(EntityNotFoundException.class,
                 () -> questionService.findQuestionById(id));
