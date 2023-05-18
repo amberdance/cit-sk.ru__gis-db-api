@@ -11,15 +11,16 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 @Profile({"prod", "dev"})
 @OpenAPIDefinition(servers = {@Server(url = "/", description = "${app.name}")})
-
 public class OpenApiConfig {
 
     @Bean
-    public GroupedOpenApi publicApi(@Value("${app.name}") String appName) {
+    public GroupedOpenApi publicApi(@Value("${app.name}") String appName,
+                                    @Value("${app.rest.api-prefix}") String prefix
+    ) {
         return GroupedOpenApi.builder()
                 .group(appName)
+                .pathsToMatch(String.format("%s/**", prefix))
                 .displayName(appName)
-                .packagesToScan("ru.hard2code.gisdbapi.controller")
                 .build();
     }
 }
