@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class RegisterGlobalApiEndpointUriPrefix implements WebMvcConfigurer {
+public class WebConfig implements WebMvcConfigurer {
 
     @Value("${app.rest.api-prefix:/api}")
     private String restApiPrefix;
@@ -18,4 +18,6 @@ public class RegisterGlobalApiEndpointUriPrefix implements WebMvcConfigurer {
     public void configurePathMatch(PathMatchConfigurer configurer) {
         configurer.addPathPrefix(restApiPrefix, HandlerTypePredicate.forAnnotation(RestController.class));
     }
+
+
 }

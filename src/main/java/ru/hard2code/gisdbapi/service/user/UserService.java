@@ -1,6 +1,6 @@
 package ru.hard2code.gisdbapi.service.user;
 
-import ru.hard2code.gisdbapi.model.user.User;
+import ru.hard2code.gisdbapi.model.User;
 
 import java.util.List;
 

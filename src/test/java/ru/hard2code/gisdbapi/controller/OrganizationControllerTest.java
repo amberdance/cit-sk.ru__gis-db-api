@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
+import ru.hard2code.gisdbapi.constants.Route;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.model.Organization;
 import ru.hard2code.gisdbapi.service.organization.OrganizationService;
@@ -15,10 +16,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WithMockUser
+@WithMockUser(authorities = {"write", "read"})
 class OrganizationControllerTest extends AbstractControllerTest {
 
-    private static final String API_PATH = "/api/organizations";
+    private static final String API_PATH = "/api/" + Route.ORGANIZATIONS;
 
     private static final Organization TEST_ORGANIZATION = new Organization(
             "name", "address");
@@ -44,8 +45,8 @@ class OrganizationControllerTest extends AbstractControllerTest {
         organizationService.createOrganization(orgs.get(2));
 
         mvc.perform(get(API_PATH).accept(CONTENT_TYPE))
-                .andExpect(status().isOk())
-                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(orgs)));
+           .andExpect(status().isOk())
+           .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(orgs)));
     }
 
     @Test
@@ -53,17 +54,17 @@ class OrganizationControllerTest extends AbstractControllerTest {
         organizationService.createOrganization(TEST_ORGANIZATION);
 
         mvc.perform(get(API_PATH + "/{id}", TEST_ORGANIZATION.getId())
-                        .accept(CONTENT_TYPE))
-                .andExpect(status().isOk())
-                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION)));
+                   .accept(CONTENT_TYPE))
+           .andExpect(status().isOk())
+           .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION)));
     }
 
     @Test
     void testCreate() throws Exception {
         mvc.perform(post(API_PATH).contentType(CONTENT_TYPE)
-                        .content(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION))
-                        .accept(CONTENT_TYPE))
-                .andExpect(status().isOk());
+                                  .content(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION))
+                                  .accept(CONTENT_TYPE))
+           .andExpect(status().isOk());
     }
 
     @Test
@@ -74,12 +75,12 @@ class OrganizationControllerTest extends AbstractControllerTest {
         TEST_ORGANIZATION.setAddress("NEW_ADDRESS");
 
         mvc.perform(put(API_PATH + "/{id}", TEST_ORGANIZATION.getId())
-                        .contentType(CONTENT_TYPE)
-                        .content(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION))
-                        .accept(CONTENT_TYPE))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value(TEST_ORGANIZATION.getName()))
-                .andExpect(jsonPath("$.address").value(TEST_ORGANIZATION.getAddress()));
+                   .contentType(CONTENT_TYPE)
+                   .content(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION))
+                   .accept(CONTENT_TYPE))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$.name").value(TEST_ORGANIZATION.getName()))
+           .andExpect(jsonPath("$.address").value(TEST_ORGANIZATION.getAddress()));
     }
 
     @Test
@@ -87,8 +88,8 @@ class OrganizationControllerTest extends AbstractControllerTest {
         organizationService.createOrganization(TEST_ORGANIZATION);
 
         mvc.perform(delete(API_PATH + "/{id}", TEST_ORGANIZATION.getId())
-                        .accept(CONTENT_TYPE))
-                .andExpect(status().isNoContent());
+                   .accept(CONTENT_TYPE))
+           .andExpect(status().isNoContent());
 
         assertThrows(EntityNotFoundException.class,
                 () -> organizationService.findById(TEST_ORGANIZATION.getId()));

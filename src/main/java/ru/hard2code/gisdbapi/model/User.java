@@ -1,14 +1,16 @@
-package ru.hard2code.gisdbapi.model.user;
+package ru.hard2code.gisdbapi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.hibernate.Hibernate;
-import ru.hard2code.gisdbapi.model.AbstractEntity;
 
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Getter
@@ -25,33 +27,30 @@ public class User extends AbstractEntity {
     @NotNull
     private String chatId;
 
-    @Column(name = "email", unique = true, length = 50)
-    @Email
-    @NotNull
-    private String email;
-
-    @Column(name = "phone", unique = true, length = 12)
-    @Pattern(regexp = "^(\\+7|7|8)?(9)?\\d{9}")
-    private String phone;
-
     @Column(name = "username", nullable = false, unique = true)
     @NotNull
     private String userName;
 
-    @Column(name = "first_name", nullable = false)
-    @NotNull
-    private String firstName;
+    @Column(name = "email", unique = true, length = 50)
+    @Email
+    private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "user_role_id", nullable = false)
+    @Column(name = "role")
+    @Enumerated(EnumType.STRING)
     @NotNull
     private Role role;
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    @ToString.Exclude
+    @JsonIgnore
+    private Set<Message> messages = new LinkedHashSet<>();
 
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o))
+            return false;
         User user = (User) o;
         return getId() != null && Objects.equals(getId(), user.getId());
     }
