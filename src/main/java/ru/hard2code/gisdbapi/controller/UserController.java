@@ -5,10 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.hard2code.gisdbapi.constants.Route;
+import ru.hard2code.gisdbapi.dto.UserDto;
+import ru.hard2code.gisdbapi.mapper.UserMapper;
 import ru.hard2code.gisdbapi.model.User;
 import ru.hard2code.gisdbapi.service.user.UserService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(Route.USERS)
@@ -17,6 +20,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final UserMapper userMapper;
 
 
     @GetMapping("{id}")
@@ -25,13 +29,16 @@ public class UserController {
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
-        return userService.findAllUsers();
+    public List<UserDto> getAllUsers() {
+        return userService.findAllUsers()
+                          .stream()
+                          .map(userMapper::map)
+                          .collect(Collectors.toList());
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userService.createUser(user);
+    public UserDto createUser(@RequestBody User user) {
+        return userMapper.map(userService.createUser(user));
     }
 
     @PutMapping("/{id}")
