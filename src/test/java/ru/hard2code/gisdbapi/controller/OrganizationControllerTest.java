@@ -21,8 +21,7 @@ class OrganizationControllerTest extends AbstractControllerTest {
 
     private static final String API_PATH = "/api/" + Route.ORGANIZATIONS;
 
-    private static final Organization TEST_ORGANIZATION = new Organization(
-            "name", "address");
+    private static final Organization TEST_ORGANIZATION = new Organization("name", "address");
 
     @Autowired
     private OrganizationService organizationService;
@@ -34,19 +33,17 @@ class OrganizationControllerTest extends AbstractControllerTest {
 
     @Test
     void testFindAll() throws Exception {
-        var orgs = List.of(
+        var organizations = List.of(
                 new Organization("name1", "name1"),
                 new Organization("name2", "name2"),
                 new Organization("name3", "name3")
         );
 
-        organizationService.createOrganization(orgs.get(0));
-        organizationService.createOrganization(orgs.get(1));
-        organizationService.createOrganization(orgs.get(2));
+        organizations.forEach(organizationService::createOrganization);
 
         mvc.perform(get(API_PATH).accept(CONTENT_TYPE))
            .andExpect(status().isOk())
-           .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(orgs)));
+           .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(organizations)));
     }
 
     @Test

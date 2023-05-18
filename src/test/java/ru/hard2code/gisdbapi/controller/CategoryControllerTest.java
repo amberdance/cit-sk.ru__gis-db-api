@@ -20,9 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser(authorities = {"write", "read"})
 class CategoryControllerTest extends AbstractControllerTest {
 
-
     private static final String API_PATH = "/api/" + Route.CATEGORIES;
-
     private final Category TEST_CATEGORY = new Category("someName");
 
     @Autowired
@@ -38,6 +36,7 @@ class CategoryControllerTest extends AbstractControllerTest {
     void testCreate() throws Exception {
         mvc.perform(post(API_PATH).contentType(CONTENT_TYPE).content(OBJECT_MAPPER.writeValueAsString(TEST_CATEGORY)).accept(CONTENT_TYPE)).andExpect(status().isOk()).andExpect(jsonPath("$.id").value(greaterThan(0)));
     }
+
 
     @Test
     void testFindAll() throws Exception {

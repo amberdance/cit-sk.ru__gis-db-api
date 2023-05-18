@@ -1,66 +1,66 @@
-insert into organizations (name, is_government)
-values ('Александровский муниципальный округ', false);
-insert into organizations (name, is_government)
-values ('Андроповский муниципальный округ', false);
-insert into organizations (name, is_government)
-values ('Апанасенковский муниципальный округ', false);
-insert into organizations (name, is_government)
-values ('Арзгирский муниципальный округ', false);
-insert into organizations (name, is_government)
-values ('Благодарненский городской округ ', false);
-insert into organizations (name, is_government)
-values ('Будённовский муниципальный округ', false);
-insert into organizations (name, is_government)
-values ('Георгиевский городской округ ', false);
-insert into organizations (name, is_government)
-values ('Грачёвский муниципальный округ', false);
-insert into organizations (name, is_government)
-values ('Изобильненский городской округ ', false);
-insert into organizations (name, is_government)
-values ('Ипатовский городской округ ', false);
-insert into organizations (name, is_government)
-values ('Кировский городской округ', false);
-insert into organizations (name, is_government)
-values ('Кочубеевский муниципальный округ', false);
-insert into organizations (name, is_government)
-values ('Красногвардейский муниципальный округ', false);
-insert into organizations (name, is_government)
-values ('Курский муниципальный округ', false);
-insert into organizations (name, is_government)
-values ('Левокумский муниципальный округ', false);
-insert into organizations (name, is_government)
-values ('Минераловодский городской округ', false);
-insert into organizations (name, is_government)
-values ('Нефтекумский городской округ ', false);
-insert into organizations (name, is_government)
-values ('Новоалександровский городской округ ', false);
-insert into organizations (name, is_government)
-values ('Новоселицкий муниципальный округ', false);
-insert into organizations (name, is_government)
-values ('Петровский городской округ ', false);
-insert into organizations (name, is_government)
-values ('Предгорный муниципальный округ', false);
-insert into organizations (name, is_government)
-values ('Советский городской округ ', false);
-insert into organizations (name, is_government)
-values ('Степновский муниципальный округ', false);
-insert into organizations (name, is_government)
-values ('Труновский муниципальный округ', false);
-insert into organizations (name, is_government)
-values ('Туркменский муниципальный округ', false);
-insert into organizations (name, is_government)
-values ('Шпаковский муниципальный округ', false);
-insert into organizations (name, is_government)
-values ('Город-курорт Ессентуки Ставропольского края', false);
-insert into organizations (name, is_government)
-values ('Город-курорт Железноводск Ставропольского края', false);
-insert into organizations (name, is_government)
-values ('Город Лермонтов Ставропольского края', false);
-insert into organizations (name, is_government)
-values ('Город Невинномысск Ставропольского края', false);
-insert into organizations (name, is_government)
-values ('Город-курорт Кисловодск Ставропольского края', false);
-insert into organizations (name, is_government)
-values ('Город-курорт Пятигорск Ставропольского края', false);
-insert into organizations (name, is_government)
-values ('Город Ставрополь Ставропольского края', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Александровский муниципальный округ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Андроповский муниципальный округ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Апанасенковский муниципальный округ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Арзгирский муниципальный округ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Благодарненский городской округ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Будённовский муниципальный округ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Георгиевский городской округ ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Грачёвский муниципальный округ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Изобильненский городской округ ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Ипатовский городской округ ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Кировский городской округ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Кочубеевский муниципальный округ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Красногвардейский муниципальный округ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Курский муниципальный округ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Левокумский муниципальный округ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Минераловодский городской округ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Нефтекумский городской округ ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Новоалександровский городской округ ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Новоселицкий муниципальный округ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Петровский городской округ ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Предгорный муниципальный округ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Советский городской округ ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Степновский муниципальный округ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Труновский муниципальный округ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Туркменский муниципальный округ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Шпаковский муниципальный округ', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Город-курорт Ессентуки Ставропольского края', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Город-курорт Железноводск Ставропольского края', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Город Лермонтов Ставропольского края', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Город Невинномысск Ставропольского края', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Город-курорт Кисловодск Ставропольского края', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Город-курорт Пятигорск Ставропольского края', false);
+insert into organizations (id, name, is_government)
+values (nextval('organizations_seq'), 'Город Ставрополь Ставропольского края', false);

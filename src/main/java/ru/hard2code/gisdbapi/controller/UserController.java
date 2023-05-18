@@ -42,14 +42,12 @@ public class UserController {
     }
 
     @PutMapping("{id}")
-    public UserDto updateUser(@PathVariable("id") long id,
-                              @RequestBody User user) {
+    public UserDto updateUser(@PathVariable("id") long id, @RequestBody User user) {
         return userMapper.toDto(userService.updateUser(id, user));
     }
 
     @PatchMapping("{id}")
-    public UserDto partialUpdateUser(@PathVariable("id") long id,
-                                     @RequestBody User user) {
+    public UserDto partialUpdateUser(@PathVariable("id") long id, @RequestBody User user) {
         return userMapper.toDto(userService.partialUpdateUser(id, user));
     }
 

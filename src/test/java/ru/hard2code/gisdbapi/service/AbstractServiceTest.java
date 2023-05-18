@@ -10,12 +10,9 @@ import java.util.List;
 @SpringBootTest
 public class AbstractServiceTest<T> {
 
-
     @Autowired
     protected CacheManager cacheManager;
-
     protected static final int INSTANCES_COUNT = 3;
-
     protected final List<T> INSTANCES = new ArrayList<>();
 
 

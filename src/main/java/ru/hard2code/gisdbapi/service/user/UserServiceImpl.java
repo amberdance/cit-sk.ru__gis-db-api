@@ -47,8 +47,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User partialUpdateUser(long id, User newUser) {
-        var userDto = userMapper.toDto(findUserById(id));
-        var updatedUser = userMapper.partialUpdate(userDto, newUser);
+        var user = findUserById(id);
+        var updatedUser = userMapper.partialUpdate(userMapper.toDto(newUser), user);
 
         return userRepository.save(updatedUser);
     }

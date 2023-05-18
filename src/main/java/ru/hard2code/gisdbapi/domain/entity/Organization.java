@@ -31,7 +31,7 @@ public class Organization {
 
     @Column(name = "is_government", nullable = false)
     @NotNull
-    private boolean isGovernment = false;
+    private boolean isGovernment = true;
 
     public Organization(String name, String address) {
         this.name = name;

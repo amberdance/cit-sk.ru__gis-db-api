@@ -24,10 +24,9 @@ class MessageControllerTest extends AbstractControllerTest {
 
     private static final String API_PATH = "/api/" + Route.MESSAGES;
 
-    private final Message TEST_MESSAGE = new Message("Label", "Answer",
+    private final Message TEST_MESSAGE = new Message(null, "Label", "Answer",
             new User(null, "123456789", "username", "test@test.ru", Role.ADMIN, Collections.emptySet())
     );
-
 
     @Autowired
     private MessageService messageService;
@@ -45,8 +44,9 @@ class MessageControllerTest extends AbstractControllerTest {
     void testGetAll() throws Exception {
         var msg = List.of(messageService.createMessage(TEST_MESSAGE));
 
-        mvc.perform(get(API_PATH).contentType(CONTENT_TYPE)
-                                 .accept(CONTENT_TYPE))
+        mvc.perform(get(API_PATH)
+                   .contentType(CONTENT_TYPE)
+                   .accept(CONTENT_TYPE))
            .andExpect(status().isOk())
            .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(msg)));
     }

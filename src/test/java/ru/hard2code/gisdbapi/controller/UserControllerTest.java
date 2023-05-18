@@ -108,7 +108,8 @@ class UserControllerTest extends AbstractControllerTest {
 
         mvc.perform(post(API_PATH).contentType(CONTENT_TYPE)
                                   .content(OBJECT_MAPPER.writeValueAsString(wrongUser))
-                                  .accept(CONTENT_TYPE)).andExpect(status().isBadRequest());
+                                  .accept(CONTENT_TYPE))
+           .andExpect(status().isBadRequest());
     }
 
 }

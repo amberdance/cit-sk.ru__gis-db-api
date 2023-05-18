@@ -12,7 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CategoryServiceTest extends AbstractServiceTest<Category> {
 
-
     @Autowired
     private CategoryService categoryService;
 
@@ -35,8 +34,7 @@ class CategoryServiceTest extends AbstractServiceTest<Category> {
     @SuppressWarnings("unchecked")
     void whenFindAllCategoriesThenCacheShouldCreated() {
         assertEquals(INSTANCES.size(),
-                ((List<Category>) cacheManager.getCache(CategoryService.CACHE_NAME)
-                        .get(CategoryService.CACHE_LIST_KEY).get()).size());
+                ((List<Category>) cacheManager.getCache(CategoryService.CACHE_NAME).get(CategoryService.CACHE_LIST_KEY).get()).size());
     }
 
     @Test
@@ -49,13 +47,13 @@ class CategoryServiceTest extends AbstractServiceTest<Category> {
 
     @Test
     void whenCreateCategoryThenCacheWillEvict() {
-        var cacheBefore = cacheManager.getCache(CategoryService.CACHE_NAME)
-                .get(CategoryService.CACHE_LIST_KEY);
+        var cacheBefore = cacheManager.getCache(CategoryService.CACHE_NAME).get(CategoryService.CACHE_LIST_KEY);
 
         categoryService.createCategory(new Category("test"));
 
-        assertNotEquals(cacheManager.getCache(CategoryService.CACHE_NAME)
-                .get(CategoryService.CACHE_LIST_KEY), cacheBefore);
+        assertNotEquals(cacheManager.getCache(CategoryService.CACHE_NAME).get(CategoryService.CACHE_LIST_KEY),
+                cacheBefore
+        );
     }
 
     @Test
@@ -63,8 +61,7 @@ class CategoryServiceTest extends AbstractServiceTest<Category> {
         var id = INSTANCES.get(0).getId();
         categoryService.findById(id);
 
-        assertNotNull(cacheManager.getCache(CategoryService.CACHE_NAME)
-                .get(id));
+        assertNotNull(cacheManager.getCache(CategoryService.CACHE_NAME).get(id));
     }
 
 

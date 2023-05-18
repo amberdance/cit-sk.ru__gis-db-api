@@ -24,12 +24,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class QuestionControllerTest extends AbstractControllerTest {
 
     private static final String API_PATH = "/api/" + Route.QUESTIONS;
-
-    private final Category GOS_WEB_IS = new Category(
-            "GOSWEB");
-    private final Category POS_WIDGET_IS =
-            new Category(
-                    "POS_WIDGET");
+    private final Category GOS_WEB_CATEGORY = new Category("GOSWEB");
+    private final Category POS_WIDGET_CATEGORY = new Category("POS_WIDGET");
+    private final Question TEST_QUESTION = new Question(null, "q1", "a1", GOS_WEB_CATEGORY);
 
     @Autowired
     private QuestionService questionService;
@@ -37,13 +34,11 @@ class QuestionControllerTest extends AbstractControllerTest {
     @Autowired
     private CategoryService categoryService;
 
-    private final Question TEST_QUESTION = new Question("q1", "a1",
-            GOS_WEB_IS);
 
     @BeforeEach
     void beforeEach() {
-        categoryService.createCategory(GOS_WEB_IS);
-        categoryService.createCategory(POS_WIDGET_IS);
+        categoryService.createCategory(GOS_WEB_CATEGORY);
+        categoryService.createCategory(POS_WIDGET_CATEGORY);
     }
 
     @AfterEach
@@ -53,8 +48,8 @@ class QuestionControllerTest extends AbstractControllerTest {
 
     @Test
     void testFindAll() throws Exception {
-        var q1 = new Question("q1", "1", POS_WIDGET_IS);
-        var q2 = new Question("q2", "2", GOS_WEB_IS);
+        var q1 = new Question(null, "q1", "1", POS_WIDGET_CATEGORY);
+        var q2 = new Question(null, "q2", "2", GOS_WEB_CATEGORY);
 
         questionService.createQuestion(q1);
         questionService.createQuestion(q2);
@@ -95,7 +90,7 @@ class QuestionControllerTest extends AbstractControllerTest {
         questionService.createQuestion(TEST_QUESTION);
         TEST_QUESTION.setLabel("NEW_LABEL");
         TEST_QUESTION.setAnswer("NEW_ANSWER");
-        TEST_QUESTION.setCategory(POS_WIDGET_IS);
+        TEST_QUESTION.setCategory(POS_WIDGET_CATEGORY);
 
         mvc.perform(put(API_PATH + "/{id}", TEST_QUESTION.getId())
                    .contentType(CONTENT_TYPE)

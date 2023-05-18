@@ -24,10 +24,11 @@ import java.util.Set;
 public class User {
 
     @Id
+    @GeneratedValue
     private Long id;
 
     @Column(name = "chat_id", nullable = false, unique = true, length = 12)
-    @Pattern(regexp = "^\\d{9,10}$")
+    @Pattern(regexp = "^\\d{9,12}$")
     @NotNull
     private String chatId;
 
