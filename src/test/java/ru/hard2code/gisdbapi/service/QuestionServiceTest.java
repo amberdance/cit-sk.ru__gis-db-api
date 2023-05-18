@@ -4,8 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.hard2code.gisdbapi.model.Category;
-import ru.hard2code.gisdbapi.model.Question;
+import ru.hard2code.gisdbapi.domain.entity.Category;
+import ru.hard2code.gisdbapi.domain.entity.Question;
 import ru.hard2code.gisdbapi.service.category.CategoryService;
 import ru.hard2code.gisdbapi.service.question.QuestionService;
 

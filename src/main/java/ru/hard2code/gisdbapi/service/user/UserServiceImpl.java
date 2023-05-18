@@ -3,8 +3,9 @@ package ru.hard2code.gisdbapi.service.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.hard2code.gisdbapi.domain.entity.User;
+import ru.hard2code.gisdbapi.domain.mapper.UserMapper;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
-import ru.hard2code.gisdbapi.model.User;
 import ru.hard2code.gisdbapi.repository.UserRepository;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
 
     @Override
@@ -34,16 +36,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(long id, User newUser) {
-        var user = userRepository.findById(id)
-                                 .orElseGet(() -> userRepository.save(newUser));
-
-        user.setUserName(newUser.getUserName());
+        var user = findUserById(id);
+        user.setUsername(newUser.getUsername());
         user.setEmail(newUser.getEmail());
         user.setChatId(newUser.getChatId());
         user.setRole(newUser.getRole());
 
         return userRepository.save(user);
     }
+
+    @Override
+    public User partialUpdateUser(long id, User newUser) {
+        var userDto = userMapper.toDto(findUserById(id));
+        var updatedUser = userMapper.partialUpdate(userDto, newUser);
+
+        return userRepository.save(updatedUser);
+    }
+
 
     @Override
     public void deleteUserById(long id) {

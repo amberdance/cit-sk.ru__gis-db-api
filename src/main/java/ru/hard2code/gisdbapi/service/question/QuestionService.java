@@ -1,6 +1,6 @@
 package ru.hard2code.gisdbapi.service.question;
 
-import ru.hard2code.gisdbapi.model.Question;
+import ru.hard2code.gisdbapi.domain.entity.Question;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package ru.hard2code.gisdbapi.model;
+package ru.hard2code.gisdbapi.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -18,9 +18,13 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@Builder(toBuilder = true)
 @Entity
 @Table(name = "users")
-public class User extends AbstractEntity {
+public class User {
+
+    @Id
+    private Long id;
 
     @Column(name = "chat_id", nullable = false, unique = true, length = 10)
     @Pattern(regexp = "^\\d{9,10}$")

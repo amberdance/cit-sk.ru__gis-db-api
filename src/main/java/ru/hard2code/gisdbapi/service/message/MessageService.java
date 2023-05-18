@@ -1,6 +1,6 @@
 package ru.hard2code.gisdbapi.service.message;
 
-import ru.hard2code.gisdbapi.model.Message;
+import ru.hard2code.gisdbapi.domain.entity.Message;
 
 import java.util.List;
 

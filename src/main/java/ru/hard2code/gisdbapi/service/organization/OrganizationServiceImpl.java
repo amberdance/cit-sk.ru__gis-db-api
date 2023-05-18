@@ -3,8 +3,8 @@ package ru.hard2code.gisdbapi.service.organization;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.hard2code.gisdbapi.domain.entity.Organization;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
-import ru.hard2code.gisdbapi.model.Organization;
 import ru.hard2code.gisdbapi.repository.OrganizationRepository;
 
 import java.util.List;

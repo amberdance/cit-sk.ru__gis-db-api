@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
 import ru.hard2code.gisdbapi.constants.Route;
+import ru.hard2code.gisdbapi.domain.entity.Message;
+import ru.hard2code.gisdbapi.domain.entity.Role;
+import ru.hard2code.gisdbapi.domain.entity.User;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
-import ru.hard2code.gisdbapi.model.Message;
-import ru.hard2code.gisdbapi.model.Role;
-import ru.hard2code.gisdbapi.model.User;
 import ru.hard2code.gisdbapi.service.message.MessageService;
 import ru.hard2code.gisdbapi.service.user.UserService;
 
@@ -24,9 +24,9 @@ class MessageControllerTest extends AbstractControllerTest {
 
     private static final String API_PATH = "/api/" + Route.MESSAGES;
 
-    private final Message TEST_MESSAGE = new Message("Label",
-            "Answer", new User("123456789", "username",
-            "test@test.ru", Role.ADMIN, Collections.emptySet()));
+    private final Message TEST_MESSAGE = new Message("Label", "Answer",
+            new User(null, "123456789", "username", "test@test.ru", Role.ADMIN, Collections.emptySet())
+    );
 
 
     @Autowired
@@ -55,8 +55,8 @@ class MessageControllerTest extends AbstractControllerTest {
     void testGetById() throws Exception {
         var msg = messageService.createMessage(TEST_MESSAGE);
 
-        mvc.perform(get(API_PATH + "/{id}", msg.getId()).contentType(CONTENT_TYPE)
-                                                        .accept(CONTENT_TYPE))
+        mvc.perform(get(API_PATH + "/{id}", msg.getId())
+                   .contentType(CONTENT_TYPE).accept(CONTENT_TYPE))
            .andExpect(status().isOk())
            .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(msg)));
     }

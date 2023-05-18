@@ -1,4 +1,4 @@
-package ru.hard2code.gisdbapi.model;
+package ru.hard2code.gisdbapi.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

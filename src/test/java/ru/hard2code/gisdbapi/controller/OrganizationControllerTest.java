@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
 import ru.hard2code.gisdbapi.constants.Route;
+import ru.hard2code.gisdbapi.domain.entity.Organization;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
-import ru.hard2code.gisdbapi.model.Organization;
 import ru.hard2code.gisdbapi.service.organization.OrganizationService;
 
 import java.util.List;

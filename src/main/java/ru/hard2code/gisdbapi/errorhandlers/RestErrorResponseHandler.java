@@ -1,4 +1,4 @@
-package ru.hard2code.gisdbapi.util;
+package ru.hard2code.gisdbapi.errorhandlers;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class RestErrorResponse {
+public class RestErrorResponseHandler {
 
     private static final String ERROR_KEY = "error";
     private static final String MESSAGE_KEY = "message";
@@ -28,7 +28,8 @@ public class RestErrorResponse {
         put(TIMESTAMP_KEY, LocalDateTime.now());
     }};
 
-    public RestErrorResponse(HttpServletRequest request, HttpStatus httpStatus) {
+    public RestErrorResponseHandler(HttpServletRequest request,
+                                    HttpStatus httpStatus) {
         this.request = request;
         this.httpStatus = httpStatus;
     }

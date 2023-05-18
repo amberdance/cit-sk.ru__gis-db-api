@@ -6,9 +6,9 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import ru.hard2code.gisdbapi.domain.entity.Category;
+import ru.hard2code.gisdbapi.domain.entity.Question;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
-import ru.hard2code.gisdbapi.model.Category;
-import ru.hard2code.gisdbapi.model.Question;
 import ru.hard2code.gisdbapi.repository.CategoryRepository;
 import ru.hard2code.gisdbapi.repository.QuestionRepository;
 
@@ -62,7 +62,7 @@ public class QuestionServiceImpl implements QuestionService {
         q.setLabel(question.getLabel());
         q.setAnswer(question.getAnswer());
         q.setCategory(categoryRepository.findById(category.getId())
-                                        .orElseThrow(() -> new EntityNotFoundException(category)));
+                                        .orElseThrow(() -> new EntityNotFoundException(Category.class, id)));
 
         return questionRepository.save(q);
     }

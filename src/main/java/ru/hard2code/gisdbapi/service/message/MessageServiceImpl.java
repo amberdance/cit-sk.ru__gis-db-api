@@ -2,8 +2,9 @@ package ru.hard2code.gisdbapi.service.message;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.hard2code.gisdbapi.domain.entity.Message;
+import ru.hard2code.gisdbapi.domain.mapper.UserMapper;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
-import ru.hard2code.gisdbapi.model.Message;
 import ru.hard2code.gisdbapi.repository.MessageRepository;
 import ru.hard2code.gisdbapi.service.user.UserService;
 
@@ -15,6 +16,7 @@ public class MessageServiceImpl implements MessageService {
 
     private final MessageRepository messageRepository;
     private final UserService userService;
+    private final UserMapper userMapper;
 
 
     @Override

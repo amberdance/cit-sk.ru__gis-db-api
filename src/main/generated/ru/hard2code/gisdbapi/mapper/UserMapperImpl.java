@@ -2,8 +2,7 @@ package ru.hard2code.gisdbapi.mapper;
 
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
-import ru.hard2code.gisdbapi.dto.UserDto;
-import ru.hard2code.gisdbapi.model.User;
+import ru.hard2code.gisdbapi.domain.entity.User;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",

@@ -5,8 +5,8 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import ru.hard2code.gisdbapi.domain.entity.Category;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
-import ru.hard2code.gisdbapi.model.Category;
 import ru.hard2code.gisdbapi.repository.CategoryRepository;
 
 import java.util.List;

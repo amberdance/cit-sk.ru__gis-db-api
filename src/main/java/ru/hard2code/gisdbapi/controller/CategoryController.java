@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.hard2code.gisdbapi.constants.Route;
-import ru.hard2code.gisdbapi.model.Category;
+import ru.hard2code.gisdbapi.domain.entity.Category;
 import ru.hard2code.gisdbapi.service.category.CategoryService;
 
 import java.util.List;

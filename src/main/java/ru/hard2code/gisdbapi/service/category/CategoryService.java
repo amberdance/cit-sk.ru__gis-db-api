@@ -1,6 +1,6 @@
 package ru.hard2code.gisdbapi.service.category;
 
-import ru.hard2code.gisdbapi.model.Category;
+import ru.hard2code.gisdbapi.domain.entity.Category;
 
 import java.util.List;
 
