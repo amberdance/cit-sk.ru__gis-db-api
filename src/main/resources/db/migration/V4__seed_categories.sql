@@ -1,6 +1,4 @@
 insert into categories (name)
-values ('Uncategorized');
-insert into categories (name)
 values ('ГИС ТОР КНД');
 insert into categories (name)
 values ('Платформа обратной связи (ПОС)');
