@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserControllerTest extends AbstractControllerTest {
 
     private static final String API_PATH = "/api/" + Route.USERS;
-    private final User TEST_USER = new User("123456789", "userName",
+    private final User TEST_USER = new User("123456789", "username",
             "test@test.ru", Role.USER, Collections.emptySet());
 
     @Autowired
@@ -93,7 +93,7 @@ class UserControllerTest extends AbstractControllerTest {
            .andExpect(status().isOk())
            .andExpect(jsonPath("$.chatId").value(user.getChatId()))
            .andExpect(jsonPath("$.role").value(user.getRole().toString()))
-           .andExpect(jsonPath("$.userName").value(user.getUserName()))
+           .andExpect(jsonPath("$.username").value(user.getUserName()))
            .andExpect(jsonPath("$.email").value(user.getEmail()));
     }
 

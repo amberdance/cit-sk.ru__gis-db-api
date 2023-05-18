@@ -25,7 +25,7 @@ class MessageControllerTest extends AbstractControllerTest {
     private static final String API_PATH = "/api/" + Route.MESSAGES;
 
     private final Message TEST_MESSAGE = new Message("Label",
-            "Answer", new User("123456789", "userName",
+            "Answer", new User("123456789", "username",
             "test@test.ru", Role.ADMIN, Collections.emptySet()));
 
 
