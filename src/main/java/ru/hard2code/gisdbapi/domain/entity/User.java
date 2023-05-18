@@ -13,33 +13,33 @@ import java.util.Objects;
 import java.util.Set;
 
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
-@Builder(toBuilder = true)
 @Entity
 @Table(name = "users")
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@ToString
+@Builder(toBuilder = true)
 public class User {
 
     @Id
     private Long id;
 
-    @Column(name = "chat_id", nullable = false, unique = true, length = 10)
+    @Column(name = "chat_id", nullable = false, unique = true, length = 12)
     @Pattern(regexp = "^\\d{9,10}$")
     @NotNull
     private String chatId;
 
-    @Column(name = "username", nullable = false, unique = true)
+    @Column(name = "username", nullable = false, unique = true, length = 32)
     @NotNull
     private String username;
 
-    @Column(name = "email", unique = true, length = 50)
+    @Column(name = "email", unique = true, length = 32)
     @Email
     private String email;
 
-    @Column(name = "role")
+    @Column(name = "role", length = 32)
     @Enumerated(EnumType.STRING)
     @NotNull
     private Role role;

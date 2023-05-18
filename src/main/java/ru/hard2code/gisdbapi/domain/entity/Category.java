@@ -10,20 +10,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@NoArgsConstructor
+@Entity
+@Table(name = "categories")
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @ToString
-@Entity
-@Table(name = "categories")
-public class Category extends AbstractEntity {
+public class Category {
 
-    public Category(@NotNull String name) {
-        this.name = name;
-    }
+    @Id
+    @GeneratedValue
+    private Long id;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "name", nullable = false, unique = true, length = 128)
     private String name;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE,
@@ -32,16 +32,20 @@ public class Category extends AbstractEntity {
     @JsonIgnore
     private List<Question> questions = new ArrayList<>();
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
-            return false;
-        }
-        Category that = (Category) o;
-        return getId() != null && Objects.equals(getId(), that.getId());
+    public Category(@NotNull String name) {
+        this.name = name;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Category category = (Category) o;
+        return getId() != null && Objects.equals(getId(), category.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

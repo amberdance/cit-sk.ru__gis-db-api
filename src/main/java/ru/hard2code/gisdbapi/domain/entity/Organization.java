@@ -1,8 +1,6 @@
 package ru.hard2code.gisdbapi.domain.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -10,20 +8,25 @@ import org.hibernate.Hibernate;
 import java.util.Objects;
 
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
 @Entity
 @Table(name = "organizations")
-public class Organization extends AbstractEntity {
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 
-    @Column(name = "name", nullable = false, unique = true)
+public class Organization {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(name = "name", nullable = false, unique = true, length = 128)
     @NotNull
     private String name;
 
-    @Column(name = "address")
+    @Column(name = "address", length = 128)
     private String address;
 
     @Column(name = "is_government", nullable = false)

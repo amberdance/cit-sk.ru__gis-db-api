@@ -16,9 +16,13 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-public class Message extends AbstractEntity {
+public class Message {
 
-    @Column(name = "question", nullable = false, length = 999)
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(name = "question", nullable = false, length = 1024)
     @NotNull
     private String question;
 

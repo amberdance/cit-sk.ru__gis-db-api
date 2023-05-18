@@ -16,10 +16,13 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity
 @Table(name = "questions")
-public class Question extends AbstractEntity {
+public class Question {
 
+    @Id
+    @GeneratedValue
+    private Long id;
 
-    @Column(name = "label", nullable = false)
+    @Column(name = "label", nullable = false, length = 2048)
     @NotNull
     private String label;
 
