@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser(authorities = {"write", "read"})
 class QuestionControllerTest extends AbstractControllerTest {
 
-    private static final String API_PATH = "/api/" + Route.QUESTIONS;
+    private static final String API_PATH = "/api" + Route.QUESTIONS;
     private final Category GOS_WEB_CATEGORY = new Category("GOSWEB");
     private final Category POS_WIDGET_CATEGORY = new Category("POS_WIDGET");
     private final Question TEST_QUESTION = new Question(null, "q1", "a1", GOS_WEB_CATEGORY);

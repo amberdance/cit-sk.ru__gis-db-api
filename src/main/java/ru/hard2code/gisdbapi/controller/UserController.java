@@ -11,7 +11,6 @@ import ru.hard2code.gisdbapi.domain.mapper.UserMapper;
 import ru.hard2code.gisdbapi.service.user.UserService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(Route.USERS)
@@ -30,10 +29,7 @@ public class UserController {
 
     @GetMapping
     public List<UserDto> getAllUsers() {
-        return userService.findAllUsers()
-                          .stream()
-                          .map(userMapper::toDto)
-                          .collect(Collectors.toList());
+        return userService.findAllUsers().stream().map(userMapper::toDto).toList();
     }
 
     @PostMapping

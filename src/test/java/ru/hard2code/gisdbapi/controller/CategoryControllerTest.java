@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser(authorities = {"write", "read"})
 class CategoryControllerTest extends AbstractControllerTest {
 
-    private static final String API_PATH = "/api/" + Route.CATEGORIES;
+    private static final String API_PATH = "/api" + Route.CATEGORIES;
     private final Category TEST_CATEGORY = new Category("someName");
 
     @Autowired

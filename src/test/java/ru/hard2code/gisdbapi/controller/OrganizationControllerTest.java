@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser(authorities = {"write", "read"})
 class OrganizationControllerTest extends AbstractControllerTest {
 
-    private static final String API_PATH = "/api/" + Route.ORGANIZATIONS;
+    private static final String API_PATH = "/api" + Route.ORGANIZATIONS;
 
     private static final Organization TEST_ORGANIZATION = new Organization("name", "address");
 

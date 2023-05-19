@@ -1,6 +1,7 @@
 package ru.hard2code.gisdbapi.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -21,6 +22,7 @@ import java.util.Set;
 @Setter
 @ToString
 @Builder(toBuilder = true)
+@Schema(hidden = true)
 public class User {
 
     @Id
@@ -48,7 +50,8 @@ public class User {
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     @ToString.Exclude
     @JsonIgnore
-    private final Set<Message> messages = new LinkedHashSet<>();
+    @Builder.Default
+    private Set<Message> messages = new LinkedHashSet<>();
 
 
     @Override

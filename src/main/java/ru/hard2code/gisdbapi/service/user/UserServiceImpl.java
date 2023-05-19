@@ -26,7 +26,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserById(long id) {
-        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(User.class, id));
+        return userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(User.class, id));
     }
 
     @Override
@@ -47,8 +48,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User partialUpdateUser(long id, User newUser) {
-        var user = findUserById(id);
-        var updatedUser = userMapper.partialUpdate(userMapper.toDto(newUser), user);
+        var updatedUser = userMapper.partialUpdate(userMapper.toDto(newUser), findUserById(id));
 
         return userRepository.save(updatedUser);
     }

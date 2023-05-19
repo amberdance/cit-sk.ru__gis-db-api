@@ -3,13 +3,12 @@ package ru.hard2code.gisdbapi.domain.mapper;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 import ru.hard2code.gisdbapi.domain.dto.UserDto;
-import ru.hard2code.gisdbapi.domain.entity.Role;
 import ru.hard2code.gisdbapi.domain.entity.User;
 import ru.hard2code.gisdbapi.domain.entity.User.UserBuilder;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-05-18T20:27:12+0300",
+    date = "2023-05-19T13:43:21+0300",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
 )
 @Component
@@ -38,19 +37,13 @@ public class UserMapperImpl implements UserMapper {
             return null;
         }
 
-        Long id = null;
-        String chatId = null;
-        String username = null;
-        String email = null;
-        Role role = null;
+        UserDto userDto = new UserDto();
 
-        id = user.getId();
-        chatId = user.getChatId();
-        username = user.getUsername();
-        email = user.getEmail();
-        role = user.getRole();
-
-        UserDto userDto = new UserDto( id, chatId, username, email, role );
+        userDto.setId( user.getId() );
+        userDto.setChatId( user.getChatId() );
+        userDto.setUsername( user.getUsername() );
+        userDto.setEmail( user.getEmail() );
+        userDto.setRole( user.getRole() );
 
         return userDto;
     }

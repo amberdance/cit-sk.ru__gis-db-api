@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WithMockUser(authorities = {"write", "read"})
 class MessageControllerTest extends AbstractControllerTest {
 
-    private static final String API_PATH = "/api/" + Route.MESSAGES;
+    private static final String API_PATH = "/api" + Route.MESSAGES;
 
     private final Message TEST_MESSAGE = new Message(null, "Label", "Answer",
             new User(null, "123456789", "username", "test@test.ru", Role.ADMIN, Collections.emptySet())
