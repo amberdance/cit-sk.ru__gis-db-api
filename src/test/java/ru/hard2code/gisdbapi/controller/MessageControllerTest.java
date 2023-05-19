@@ -124,4 +124,14 @@ class MessageControllerTest extends AbstractControllerTest {
                 .andExpect(jsonPath("$.user").value(message.getUser()));
     }
 
+    @Test
+    void testFindMessagesByUserId() throws Exception {
+        var message = messageService.createMessage(TEST_MESSAGE);
+
+        mvc.perform(get(API_PATH + "/user/{chatId}", message.getUser().getChatId())
+                        .contentType(CONTENT_TYPE).accept(CONTENT_TYPE))
+                .andExpect(status().isOk())
+                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(List.of(message))));
+    }
+
 }

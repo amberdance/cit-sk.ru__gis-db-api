@@ -35,6 +35,14 @@ public class MessageController {
         return messageMapper.toDto(messageService.getMessageById(id));
     }
 
+    @GetMapping("user/{chatId}")
+    public List<MessageDto> getMessagesByChatId(@PathVariable("chatId") String chatId) {
+        return messageService.findMessageByChatId(chatId)
+                .stream()
+                .map(messageMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     @PostMapping
     public MessageDto createMessage(@RequestBody Message msg) {
         return messageMapper.toDto(messageService.createMessage(msg));
@@ -48,7 +56,7 @@ public class MessageController {
 
     @PatchMapping("{id}")
     public MessageDto partialUpdateMessage(@PathVariable("id") long id,
-                                        @RequestBody Message msg) {
+                                           @RequestBody Message msg) {
         return messageMapper.toDto(messageService.partialUpdateMessage(id, msg));
     }
 

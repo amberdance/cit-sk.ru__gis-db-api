@@ -64,8 +64,12 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Message partialUpdateMessage(long id, Message msg) {
         var updatedMessage = messageMapper.partialUpdate(messageMapper.toDto(msg), getMessageById(id));
-
         return messageRepository.save(updatedMessage);
+    }
+
+    @Override
+    public List<Message> findMessageByChatId(String chatId) {
+        return messageRepository.findByUser_ChatId(chatId);
     }
 
 }
