@@ -8,7 +8,7 @@ import ru.hard2code.gisdbapi.domain.entity.User.UserBuilder;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-05-19T13:43:21+0300",
+    date = "2023-05-19T15:26:26+0300",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
 )
 @Component
@@ -26,7 +26,6 @@ public class UserMapperImpl implements UserMapper {
         user.chatId( userDto.getChatId() );
         user.username( userDto.getUsername() );
         user.email( userDto.getEmail() );
-        user.role( userDto.getRole() );
 
         return user.build();
     }
@@ -37,13 +36,17 @@ public class UserMapperImpl implements UserMapper {
             return null;
         }
 
-        UserDto userDto = new UserDto();
+        Long id = null;
+        String chatId = null;
+        String username = null;
+        String email = null;
 
-        userDto.setId( user.getId() );
-        userDto.setChatId( user.getChatId() );
-        userDto.setUsername( user.getUsername() );
-        userDto.setEmail( user.getEmail() );
-        userDto.setRole( user.getRole() );
+        id = user.getId();
+        chatId = user.getChatId();
+        username = user.getUsername();
+        email = user.getEmail();
+
+        UserDto userDto = new UserDto( id, chatId, username, email );
 
         return userDto;
     }
@@ -65,9 +68,6 @@ public class UserMapperImpl implements UserMapper {
         }
         if ( userDto.getEmail() != null ) {
             user.setEmail( userDto.getEmail() );
-        }
-        if ( userDto.getRole() != null ) {
-            user.setRole( userDto.getRole() );
         }
 
         return user;

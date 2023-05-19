@@ -8,6 +8,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import ru.hard2code.gisdbapi.constants.Route;
 import ru.hard2code.gisdbapi.domain.entity.Role;
 import ru.hard2code.gisdbapi.domain.entity.User;
+import ru.hard2code.gisdbapi.domain.mapper.UserMapper;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.service.user.UserService;
 
@@ -29,6 +30,8 @@ class UserControllerTest extends AbstractControllerTest {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserMapper userMapper;
 
     @AfterEach
     void cleanup() {
@@ -41,7 +44,7 @@ class UserControllerTest extends AbstractControllerTest {
         mvc.perform(get(API_PATH + "/{id}", TEST_USER.getId())
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
-                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(TEST_USER)));
+                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(userMapper.toDto(TEST_USER))));
     }
 
     @Test
@@ -57,7 +60,10 @@ class UserControllerTest extends AbstractControllerTest {
         mvc.perform(get(API_PATH)
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
-                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(users)));
+                .andExpect(content().string(OBJECT_MAPPER
+                        .writeValueAsString(users.stream()
+                                .map(userMapper::toDto)
+                                .toList())));
     }
 
     @Test
@@ -94,11 +100,10 @@ class UserControllerTest extends AbstractControllerTest {
 
         mvc.perform(put(API_PATH + "/{id}", user.getId())
                         .contentType(CONTENT_TYPE)
-                        .content(OBJECT_MAPPER.writeValueAsString(user))
+                        .content(OBJECT_MAPPER.writeValueAsString(userMapper.toDto(user)))
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.chatId").value(user.getChatId()))
-                .andExpect(jsonPath("$.role").value(user.getRole().toString()))
                 .andExpect(jsonPath("$.username").value(user.getUsername()))
                 .andExpect(jsonPath("$.email").value(user.getEmail()));
     }
@@ -123,7 +128,6 @@ class UserControllerTest extends AbstractControllerTest {
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.chatId").value(user.getChatId()))
-                .andExpect(jsonPath("$.role").value(user.getRole().toString()))
                 .andExpect(jsonPath("$.username").value(user.getUsername()))
                 .andExpect(jsonPath("$.email").value(user.getEmail()));
     }

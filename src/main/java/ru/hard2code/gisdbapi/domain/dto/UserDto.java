@@ -4,19 +4,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import ru.hard2code.gisdbapi.domain.entity.Role;
+import lombok.*;
 
 import java.io.Serializable;
 
 /**
  * DTO for {@link ru.hard2code.gisdbapi.domain.entity.User}
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+@Value
 @Schema(name = "User")
 public class UserDto implements Serializable {
 
@@ -32,5 +27,4 @@ public class UserDto implements Serializable {
     @Email
     private String email;
 
-    private Role role;
 }

@@ -10,7 +10,7 @@ import ru.hard2code.gisdbapi.domain.entity.User;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-05-19T14:32:55+0300",
+    date = "2023-05-19T15:26:26+0300",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.5 (Oracle Corporation)"
 )
 @Component

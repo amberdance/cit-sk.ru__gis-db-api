@@ -8,12 +8,14 @@ import ru.hard2code.gisdbapi.constants.Route;
 import ru.hard2code.gisdbapi.domain.entity.Message;
 import ru.hard2code.gisdbapi.domain.entity.Role;
 import ru.hard2code.gisdbapi.domain.entity.User;
+import ru.hard2code.gisdbapi.domain.mapper.MessageMapper;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.service.message.MessageService;
 import ru.hard2code.gisdbapi.service.user.UserService;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -34,6 +36,9 @@ class MessageControllerTest extends AbstractControllerTest {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private MessageMapper messageMapper;
+
     @AfterEach
     void cleanup() {
         messageService.deleteAll();
@@ -42,13 +47,17 @@ class MessageControllerTest extends AbstractControllerTest {
 
     @Test
     void testGetAll() throws Exception {
-        var msg = List.of(messageService.createMessage(TEST_MESSAGE));
+        var message = List.of(messageService.createMessage(TEST_MESSAGE));
 
         mvc.perform(get(API_PATH)
                         .contentType(CONTENT_TYPE)
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
-                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(msg)));
+                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(message
+                        .stream()
+                        .map(messageMapper::toDto)
+                        .toList()))
+                );
     }
 
     @Test
@@ -58,7 +67,7 @@ class MessageControllerTest extends AbstractControllerTest {
         mvc.perform(get(API_PATH + "/{id}", msg.getId())
                         .contentType(CONTENT_TYPE).accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
-                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(msg)));
+                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(messageMapper.toDto(msg))));
     }
 
     @Test
@@ -131,7 +140,9 @@ class MessageControllerTest extends AbstractControllerTest {
         mvc.perform(get(API_PATH + "/user/{chatId}", message.getUser().getChatId())
                         .contentType(CONTENT_TYPE).accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
-                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(List.of(message))));
+                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(Stream.of(message)
+                        .map(messageMapper::toDto)
+                        .toList())));
     }
 
 }
