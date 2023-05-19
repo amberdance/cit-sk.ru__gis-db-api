@@ -5,10 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.hard2code.gisdbapi.constants.Route;
+import ru.hard2code.gisdbapi.domain.dto.MessageDto;
 import ru.hard2code.gisdbapi.domain.entity.Message;
+import ru.hard2code.gisdbapi.domain.mapper.MessageMapper;
 import ru.hard2code.gisdbapi.service.message.MessageService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(Route.MESSAGES)
@@ -18,33 +21,35 @@ import java.util.List;
 public class MessageController {
 
     private final MessageService messageService;
+    private final MessageMapper messageMapper;
 
 
     @GetMapping
-    public List<Message> getAllMessages() {
-        return messageService.getAllMessages();
+    public List<MessageDto> getAllMessages() {
+        return messageService.getAllMessages()
+                .stream().map(messageMapper::toDto).collect(Collectors.toList());
     }
 
     @GetMapping("{id}")
-    public Message getMessageById(@PathVariable("id") long id) {
-        return messageService.getMessageById(id);
+    public MessageDto getMessageById(@PathVariable("id") long id) {
+        return messageMapper.toDto(messageService.getMessageById(id));
     }
 
     @PostMapping
-    public Message createMessage(@RequestBody Message msg) {
-        return messageService.createMessage(msg);
+    public MessageDto createMessage(@RequestBody Message msg) {
+        return messageMapper.toDto(messageService.createMessage(msg));
     }
 
     @PutMapping("{id}")
-    public Message updateMessage(@PathVariable("id") long id,
-                                 @RequestBody Message msg) {
-        return messageService.updateMessage(id, msg);
+    public MessageDto updateMessage(@PathVariable("id") long id,
+                                    @RequestBody Message msg) {
+        return messageMapper.toDto(messageService.updateMessage(id, msg));
     }
 
     @PatchMapping("{id}")
-    public Message partialUpdateMessage(@PathVariable("id") long id,
+    public MessageDto partialUpdateMessage(@PathVariable("id") long id,
                                         @RequestBody Message msg) {
-        return messageService.updateMessage(id, msg);
+        return messageMapper.toDto(messageService.partialUpdateMessage(id, msg));
     }
 
     @DeleteMapping("{id}")

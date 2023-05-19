@@ -17,5 +17,5 @@ public interface MessageService {
 
     Message updateMessage(long id, Message msg);
 
-
+    Message partialUpdateMessage(long id, Message msg);
 }

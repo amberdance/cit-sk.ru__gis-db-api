@@ -44,8 +44,7 @@ public class User {
 
     @Column(name = "role", length = 32)
     @Enumerated(EnumType.STRING)
-    @NotNull
-    private Role role;
+    private Role role = Role.USER;
 
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     @ToString.Exclude

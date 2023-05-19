@@ -1,5 +1,6 @@
 package ru.hard2code.gisdbapi.domain.entity;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -16,6 +17,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
+@Schema(hidden = true)
 public class Message {
 
     @Id

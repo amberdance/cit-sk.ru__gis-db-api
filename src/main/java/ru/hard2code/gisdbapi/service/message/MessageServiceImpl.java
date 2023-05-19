@@ -3,6 +3,7 @@ package ru.hard2code.gisdbapi.service.message;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.hard2code.gisdbapi.domain.entity.Message;
+import ru.hard2code.gisdbapi.domain.mapper.MessageMapper;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.repository.MessageRepository;
 import ru.hard2code.gisdbapi.service.user.UserService;
@@ -15,6 +16,7 @@ public class MessageServiceImpl implements MessageService {
 
     private final MessageRepository messageRepository;
     private final UserService userService;
+    private final MessageMapper messageMapper;
 
 
     @Override
@@ -24,14 +26,15 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public Message getMessageById(long id) {
-        return messageRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Message.class, id));
+        return messageRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(Message.class, id));
     }
 
     @Override
     public Message createMessage(Message msg) {
         var user = msg.getUser();
 
-        if (user.getId() != null) {
+        if (user.getId() != null && user.getId() != 0) {
             msg.setUser(userService.findUserById(user.getId()));
         }
 
@@ -56,6 +59,13 @@ public class MessageServiceImpl implements MessageService {
         message.setUser(msg.getUser());
 
         return message;
+    }
+
+    @Override
+    public Message partialUpdateMessage(long id, Message msg) {
+        var updatedMessage = messageMapper.partialUpdate(messageMapper.toDto(msg), getMessageById(id));
+
+        return messageRepository.save(updatedMessage);
     }
 
 }
