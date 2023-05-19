@@ -20,7 +20,7 @@ import java.util.Objects;
 public class Category {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", nullable = false, unique = true, length = 128)
@@ -39,7 +39,8 @@ public class Category {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o))
+            return false;
         Category category = (Category) o;
         return getId() != null && Objects.equals(getId(), category.getId());
     }

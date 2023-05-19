@@ -24,7 +24,7 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "chat_id", nullable = false, unique = true, length = 12)
@@ -48,7 +48,7 @@ public class User {
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     @ToString.Exclude
     @JsonIgnore
-    private Set<Message> messages = new LinkedHashSet<>();
+    private final Set<Message> messages = new LinkedHashSet<>();
 
 
     @Override
