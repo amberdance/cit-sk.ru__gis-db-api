@@ -1,5 +1,6 @@
 package ru.hard2code.gisdbapi.controller;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -42,17 +43,20 @@ public class OrganizationController {
     }
 
     @PostMapping
+    @Hidden
     public Organization createOrganization(@RequestBody Organization organization) {
         return organizationService.createOrganization(organization);
     }
 
     @PutMapping("{id}")
+    @Hidden
     public Organization updateOrganization(@PathVariable("id") long id,
                                            @RequestBody Organization organization) {
         return organizationService.update(id, organization);
     }
 
     @DeleteMapping("{id}")
+    @Hidden
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateOrganization(@PathVariable("id") long id) {
         organizationService.delete(id);

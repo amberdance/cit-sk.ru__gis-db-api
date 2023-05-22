@@ -1,5 +1,6 @@
 package ru.hard2code.gisdbapi.controller;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,15 +27,15 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-
-    @PostMapping
-    public Category createCategory(@RequestBody Category gis) {
-        return categoryService.createCategory(gis);
-    }
-
     @GetMapping
     public List<Category> getAllCategories() {
         return categoryService.findAll();
+    }
+
+    @PostMapping
+    @Hidden
+    public Category createCategory(@RequestBody Category gis) {
+        return categoryService.createCategory(gis);
     }
 
     @GetMapping("{id}")
@@ -43,12 +44,14 @@ public class CategoryController {
     }
 
     @PutMapping("{id}")
+    @Hidden
     Category updateCategory(@PathVariable("id") long id,
                             @RequestBody Category category) {
         return categoryService.updateCategory(id, category);
     }
 
     @DeleteMapping("{id}")
+    @Hidden
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable("id") long id) {
         categoryService.deleteCategoryById(id);

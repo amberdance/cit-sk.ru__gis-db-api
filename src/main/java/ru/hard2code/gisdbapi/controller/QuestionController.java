@@ -1,5 +1,6 @@
 package ru.hard2code.gisdbapi.controller;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -42,11 +43,13 @@ public class QuestionController {
     }
 
     @PostMapping
+    @Hidden
     public Question createQuestion(@RequestBody Question question) {
         return questionService.createQuestion(question);
     }
 
     @PutMapping("{id}")
+    @Hidden
     public Question updateQuestion(@PathVariable("id") long id,
                                    @RequestBody Question question) {
         return questionService.updateQuestion(id, question);
@@ -54,6 +57,7 @@ public class QuestionController {
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Hidden
     public void deleteQuestion(@PathVariable("id") long id) {
         questionService.deleteQuestionById(id);
     }
