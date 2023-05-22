@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
 import ru.hard2code.gisdbapi.domain.entity.Role;
 import ru.hard2code.gisdbapi.domain.entity.User;
-import ru.hard2code.gisdbapi.domain.mapper.UserMapper;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.service.user.UserService;
 import ru.hard2code.gisdbapi.system.Constants;
@@ -15,6 +14,7 @@ import ru.hard2code.gisdbapi.system.Constants;
 import java.util.Collections;
 import java.util.List;
 
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -36,8 +36,6 @@ class UserControllerTest extends AbstractControllerTest {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private UserMapper userMapper;
 
     @AfterEach
     void cleanup() {
@@ -50,7 +48,8 @@ class UserControllerTest extends AbstractControllerTest {
         mvc.perform(get(API_PATH + "/{id}", TEST_USER.getId())
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
-                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(userMapper.toDto(TEST_USER))));
+                .andExpect(content().string(
+                        objectMapper.writeValueAsString(TEST_USER)));
     }
 
     @Test
@@ -66,10 +65,8 @@ class UserControllerTest extends AbstractControllerTest {
         mvc.perform(get(API_PATH)
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
-                .andExpect(content().string(OBJECT_MAPPER
-                        .writeValueAsString(users.stream()
-                                .map(userMapper::toDto)
-                                .toList())));
+                .andExpect(content().string(
+                        objectMapper.writeValueAsString(users)));
     }
 
     @Test
@@ -88,16 +85,34 @@ class UserControllerTest extends AbstractControllerTest {
     @Test
     void testCreate() throws Exception {
         mvc.perform(post(API_PATH).contentType(CONTENT_TYPE)
-                        .content(OBJECT_MAPPER.writeValueAsString(TEST_USER))
+                        .content(objectMapper.writeValueAsString(TEST_USER))
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void testUpdate() throws Exception {
-        var user = userService.createUser(TEST_USER);
+    void whenPassedExistingIdInPOST_ThenMessageShouldBeCreatedInsteadUpdate()
+            throws Exception {
+        userService.createUser(TEST_USER);
 
-        user = user.toBuilder()
+        var anotherUserWithSameId = User.builder()
+                .id(TEST_USER.getId())
+                .chatId("1234567899")
+                .username("somename")
+                .build();
+
+        mvc.perform(post(API_PATH)
+                        .contentType(CONTENT_TYPE)
+                        .content(objectMapper.writeValueAsString(anotherUserWithSameId))
+                        .accept(CONTENT_TYPE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(not(TEST_USER.getId())));
+    }
+
+    @Test
+    void testUpdate() throws Exception {
+        var user = userService.createUser(TEST_USER)
+                .toBuilder()
                 .chatId("999999999")
                 .role(Role.ADMIN)
                 .username("newUserName")
@@ -106,7 +121,7 @@ class UserControllerTest extends AbstractControllerTest {
 
         mvc.perform(put(API_PATH + "/{id}", user.getId())
                         .contentType(CONTENT_TYPE)
-                        .content(OBJECT_MAPPER.writeValueAsString(userMapper.toDto(user)))
+                        .content(objectMapper.writeValueAsString(user))
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.chatId").value(user.getChatId()))
@@ -116,10 +131,12 @@ class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void testValidation() throws Exception {
-        var wrongUser = new User(null, "chatId", "username", "email", Role.ADMIN, Collections.emptySet());
+        var wrongUser =
+                new User(null, "chatId", "username", "email", Role.ADMIN,
+                        Collections.emptySet());
 
         mvc.perform(post(API_PATH).contentType(CONTENT_TYPE)
-                        .content(OBJECT_MAPPER.writeValueAsString(wrongUser))
+                        .content(objectMapper.writeValueAsString(wrongUser))
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isBadRequest());
     }
@@ -128,6 +145,7 @@ class UserControllerTest extends AbstractControllerTest {
     void testPartialUpdate() throws Exception {
         var user = userService.createUser(TEST_USER);
         user.setChatId("1231457892");
+
         mvc.perform(patch(API_PATH + "/{id}", user.getId())
                         .contentType(CONTENT_TYPE)
                         .content("{\"chatId\":\"" + user.getChatId() + "\"}")

@@ -10,7 +10,10 @@ import ru.hard2code.gisdbapi.service.question.QuestionService;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 
 class QuestionServiceTest extends AbstractServiceTest<Question> {
@@ -28,10 +31,10 @@ class QuestionServiceTest extends AbstractServiceTest<Question> {
         categoryService.deleteAllCategories();
 
         for (int i = 0; i < INSTANCES_COUNT; i++) {
-            var category = categoryService.createCategory(new Category(String.valueOf(i)));
-            var savedQuestion = questionService.createQuestion(new Question(null, String.valueOf(i),
-                    String.valueOf(i), category
-            ));
+            var savedQuestion = questionService.createQuestion(
+                    new Question(null, String.valueOf(i),
+                            String.valueOf(i),
+                            new Category(String.valueOf(i))));
 
             INSTANCES.add(savedQuestion);
         }
@@ -59,13 +62,14 @@ class QuestionServiceTest extends AbstractServiceTest<Question> {
 
     @Test
     void whenCreateQuestionThenCacheWillEvict() {
-        var cacheBefore = cacheManager.getCache(QuestionService.CACHE_NAME).get(QuestionService.CACHE_LIST_KEY);
+        var cacheBefore = cacheManager.getCache(QuestionService.CACHE_NAME)
+                .get(QuestionService.CACHE_LIST_KEY);
 
-        questionService.createQuestion(new Question(null, "test", "test",
-                categoryService.createCategory(new Category("test"))
-        ));
+        questionService.createQuestion(
+                new Question(null, "test", "test", new Category("test")));
 
-        assertNotEquals(cacheManager.getCache(QuestionService.CACHE_NAME).get(QuestionService.CACHE_LIST_KEY),
+        assertNotEquals(cacheManager.getCache(QuestionService.CACHE_NAME)
+                        .get(QuestionService.CACHE_LIST_KEY),
                 cacheBefore
         );
     }
@@ -80,12 +84,14 @@ class QuestionServiceTest extends AbstractServiceTest<Question> {
 
     @Test
     void whenFindQuestionByCategorySystemIdThenQuestionsWillReturnedFromCache() {
-        var categoryId = categoryService.createCategory(new Category("test"));
+        var question = questionService.createQuestion(new Question(null,
+                "test", "test", new Category("test")));
 
-        questionService.createQuestion(new Question(null, "test", "test", categoryId));
-        questionService.findQuestionsByCategoryId(categoryId.getId());
+        questionService.findQuestionsByCategoryId(
+                question.getCategory().getId());
 
-        assertNotNull(cacheManager.getCache(QuestionService.CACHE_NAME).get(categoryId.getId()));
+        assertNotNull(cacheManager.getCache(QuestionService.CACHE_NAME)
+                .get(question.getCategory().getId()));
     }
 
 }

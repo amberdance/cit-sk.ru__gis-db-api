@@ -12,6 +12,7 @@ import ru.hard2code.gisdbapi.system.Constants;
 
 import java.util.List;
 
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -48,8 +49,9 @@ class OrganizationControllerTest extends AbstractControllerTest {
         organizations.forEach(organizationService::createOrganization);
 
         mvc.perform(get(API_PATH).accept(CONTENT_TYPE))
-           .andExpect(status().isOk())
-           .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(organizations)));
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        objectMapper.writeValueAsString(organizations)));
     }
 
     @Test
@@ -57,17 +59,37 @@ class OrganizationControllerTest extends AbstractControllerTest {
         organizationService.createOrganization(TEST_ORGANIZATION);
 
         mvc.perform(get(API_PATH + "/{id}", TEST_ORGANIZATION.getId())
-                   .accept(CONTENT_TYPE))
-           .andExpect(status().isOk())
-           .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION)));
+                        .accept(CONTENT_TYPE))
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        objectMapper.writeValueAsString(TEST_ORGANIZATION)));
     }
 
     @Test
     void testCreate() throws Exception {
         mvc.perform(post(API_PATH).contentType(CONTENT_TYPE)
-                                  .content(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION))
-                                  .accept(CONTENT_TYPE))
-           .andExpect(status().isOk());
+                        .content(objectMapper.writeValueAsString(TEST_ORGANIZATION))
+                        .accept(CONTENT_TYPE))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void whenPassedExistingIdInPOST_ThenOrganizationShouldBeCreatedInsteadOfUpdate()
+            throws Exception {
+        organizationService.createOrganization(TEST_ORGANIZATION);
+
+        var anotherOrganization = Organization.builder()
+                .id(TEST_ORGANIZATION.getId())
+                .name("Another organization")
+                .build();
+
+        mvc.perform(post(API_PATH)
+                        .contentType(CONTENT_TYPE)
+                        .content(objectMapper.writeValueAsString(anotherOrganization))
+                        .accept(CONTENT_TYPE))
+                .andExpect(status().isOk())
+                .andExpect(
+                        jsonPath("$.id").value(not(TEST_ORGANIZATION.getId())));
     }
 
     @Test
@@ -78,8 +100,8 @@ class OrganizationControllerTest extends AbstractControllerTest {
         TEST_ORGANIZATION.setAddress("NEW_ADDRESS");
 
         mvc.perform(put(API_PATH + "/{id}", TEST_ORGANIZATION.getId())
-                   .contentType(CONTENT_TYPE)
-                   .content(OBJECT_MAPPER.writeValueAsString(TEST_ORGANIZATION))
+                        .contentType(CONTENT_TYPE)
+                        .content(objectMapper.writeValueAsString(TEST_ORGANIZATION))
                    .accept(CONTENT_TYPE))
            .andExpect(status().isOk())
            .andExpect(jsonPath("$.name").value(TEST_ORGANIZATION.getName()))

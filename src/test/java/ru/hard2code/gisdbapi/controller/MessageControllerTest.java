@@ -7,7 +7,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 import ru.hard2code.gisdbapi.domain.entity.Message;
 import ru.hard2code.gisdbapi.domain.entity.Role;
 import ru.hard2code.gisdbapi.domain.entity.User;
-import ru.hard2code.gisdbapi.domain.mapper.MessageMapper;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.service.message.MessageService;
 import ru.hard2code.gisdbapi.service.user.UserService;
@@ -15,8 +14,8 @@ import ru.hard2code.gisdbapi.system.Constants;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,10 +30,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MessageControllerTest extends AbstractControllerTest {
 
     private static final String API_PATH = "/api" + Constants.Route.MESSAGES;
+    private final User TEST_USER = new User(null, "123456789", "username",
+            "test@test.ru", Role.ADMIN, Collections.emptySet());
+    private final Message TEST_MESSAGE =
+            new Message(null, "Label", "Answer", TEST_USER);
 
-    private final Message TEST_MESSAGE = new Message(null, "Label", "Answer",
-            new User(null, "123456789", "username", "test@test.ru", Role.ADMIN, Collections.emptySet())
-    );
 
     @Autowired
     private MessageService messageService;
@@ -42,8 +42,6 @@ class MessageControllerTest extends AbstractControllerTest {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private MessageMapper messageMapper;
 
     @AfterEach
     void cleanup() {
@@ -59,11 +57,8 @@ class MessageControllerTest extends AbstractControllerTest {
                         .contentType(CONTENT_TYPE)
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
-                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(message
-                        .stream()
-                        .map(messageMapper::toDto)
-                        .toList()))
-                );
+                .andExpect(content().string(
+                        objectMapper.writeValueAsString(message)));
     }
 
     @Test
@@ -73,23 +68,51 @@ class MessageControllerTest extends AbstractControllerTest {
         mvc.perform(get(API_PATH + "/{id}", msg.getId())
                         .contentType(CONTENT_TYPE).accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
-                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(messageMapper.toDto(msg))));
+                .andExpect(content().string(
+                        objectMapper.writeValueAsString(msg)));
     }
 
     @Test
-    void testCreate() throws Exception {
+    void testCreateCascadeWithUser() throws Exception {
         mvc.perform(post(API_PATH).contentType(CONTENT_TYPE)
-                        .content(OBJECT_MAPPER.writeValueAsString(TEST_MESSAGE))
+                        .content(objectMapper.writeValueAsString(TEST_MESSAGE))
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void testCreateWithRoleId() throws Exception {
-        TEST_MESSAGE.getUser().setRole(Role.USER);
+    void whenPassedExistingIdInPOST_ThenMessageShouldBeCreatedInsteadUpdate()
+            throws Exception {
+        messageService.createMessage(TEST_MESSAGE);
+
+        var anotherMessage = Message.builder()
+                .id(TEST_MESSAGE.getId())
+                .question("Another question")
+                .user(TEST_USER)
+                .build();
+
+        mvc.perform(post(API_PATH)
+                        .contentType(CONTENT_TYPE)
+                        .content(objectMapper.writeValueAsString(anotherMessage))
+                        .accept(CONTENT_TYPE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(not(TEST_MESSAGE.getId())));
+    }
+
+    @Test
+    void whenPassedExistingUser_ThenOnlyMessageShouldCreatedNotCascade()
+            throws Exception {
+        var user = User.builder()
+                .username("username")
+                .chatId("9789110123")
+                .email("some@email.com")
+                .build();
+
+        var userFromDb = userService.createUser(user);
+        var message = new Message(null, "Question", "Answer", userFromDb);
 
         mvc.perform(post(API_PATH).contentType(CONTENT_TYPE)
-                        .content(OBJECT_MAPPER.writeValueAsString(TEST_MESSAGE))
+                        .content(objectMapper.writeValueAsString(message))
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk());
     }
@@ -103,7 +126,7 @@ class MessageControllerTest extends AbstractControllerTest {
 
         mvc.perform(put(API_PATH + "/{id}", TEST_MESSAGE.getId())
                         .contentType(CONTENT_TYPE)
-                        .content(OBJECT_MAPPER.writeValueAsString(TEST_MESSAGE))
+                        .content(objectMapper.writeValueAsString(TEST_MESSAGE))
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.question").value(TEST_MESSAGE.getQuestion()))
@@ -131,7 +154,8 @@ class MessageControllerTest extends AbstractControllerTest {
 
         mvc.perform(patch(API_PATH + "/{id}", message.getId())
                         .contentType(CONTENT_TYPE)
-                        .content("{\"question\":\"" + message.getQuestion() + "\"," + "\"answer\":\"" + message.getAnswer() + "\"}")
+                        .content("{\"question\":\"" + message.getQuestion() + "\"," +
+                                "\"answer\":\"" + message.getAnswer() + "\"}")
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.question").value(message.getQuestion()))
@@ -143,12 +167,13 @@ class MessageControllerTest extends AbstractControllerTest {
     void testFindMessagesByUserId() throws Exception {
         var message = messageService.createMessage(TEST_MESSAGE);
 
-        mvc.perform(get(API_PATH + "/user/{chatId}", message.getUser().getChatId())
+        mvc.perform(get(API_PATH + "/user/{chatId}",
+                        message.getUser().getChatId())
                         .contentType(CONTENT_TYPE).accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
-                .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(Stream.of(message)
-                        .map(messageMapper::toDto)
-                        .toList())));
+                .andExpect(content().string(
+                        objectMapper.writeValueAsString(
+                                Collections.singletonList(message))));
     }
 
 }

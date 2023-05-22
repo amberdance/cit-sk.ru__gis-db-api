@@ -10,8 +10,9 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 public class AbstractControllerTest {
 
-    protected static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    protected static final String CONTENT_TYPE = "application/json;charset=UTF-8";
+    protected static final ObjectMapper objectMapper = new ObjectMapper();
+    protected static final String CONTENT_TYPE =
+            "application/json;charset=UTF-8";
 
     @Autowired
     protected MockMvc mvc;
