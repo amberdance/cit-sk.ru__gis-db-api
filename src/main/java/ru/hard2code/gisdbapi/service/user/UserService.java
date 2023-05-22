@@ -5,6 +5,7 @@ import ru.hard2code.gisdbapi.domain.entity.User;
 import java.util.List;
 
 public interface UserService {
+
     User findUserById(long id);
 
     User createUser(User user);
@@ -18,4 +19,5 @@ public interface UserService {
     void deleteUserById(long id);
 
     void deleteAllUsers();
+
 }

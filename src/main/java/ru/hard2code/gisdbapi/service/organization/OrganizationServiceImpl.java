@@ -23,22 +23,26 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public Organization createOrganization(Organization org) {
+        org.setId(null);
         return organizationRepository.save(org);
     }
 
     @Override
     public Organization findById(long id) {
         return organizationRepository.findById(id)
-                                     .orElseThrow(() -> new EntityNotFoundException(Organization.class, id));
+                .orElseThrow(
+                        () -> new EntityNotFoundException(Organization.class,
+                                id));
     }
 
     @Override
     public Organization update(long id, Organization organization) {
         var org = organizationRepository.findById(id)
-                                        .orElseGet(() -> createOrganization(organization));
-        org.setName(organization.getName());
-        org.setAddress(organization.getAddress());
-        org.setGovernment(org.isGovernment());
+                .orElseGet(() -> createOrganization(organization)).toBuilder()
+                .name(organization.getName())
+                .address(organization.getAddress())
+                .isGovernment(organization.isGovernment())
+                .build();
 
         return organizationRepository.save(org);
     }

@@ -6,11 +6,10 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import ru.hard2code.gisdbapi.domain.entity.Category;
 import ru.hard2code.gisdbapi.domain.entity.Question;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
-import ru.hard2code.gisdbapi.repository.CategoryRepository;
 import ru.hard2code.gisdbapi.repository.QuestionRepository;
+import ru.hard2code.gisdbapi.service.category.CategoryService;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ import java.util.List;
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
 
     @Override
@@ -33,8 +32,8 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Cacheable(key = "#id")
     public Question findQuestionById(long id) {
-        return questionRepository.findById(id)
-                                 .orElseThrow(() -> new EntityNotFoundException(Question.class, id));
+        return questionRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(Question.class, id));
     }
 
     @Override
@@ -46,25 +45,30 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @CacheEvict(allEntries = true)
     public Question createQuestion(Question question) {
-        if (question.getCategory().getId() != null)
-            question.setCategory(categoryRepository.findById(question.getCategory().getId())
-                                                   .orElseThrow(() -> new EntityNotFoundException(Category.class, question.getCategory().getId())));
+        question.setId(null);
+
+        if (question.getCategory().getId() != null &&
+                question.getCategory().getId() != 0) {
+            question.setCategory(
+                    categoryService.findById(question.getCategory().getId()));
+        }
+
         return questionRepository.save(question);
     }
 
     @Override
     @CacheEvict(allEntries = true)
     public Question updateQuestion(long id, Question question) {
-        var q = questionRepository.findById(id)
-                                  .orElseGet(() -> questionRepository.save(question));
-        var category = question.getCategory();
 
-        q.setLabel(question.getLabel());
-        q.setAnswer(question.getAnswer());
-        q.setCategory(categoryRepository.findById(category.getId())
-                                        .orElseThrow(() -> new EntityNotFoundException(Category.class, id)));
+        var questionFromDb = questionRepository.findById(id)
+                .orElseGet(() -> questionRepository.save(question))
+                .toBuilder()
+                .label(question.getLabel())
+                .answer(question.getAnswer())
+                .category(question.getCategory())
+                .build();
 
-        return questionRepository.save(q);
+        return questionRepository.save(questionFromDb);
     }
 
     @Override

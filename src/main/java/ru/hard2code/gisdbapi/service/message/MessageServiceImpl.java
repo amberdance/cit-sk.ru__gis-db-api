@@ -32,6 +32,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public Message createMessage(Message msg) {
+        msg.setId(null);
         var user = msg.getUser();
 
         if (user.getId() != null && user.getId() != 0) {
@@ -53,17 +54,21 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public Message updateMessage(long id, Message msg) {
-        var message = getMessageById(id);
-        message.setQuestion(msg.getQuestion());
-        message.setAnswer(msg.getAnswer());
-        message.setUser(msg.getUser());
+        var message = getMessageById(id)
+                .toBuilder()
+                .question(msg.getQuestion())
+                .answer(msg.getAnswer())
+                .user(msg.getUser())
+                .build();
 
-        return message;
+        return messageRepository.save(message);
     }
 
     @Override
     public Message partialUpdateMessage(long id, Message msg) {
-        var updatedMessage = messageMapper.partialUpdate(messageMapper.toDto(msg), getMessageById(id));
+        var updatedMessage =
+                messageMapper.partialUpdate(messageMapper.toDto(msg),
+                        getMessageById(id));
         return messageRepository.save(updatedMessage);
     }
 

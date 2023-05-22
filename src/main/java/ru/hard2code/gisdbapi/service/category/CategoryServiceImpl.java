@@ -29,12 +29,14 @@ public class CategoryServiceImpl implements CategoryService {
     @Cacheable(key = "#id")
     public Category findById(long id) {
         return categoryRepository.findById(id)
-                                 .orElseThrow(() -> new EntityNotFoundException(Category.class, id));
+                .orElseThrow(
+                        () -> new EntityNotFoundException(Category.class, id));
     }
 
     @Override
     @CacheEvict(key = "#category.id")
     public Category createCategory(Category category) {
+        category.setId(null);
         return categoryRepository.save(category);
     }
 
@@ -48,7 +50,7 @@ public class CategoryServiceImpl implements CategoryService {
     @CacheEvict(key = "#id")
     public Category updateCategory(long id, Category category) {
         var cat = categoryRepository.findById(id)
-                                    .orElseGet(() -> categoryRepository.save(category));
+                .orElseGet(() -> categoryRepository.save(category));
 
         cat.setName(category.getName());
 
