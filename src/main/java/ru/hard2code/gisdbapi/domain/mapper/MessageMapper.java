@@ -1,6 +1,11 @@
 package ru.hard2code.gisdbapi.domain.mapper;
 
-import org.mapstruct.*;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 import ru.hard2code.gisdbapi.domain.dto.MessageDto;
 import ru.hard2code.gisdbapi.domain.entity.Message;
 
@@ -11,5 +16,6 @@ public interface MessageMapper {
     MessageDto toDto(Message message);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(ignore = true, target = "user")
     Message partialUpdate(MessageDto messageDto, @MappingTarget Message message);
 }

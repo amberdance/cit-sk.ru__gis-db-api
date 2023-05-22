@@ -60,7 +60,6 @@ public class MessageServiceImpl implements MessageService {
                 .toBuilder()
                 .question(msg.getQuestion())
                 .answer(msg.getAnswer())
-                .user(msg.getUser())
                 .build();
 
         return messageRepository.save(message);
