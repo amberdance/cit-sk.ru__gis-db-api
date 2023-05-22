@@ -1,6 +1,7 @@
 package ru.hard2code.gisdbapi.service.question;
 
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -43,6 +44,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
+    @Transactional
     @CacheEvict(allEntries = true)
     public Question createQuestion(Question question) {
         question.setId(null);

@@ -1,5 +1,6 @@
 package ru.hard2code.gisdbapi.service.message;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.hard2code.gisdbapi.domain.entity.Message;
@@ -31,6 +32,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
+    @Transactional
     public Message createMessage(Message msg) {
         msg.setId(null);
         var user = msg.getUser();
