@@ -5,21 +5,27 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
-import ru.hard2code.gisdbapi.constants.Route;
 import ru.hard2code.gisdbapi.domain.entity.Organization;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.service.organization.OrganizationService;
+import ru.hard2code.gisdbapi.system.Constants;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WithMockUser(authorities = {"write", "read"})
 class OrganizationControllerTest extends AbstractControllerTest {
 
-    private static final String API_PATH = "/api" + Route.ORGANIZATIONS;
+    private static final String API_PATH =
+            "/api" + Constants.Route.ORGANIZATIONS;
 
     private static final Organization TEST_ORGANIZATION = new Organization("name", "address");
 

@@ -3,17 +3,26 @@ package ru.hard2code.gisdbapi.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-import ru.hard2code.gisdbapi.constants.Route;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import ru.hard2code.gisdbapi.domain.dto.UserDto;
 import ru.hard2code.gisdbapi.domain.entity.User;
 import ru.hard2code.gisdbapi.domain.mapper.UserMapper;
 import ru.hard2code.gisdbapi.service.user.UserService;
+import ru.hard2code.gisdbapi.system.Constants;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(Route.USERS)
+@RequestMapping(Constants.Route.USERS)
 @Tag(name = "UserController", description = "User management API")
 @RequiredArgsConstructor
 public class UserController {

@@ -4,7 +4,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
-import ru.hard2code.gisdbapi.constants.Route;
 import ru.hard2code.gisdbapi.domain.entity.Message;
 import ru.hard2code.gisdbapi.domain.entity.Role;
 import ru.hard2code.gisdbapi.domain.entity.User;
@@ -12,19 +11,26 @@ import ru.hard2code.gisdbapi.domain.mapper.MessageMapper;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.service.message.MessageService;
 import ru.hard2code.gisdbapi.service.user.UserService;
+import ru.hard2code.gisdbapi.system.Constants;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WithMockUser(authorities = {"write", "read"})
 class MessageControllerTest extends AbstractControllerTest {
 
-    private static final String API_PATH = "/api" + Route.MESSAGES;
+    private static final String API_PATH = "/api" + Constants.Route.MESSAGES;
 
     private final Message TEST_MESSAGE = new Message(null, "Label", "Answer",
             new User(null, "123456789", "username", "test@test.ru", Role.ADMIN, Collections.emptySet())

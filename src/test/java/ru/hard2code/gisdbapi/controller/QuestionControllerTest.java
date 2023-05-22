@@ -6,24 +6,29 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
-import ru.hard2code.gisdbapi.constants.Route;
 import ru.hard2code.gisdbapi.domain.entity.Category;
 import ru.hard2code.gisdbapi.domain.entity.Question;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.service.category.CategoryService;
 import ru.hard2code.gisdbapi.service.question.QuestionService;
+import ru.hard2code.gisdbapi.system.Constants;
 
 import java.util.List;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WithMockUser(authorities = {"write", "read"})
 class QuestionControllerTest extends AbstractControllerTest {
 
-    private static final String API_PATH = "/api" + Route.QUESTIONS;
+    private static final String API_PATH = "/api" + Constants.Route.QUESTIONS;
     private final Category GOS_WEB_CATEGORY = new Category("GOSWEB");
     private final Category POS_WIDGET_CATEGORY = new Category("POS_WIDGET");
     private final Question TEST_QUESTION = new Question(null, "q1", "a1", GOS_WEB_CATEGORY);

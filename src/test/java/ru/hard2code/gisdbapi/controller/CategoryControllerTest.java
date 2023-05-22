@@ -5,22 +5,27 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
-import ru.hard2code.gisdbapi.constants.Route;
 import ru.hard2code.gisdbapi.domain.entity.Category;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.service.category.CategoryService;
+import ru.hard2code.gisdbapi.system.Constants;
 
 import java.util.List;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WithMockUser(authorities = {"write", "read"})
 class CategoryControllerTest extends AbstractControllerTest {
 
-    private static final String API_PATH = "/api" + Route.CATEGORIES;
+    private static final String API_PATH = "/api" + Constants.Route.CATEGORIES;
     private final Category TEST_CATEGORY = new Category("someName");
 
     @Autowired
