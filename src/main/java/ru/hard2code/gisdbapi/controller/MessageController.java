@@ -13,14 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.hard2code.gisdbapi.domain.dto.MessageDto;
 import ru.hard2code.gisdbapi.domain.entity.Message;
-import ru.hard2code.gisdbapi.domain.mapper.MessageMapper;
 import ru.hard2code.gisdbapi.service.message.MessageService;
 import ru.hard2code.gisdbapi.system.Constants;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(Constants.Route.MESSAGES)
@@ -30,43 +27,39 @@ import java.util.stream.Collectors;
 public class MessageController {
 
     private final MessageService messageService;
-    private final MessageMapper messageMapper;
-
 
     @GetMapping
-    public List<MessageDto> getAllMessages() {
-        return messageService.getAllMessages()
-                .stream().map(messageMapper::toDto).collect(Collectors.toList());
+    public List<Message> getAllMessages() {
+        return messageService.getAllMessages();
     }
 
     @GetMapping("{id}")
-    public MessageDto getMessageById(@PathVariable("id") long id) {
-        return messageMapper.toDto(messageService.getMessageById(id));
+    public Message getMessageById(@PathVariable("id") long id) {
+        return messageService.getMessageById(id);
     }
 
     @GetMapping("user/{chatId}")
-    public List<MessageDto> getMessagesByChatId(@PathVariable("chatId") String chatId) {
-        return messageService.findMessageByChatId(chatId)
-                .stream()
-                .map(messageMapper::toDto)
-                .collect(Collectors.toList());
+    public List<Message> getMessagesByChatId(
+            @PathVariable("chatId") String chatId) {
+        return messageService.findMessageByChatId(chatId);
+
     }
 
     @PostMapping
-    public MessageDto createMessage(@RequestBody Message msg) {
-        return messageMapper.toDto(messageService.createMessage(msg));
+    public Message createMessage(@RequestBody Message msg) {
+        return messageService.createMessage(msg);
     }
 
     @PutMapping("{id}")
-    public MessageDto updateMessage(@PathVariable("id") long id,
-                                    @RequestBody Message msg) {
-        return messageMapper.toDto(messageService.updateMessage(id, msg));
+    public Message updateMessage(@PathVariable("id") long id,
+                                 @RequestBody Message msg) {
+        return messageService.updateMessage(id, msg);
     }
 
     @PatchMapping("{id}")
-    public MessageDto partialUpdateMessage(@PathVariable("id") long id,
-                                           @RequestBody Message msg) {
-        return messageMapper.toDto(messageService.partialUpdateMessage(id, msg));
+    public Message partialUpdateMessage(@PathVariable("id") long id,
+                                        @RequestBody Message msg) {
+        return messageService.partialUpdateMessage(id, msg);
     }
 
     @DeleteMapping("{id}")

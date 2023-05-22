@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import ru.hard2code.gisdbapi.domain.dto.UserDto;
 import ru.hard2code.gisdbapi.domain.entity.User;
-import ru.hard2code.gisdbapi.domain.mapper.UserMapper;
 import ru.hard2code.gisdbapi.service.user.UserService;
 import ru.hard2code.gisdbapi.system.Constants;
 
@@ -28,32 +26,32 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
-    private final UserMapper userMapper;
-
 
     @GetMapping("{id}")
-    public UserDto getUserById(@PathVariable("id") long id) {
-        return userMapper.toDto(userService.findUserById(id));
+    public User getUserById(@PathVariable("id") long id) {
+        return userService.findUserById(id);
     }
 
     @GetMapping
-    public List<UserDto> getAllUsers() {
-        return userService.findAllUsers().stream().map(userMapper::toDto).toList();
+    public List<User> getAllUsers() {
+        return userService.findAllUsers();
     }
 
     @PostMapping
-    public UserDto createUser(@RequestBody User user) {
-        return userMapper.toDto(userService.createUser(user));
+    public User createUser(@RequestBody User user) {
+        return userService.createUser(user);
     }
 
     @PutMapping("{id}")
-    public UserDto updateUser(@PathVariable("id") long id, @RequestBody User user) {
-        return userMapper.toDto(userService.updateUser(id, user));
+    public User updateUser(@PathVariable("id") long id,
+                           @RequestBody User user) {
+        return userService.updateUser(id, user);
     }
 
     @PatchMapping("{id}")
-    public UserDto partialUpdateUser(@PathVariable("id") long id, @RequestBody User user) {
-        return userMapper.toDto(userService.partialUpdateUser(id, user));
+    public User partialUpdateUser(@PathVariable("id") long id,
+                                  @RequestBody User user) {
+        return userService.partialUpdateUser(id, user);
     }
 
     @DeleteMapping("{id}")

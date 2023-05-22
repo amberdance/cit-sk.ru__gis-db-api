@@ -11,13 +11,13 @@ import org.springframework.context.annotation.Profile;
 @Profile({"prod", "dev"})
 @OpenAPIDefinition(
         info = @Info(
+                title = "OpenApi specification",
+                description = "${app.name}",
                 contact = @Contact(
                         name = "Amberdance",
                         email = "amberdance@yandex.run",
                         url = "https://hard2code.ru"
-                ),
-                description = "${app.name}",
-                title = "OpenApi specification"
+                )
         ),
         servers = {
                 @Server(
