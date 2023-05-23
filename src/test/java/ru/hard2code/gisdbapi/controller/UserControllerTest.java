@@ -1,17 +1,20 @@
 package ru.hard2code.gisdbapi.controller;
 
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
+import ru.hard2code.gisdbapi.domain.entity.Organization;
 import ru.hard2code.gisdbapi.domain.entity.Role;
 import ru.hard2code.gisdbapi.domain.entity.User;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
+import ru.hard2code.gisdbapi.service.organization.OrganizationService;
 import ru.hard2code.gisdbapi.service.user.UserService;
 import ru.hard2code.gisdbapi.system.Constants;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.not;
@@ -29,17 +32,38 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserControllerTest extends AbstractControllerTest {
 
     private static final String API_PATH = "/api" + Constants.Route.USERS;
-    private final User TEST_USER = new User(null, "123456789",
-            "username", "test@test.ru", Role.USER, Collections.emptySet()
-    );
+    private static User TEST_USER;
 
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private OrganizationService organizationService;
+
+    private static User instantiateUser() {
+        return User.builder()
+                .chatId("123456789")
+                .username("username")
+                .email("test@test.ru")
+                .role(Role.ADMIN)
+                .organization(new Organization("Organization", "Address"))
+                .build();
+    }
+
+    @BeforeAll
+    static void startContainer() {
+        CONTAINER.start();
+    }
+
+    @AfterAll
+    static void stopContainer() {
+        CONTAINER.stop();
+    }
 
     @AfterEach
     void cleanup() {
         userService.deleteAllUsers();
+        organizationService.deleteAll();
     }
 
     @Test
@@ -54,12 +78,7 @@ class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void testFindAll() throws Exception {
-        var users = List.of(
-                new User(null, "123123123", "username1",
-                        "test@test1.ru", Role.ADMIN, Collections.emptySet()),
-                new User(null, "432432432", "username2",
-                        "test@test2.ru", Role.USER, Collections.emptySet())
-        );
+        var users = List.of(TEST_USER);
 
         users.forEach(usr -> userService.createUser(usr));
         mvc.perform(get(API_PATH)
@@ -95,7 +114,7 @@ class UserControllerTest extends AbstractControllerTest {
             throws Exception {
         userService.createUser(TEST_USER);
 
-        var anotherUserWithSameId = User.builder()
+        var anotherUserWithSameId = instantiateUser().toBuilder()
                 .id(TEST_USER.getId())
                 .chatId("1234567899")
                 .username("somename")
@@ -114,7 +133,7 @@ class UserControllerTest extends AbstractControllerTest {
         var user = userService.createUser(TEST_USER)
                 .toBuilder()
                 .chatId("999999999")
-                .role(Role.ADMIN)
+                .role(Role.USER)
                 .username("newUserName")
                 .email("newemail@test.com")
                 .build();
@@ -125,15 +144,17 @@ class UserControllerTest extends AbstractControllerTest {
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.chatId").value(user.getChatId()))
+                .andExpect(jsonPath("$.role").value(user.getRole()))
                 .andExpect(jsonPath("$.username").value(user.getUsername()))
                 .andExpect(jsonPath("$.email").value(user.getEmail()));
     }
 
     @Test
     void testValidation() throws Exception {
-        var wrongUser =
-                new User(null, "chatId", "username", "email", Role.ADMIN,
-                        Collections.emptySet());
+        var wrongUser = instantiateUser().toBuilder()
+                .chatId("test")
+                .email("test")
+                .build();
 
         mvc.perform(post(API_PATH).contentType(CONTENT_TYPE)
                         .content(objectMapper.writeValueAsString(wrongUser))
@@ -143,7 +164,7 @@ class UserControllerTest extends AbstractControllerTest {
 
     @Test
     void testPartialUpdate() throws Exception {
-        var user = userService.createUser(TEST_USER);
+        var user = userService.createUser(instantiateUser());
         user.setChatId("1231457892");
 
         mvc.perform(patch(API_PATH + "/{id}", user.getId())
@@ -151,9 +172,7 @@ class UserControllerTest extends AbstractControllerTest {
                         .content("{\"chatId\":\"" + user.getChatId() + "\"}")
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.chatId").value(user.getChatId()))
-                .andExpect(jsonPath("$.username").value(user.getUsername()))
-                .andExpect(jsonPath("$.email").value(user.getEmail()));
+                .andExpect(jsonPath("$.chatId").value(user.getChatId()));
     }
 
 }

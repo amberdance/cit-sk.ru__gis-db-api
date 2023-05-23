@@ -7,6 +7,7 @@ import ru.hard2code.gisdbapi.domain.entity.User;
 import ru.hard2code.gisdbapi.domain.mapper.UserMapper;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.repository.UserRepository;
+import ru.hard2code.gisdbapi.service.organization.OrganizationService;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final OrganizationService organizationService;
 
     @Override
     public List<User> findAllUsers() {
@@ -33,6 +35,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public User createUser(User user) {
         user.setId(null);
+
+        if (user.getOrganization().getId() != null) {
+            user.setOrganization(organizationService.findById(
+                    user.getOrganization().getId()));
+        }
+
         return userRepository.save(user);
     }
 
@@ -43,14 +51,23 @@ public class UserServiceImpl implements UserService {
                 .username(newUser.getUsername())
                 .email(newUser.getEmail())
                 .chatId(newUser.getChatId())
-                .role(newUser.getRole())
-                .build();
+                .role(newUser.getRole());
 
-        return userRepository.save(user);
+        if (newUser.getOrganization().getId() != null) {
+            user.organization(organizationService.findById(
+                    newUser.getOrganization().getId()));
+        }
+
+        return userRepository.save(user.build());
     }
 
     @Override
     public User partialUpdateUser(long id, User newUser) {
+        if (newUser.getOrganization().getId() != null) {
+            newUser.setOrganization(organizationService.findById(
+                    newUser.getOrganization().getId()));
+        }
+
         var updatedUser = userMapper.partialUpdate(userMapper.toDto(newUser),
                 findUserById(id));
 

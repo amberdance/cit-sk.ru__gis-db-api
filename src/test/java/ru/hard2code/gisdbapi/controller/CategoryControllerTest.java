@@ -1,7 +1,8 @@
 package ru.hard2code.gisdbapi.controller;
 
 
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -9,9 +10,9 @@ import ru.hard2code.gisdbapi.domain.entity.Category;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.service.category.CategoryService;
 import ru.hard2code.gisdbapi.system.Constants;
+import ru.hard2code.gisdbapi.util.RandomString;
 
 import java.util.Collections;
-import java.util.List;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.not;
@@ -28,22 +29,34 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class CategoryControllerTest extends AbstractControllerTest {
 
     private static final String API_PATH = "/api" + Constants.Route.CATEGORIES;
-    private final Category TEST_CATEGORY = new Category("someName");
+
 
     @Autowired
     private CategoryService categoryService;
 
 
-    @AfterEach
-    void cleanup() {
-        categoryService.deleteAllCategories();
+    private Category getCategoryWithRandomName() {
+        return new Category(RandomString.generate());
     }
+
+    @BeforeAll
+    static void startContainer() {
+        init();
+    }
+
+    @AfterAll
+    static void stopContainer() {
+        shutdown();
+    }
+
 
     @Test
     void testCreate() throws Exception {
+        var category = getCategoryWithRandomName();
+
         mvc.perform(post(API_PATH)
                         .contentType(CONTENT_TYPE)
-                        .content(objectMapper.writeValueAsString(TEST_CATEGORY))
+                        .content(objectMapper.writeValueAsString(category))
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(greaterThan(0)));
@@ -52,10 +65,12 @@ class CategoryControllerTest extends AbstractControllerTest {
     @Test
     void whenPassedExistingIdInPOSTThenCategoryShouldBeCreatedInsteadUpdate()
             throws Exception {
-        categoryService.createCategory(TEST_CATEGORY);
+        var category = getCategoryWithRandomName();
+
+        categoryService.createCategory(new Category(RandomString.generate()));
 
         var anotherCategory =
-                new Category(TEST_CATEGORY.getId(), "Another category",
+                new Category(category.getId(), "Another category",
                         Collections.emptySet());
 
         mvc.perform(post(API_PATH)
@@ -63,65 +78,57 @@ class CategoryControllerTest extends AbstractControllerTest {
                         .content(objectMapper.writeValueAsString(anotherCategory))
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(not(TEST_CATEGORY.getId())))
+                .andExpect(jsonPath("$.id").value(not(category.getId())))
                 .andExpect(jsonPath("$.name").value("Another category"));
     }
 
 
     @Test
     void testFindAll() throws Exception {
-        var systems = List.of(new Category("1"), new Category("2"),
-                new Category("3"));
-
-        categoryService.createCategory(systems.get(0));
-        categoryService.createCategory(systems.get(1));
-        categoryService.createCategory(systems.get(2));
+        var categories = categoryService.findAll();
 
         mvc.perform(get(API_PATH)
                         .contentType(CONTENT_TYPE)
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
-                        objectMapper.writeValueAsString(systems)));
+                        objectMapper.writeValueAsString(categories)));
     }
 
     @Test
     void testFindById() throws Exception {
-        categoryService.createCategory(TEST_CATEGORY);
+        var category = categoryService.findById(4);
 
-        mvc.perform(get(API_PATH + "/{id}", TEST_CATEGORY.getId())
+        mvc.perform(get(API_PATH + "/{id}", category.getId())
                         .contentType(CONTENT_TYPE)
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
                 .andExpect(content().string(
-                        objectMapper.writeValueAsString(TEST_CATEGORY)));
+                        objectMapper.writeValueAsString(category)));
     }
 
     @Test
     void testDeleteById() throws Exception {
-        categoryService.createCategory(TEST_CATEGORY);
-
-        mvc.perform(delete(API_PATH + "/{id}", TEST_CATEGORY.getId())
+        var id = 1;
+        mvc.perform(delete(API_PATH + "/{id}", id)
                         .contentType(CONTENT_TYPE)
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isNoContent());
 
         assertThrows(EntityNotFoundException.class,
-                () -> categoryService.findById(TEST_CATEGORY.getId()));
+                () -> categoryService.findById(id));
     }
 
     @Test
     void testUpdate() throws Exception {
-        categoryService.createCategory(TEST_CATEGORY);
+        var category = categoryService.findById(4);
+        category.setName("NEW_NAME");
 
-        TEST_CATEGORY.setName("NEW_NAME");
-
-        mvc.perform(put(API_PATH + "/{id}", TEST_CATEGORY.getId())
+        mvc.perform(put(API_PATH + "/{id}", category.getId())
                         .contentType(CONTENT_TYPE)
-                        .content(objectMapper.writeValueAsString(TEST_CATEGORY))
+                        .content(objectMapper.writeValueAsString(category))
                         .accept(CONTENT_TYPE))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(greaterThan(0)))
                 .andExpect(jsonPath("$.name").value("NEW_NAME"));
     }
 

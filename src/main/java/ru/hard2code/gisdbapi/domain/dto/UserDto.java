@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Value;
+import ru.hard2code.gisdbapi.domain.entity.Organization;
 import ru.hard2code.gisdbapi.domain.entity.Role;
 
 import java.io.Serializable;
@@ -29,5 +30,7 @@ public class UserDto implements Serializable {
     String email;
 
     Role role;
+
+    Organization organization;
 
 }

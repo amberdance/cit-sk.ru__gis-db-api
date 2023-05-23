@@ -1,7 +1,9 @@
 package ru.hard2code.gisdbapi.controller;
 
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -42,11 +44,16 @@ class QuestionControllerTest extends AbstractControllerTest {
     private CategoryService categoryService;
 
 
-//    @BeforeEach
-//    void beforeEach() {
-//        categoryService.createCategory(GOS_WEB_CATEGORY);
-//        categoryService.createCategory(POS_WIDGET_CATEGORY);
-//    }
+    @BeforeAll
+    static void startContainer() {
+        init();
+    }
+
+    @AfterAll
+    static void stopContainer() {
+        shutdown();
+    }
+
 
     @AfterEach
     void cleanUp() {

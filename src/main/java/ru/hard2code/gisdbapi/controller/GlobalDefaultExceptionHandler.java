@@ -28,7 +28,7 @@ public class GlobalDefaultExceptionHandler extends ResponseEntityExceptionHandle
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleDefaultError(Exception e, HttpServletRequest request) {
-        logger.error(e);
+        logger.error(e.getMessage(), e);
         return new RestErrorResponseHandler(request,
                 HttpStatus.INTERNAL_SERVER_ERROR).defaultError(e);
     }

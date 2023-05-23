@@ -1,7 +1,8 @@
 package ru.hard2code.gisdbapi.controller;
 
 
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -28,15 +29,22 @@ class OrganizationControllerTest extends AbstractControllerTest {
     private static final String API_PATH =
             "/api" + Constants.Route.ORGANIZATIONS;
 
-    private static final Organization TEST_ORGANIZATION = new Organization("name", "address");
+    private static final Organization TEST_ORGANIZATION =
+            new Organization("name", "address");
 
     @Autowired
     private OrganizationService organizationService;
 
-    @AfterEach
-    void cleanup() {
-        organizationService.deleteAll();
+    @BeforeAll
+    static void startContainer() {
+        init();
     }
+
+    @AfterAll
+    static void stopContainer() {
+        shutdown();
+    }
+
 
     @Test
     void testFindAll() throws Exception {

@@ -1,11 +1,12 @@
 package ru.hard2code.gisdbapi.controller;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
 import ru.hard2code.gisdbapi.domain.entity.Message;
-import ru.hard2code.gisdbapi.domain.entity.Role;
 import ru.hard2code.gisdbapi.domain.entity.User;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.service.message.MessageService;
@@ -30,8 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MessageControllerTest extends AbstractControllerTest {
 
     private static final String API_PATH = "/api" + Constants.Route.MESSAGES;
-    private final User TEST_USER = new User(null, "123456789", "username",
-            "test@test.ru", Role.ADMIN, Collections.emptySet());
+    private static User TEST_USER;
     private final Message TEST_MESSAGE =
             new Message(null, "Label", "Answer", TEST_USER);
 
@@ -42,6 +42,27 @@ class MessageControllerTest extends AbstractControllerTest {
     @Autowired
     private UserService userService;
 
+    @BeforeAll
+    static void startContainer() {
+        init();
+    }
+
+    @AfterAll
+    static void stopContainer() {
+        shutdown();
+    }
+
+
+//    @BeforeAll
+//    static void beforeAll() {
+//        TEST_USER = User.builder()
+//                .chatId("123456789")
+//                .username("username")
+//                .email("test@test.ru")
+//                .role(Role.ADMIN)
+//                .organization(new Organization("Organization", "Address"))
+//                .build();
+//    }
 
     @AfterEach
     void cleanup() {
