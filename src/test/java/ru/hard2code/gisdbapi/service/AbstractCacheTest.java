@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
-public class AbstractServiceTest<T> {
+public class AbstractCacheTest<T> {
 
     @Autowired
     protected CacheManager cacheManager;

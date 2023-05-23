@@ -8,9 +8,14 @@ import ru.hard2code.gisdbapi.service.category.CategoryService;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static ru.hard2code.gisdbapi.service.category.CategoryService.CACHE_LIST_KEY;
+import static ru.hard2code.gisdbapi.service.category.CategoryService.CACHE_NAME;
 
-class CategoryServiceTest extends AbstractServiceTest<Category> {
+class CategoryCacheTest extends AbstractCacheTest<Category> {
 
     @Autowired
     private CategoryService categoryService;
@@ -20,7 +25,8 @@ class CategoryServiceTest extends AbstractServiceTest<Category> {
         categoryService.deleteAllCategories();
 
         for (int i = 0; i < INSTANCES_COUNT; i++) {
-            INSTANCES.add(categoryService.createCategory(new Category(String.valueOf(i))));
+            INSTANCES.add(categoryService.createCategory(
+                    new Category(String.valueOf(i))));
         }
     }
 
@@ -34,7 +40,8 @@ class CategoryServiceTest extends AbstractServiceTest<Category> {
     @SuppressWarnings("unchecked")
     void whenFindAllCategoriesThenCacheShouldCreated() {
         assertEquals(INSTANCES.size(),
-                ((List<Category>) cacheManager.getCache(CategoryService.CACHE_NAME).get(CategoryService.CACHE_LIST_KEY).get()).size());
+                ((List<Category>) cacheManager.getCache(CACHE_NAME)
+                        .get(CACHE_LIST_KEY).get()).size());
     }
 
     @Test
@@ -42,18 +49,17 @@ class CategoryServiceTest extends AbstractServiceTest<Category> {
         var id = INSTANCES.get(0).getId();
         categoryService.deleteCategoryById(id);
 
-        assertNull(cacheManager.getCache(CategoryService.CACHE_NAME).get(id));
+        assertNull(cacheManager.getCache(CACHE_NAME).get(id));
     }
 
     @Test
     void whenCreateCategoryThenCacheWillEvict() {
-        var cacheBefore = cacheManager.getCache(CategoryService.CACHE_NAME).get(CategoryService.CACHE_LIST_KEY);
+        var cacheBefore = cacheManager.getCache(CACHE_NAME).get(CACHE_LIST_KEY);
 
         categoryService.createCategory(new Category("test"));
 
-        assertNotEquals(cacheManager.getCache(CategoryService.CACHE_NAME).get(CategoryService.CACHE_LIST_KEY),
-                cacheBefore
-        );
+        assertNotEquals(cacheManager.getCache(CACHE_NAME).get(CACHE_LIST_KEY),
+                cacheBefore);
     }
 
     @Test
@@ -61,7 +67,7 @@ class CategoryServiceTest extends AbstractServiceTest<Category> {
         var id = INSTANCES.get(0).getId();
         categoryService.findById(id);
 
-        assertNotNull(cacheManager.getCache(CategoryService.CACHE_NAME).get(id));
+        assertNotNull(cacheManager.getCache(CACHE_NAME).get(id));
     }
 
 

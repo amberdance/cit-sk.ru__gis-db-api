@@ -38,7 +38,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    @Cacheable(key = "#id")
+      @Cacheable(key = "'" + QuestionService.CACHE_LIST_BY_CATEGORY_KEY + "_'+#id")
     public List<Question> findQuestionsByCategoryId(long id) {
         return questionRepository.findByCategory_Id(id);
     }
@@ -61,7 +61,6 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @CacheEvict(allEntries = true)
     public Question updateQuestion(long id, Question question) {
-
         var questionFromDb = questionRepository.findById(id)
                 .orElseGet(() -> questionRepository.save(question))
                 .toBuilder()

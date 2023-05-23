@@ -6,7 +6,8 @@ import java.util.List;
 
 public interface QuestionService {
     String CACHE_NAME = "questions";
-    String CACHE_LIST_KEY = "questionList";
+    String CACHE_LIST_KEY = "all";
+    String CACHE_LIST_BY_CATEGORY_KEY = "list_by_category";
 
     List<Question> findAllQuestions();
 
