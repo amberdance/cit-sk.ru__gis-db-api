@@ -19,5 +19,7 @@ server:
 
 app:
   name: Government Information Systems Rest API
+  url: https://api.gis.hard2code.ru
+
   rest:
     api-prefix: /api/v1

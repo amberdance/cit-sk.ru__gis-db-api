@@ -21,12 +21,12 @@ import org.springframework.context.annotation.Profile;
         ),
         servers = {
                 @Server(
-                        description = "Local ENV",
-                        url = "http://localhost:${server.port:8080}"
+                        description = "PROD ENV",
+                        url = "${app.url}"
                 ),
                 @Server(
-                        description = "PROD ENV",
-                        url = "https://api.gis.hard2code.ru"
+                        description = "Local ENV",
+                        url = "http://localhost:${server.port:8080}"
                 )
         }
 )
