@@ -3,6 +3,7 @@ package ru.hard2code.gisdbapi.service.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.hard2code.gisdbapi.domain.entity.Role;
 import ru.hard2code.gisdbapi.domain.entity.User;
 import ru.hard2code.gisdbapi.domain.mapper.UserMapper;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
@@ -17,12 +18,26 @@ import java.util.List;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
     private final OrganizationService organizationService;
+    private final UserMapper userMapper;
+
 
     @Override
     public List<User> findAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public User createUser(User user) {
+        user.setId(null);
+        user.setRole(Role.USER);
+
+        if (user.getOrganization().getId() != null) {
+            user.setOrganization(organizationService.findOrganizationById(
+                    user.getOrganization().getId()));
+        }
+
+        return userRepository.save(user);
     }
 
     @Override
@@ -33,41 +48,28 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User createUser(User user) {
-        user.setId(null);
+    public User updateUser(long id, User usr) {
+        var optional = userRepository.findById(id);
 
-        if (user.getOrganization().getId() != null) {
-            user.setOrganization(organizationService.findById(
-                    user.getOrganization().getId()));
+        if (optional.isEmpty()) {
+            return createUser(usr);
         }
+
+        var user = optional.get()
+                .toBuilder()
+                .organization(usr.getOrganization())
+                .role(usr.getRole())
+                .username(usr.getUsername())
+                .chatId(usr.getChatId())
+                .email(usr.getEmail())
+                .messages(usr.getMessages())
+                .build();
 
         return userRepository.save(user);
     }
 
     @Override
-    public User updateUser(long id, User newUser) {
-        var user = findUserById(id)
-                .toBuilder()
-                .username(newUser.getUsername())
-                .email(newUser.getEmail())
-                .chatId(newUser.getChatId())
-                .role(newUser.getRole());
-
-        if (newUser.getOrganization().getId() != null) {
-            user.organization(organizationService.findById(
-                    newUser.getOrganization().getId()));
-        }
-
-        return userRepository.save(user.build());
-    }
-
-    @Override
     public User partialUpdateUser(long id, User newUser) {
-        if (newUser.getOrganization().getId() != null) {
-            newUser.setOrganization(organizationService.findById(
-                    newUser.getOrganization().getId()));
-        }
-
         var updatedUser = userMapper.partialUpdate(userMapper.toDto(newUser),
                 findUserById(id));
 
@@ -78,11 +80,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUserById(long id) {
         userRepository.deleteById(id);
-    }
-
-    @Override
-    public void deleteAllUsers() {
-        userRepository.deleteAllInBatch();
     }
 
 }

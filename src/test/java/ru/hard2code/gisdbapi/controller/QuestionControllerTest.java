@@ -13,16 +13,18 @@ import ru.hard2code.gisdbapi.service.category.CategoryService;
 import ru.hard2code.gisdbapi.service.question.QuestionService;
 import ru.hard2code.gisdbapi.system.Constants;
 
+import java.util.HashMap;
+
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WithMockUser(authorities = {"write", "read"})
-class QuestionControllerTest extends AbstractTestContainersControllerTest {
+class QuestionControllerTest extends
+        AbstractControllerTestConfig {
 
     private static final String API_PATH = "/api" + Constants.Route.QUESTIONS;
 
@@ -36,11 +38,11 @@ class QuestionControllerTest extends AbstractTestContainersControllerTest {
 
     @BeforeAll
     static void setup() {
-        startContainer();
+        CONTAINER.start();
     }
 
     Question createRandomQuestion() {
-        var random = RandomStringUtils.random(32);
+        var random = RandomStringUtils.randomAlphabetic(12);
         return new Question(null, random, random, new Category(random));
     }
 
@@ -48,41 +50,46 @@ class QuestionControllerTest extends AbstractTestContainersControllerTest {
     @Test
     void testFindAll() throws Exception {
         var questions = questionService.findAllQuestions();
-        mockHttpGet(API_PATH).andExpect(
-                content().string(objectMapper.writeValueAsString(questions)));
+
+        mockHttpGet(API_PATH)
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        objectMapper.writeValueAsString(questions)));
     }
 
     @Test
     void testFindById() throws Exception {
-        var question = questionService.findQuestionById(1L);
+        var question = questionService.findQuestionById(1);
 
-        mockHttpGet(API_PATH + "/{id}", 1L).andExpect(content().string(
-                objectMapper.writeValueAsString(question)));
+        mockHttpGet(API_PATH + "/{id}", 1)
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        objectMapper.writeValueAsString(question)));
     }
 
     @Test
     void testCreate() throws Exception {
         var question = createRandomQuestion();
+
         mockHttpPost(API_PATH, question)
-                .andExpect(jsonPath("$.id").value(notNullValue()))
-                .andExpect(jsonPath("$.category.id").value(notNullValue()));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(notNullValue()));
     }
 
     @Test
     void whenPassedExistingIdInPOST_ThenOrganizationShouldBeCreatedInsteadOfUpdate()
             throws Exception {
-        var existingQuestion = questionService.findQuestionById(1L);
+
+        var random = RandomStringUtils.randomAlphabetic(12);
+        var existingQuestion = questionService.findQuestionById(1);
         var anotherQuestion = Question.builder()
                 .id(existingQuestion.getId())
-                .label(RandomStringUtils.random(12))
-                .answer((RandomStringUtils.random(1024)))
-                .category(new Category((RandomStringUtils.random(12))))
+                .label(random)
+                .answer(random)
+                .category(new Category(random))
                 .build();
 
-        mvc.perform(post(API_PATH)
-                        .contentType(CONTENT_TYPE)
-                        .content(objectMapper.writeValueAsString(anotherQuestion))
-                        .accept(CONTENT_TYPE))
+        mockHttpPost(API_PATH, anotherQuestion)
                 .andExpect(status().isOk())
                 .andExpect(
                         jsonPath("$.id").value(not(existingQuestion.getId())));
@@ -90,17 +97,23 @@ class QuestionControllerTest extends AbstractTestContainersControllerTest {
 
     @Test
     void testUpdate() throws Exception {
-        var question = questionService.findQuestionById(1L);
+        var question = questionService.findQuestionById(2);
 
         question.setLabel("NEW_LABEL");
         question.setAnswer("NEW_ANSWER");
-        question.setCategory(categoryService.findById(1L));
+        question.setCategory(categoryService.findCategoryById(3));
 
-        mockHttpPut(API_PATH + "/{id}", question.getId(), question)
-                .andExpect(jsonPath("$.label").value("NEW_LABEL"))
-                .andExpect(jsonPath("$.answer").value("NEW_ANSWER"))
-                .andExpect(
-                        jsonPath("$.category").value(question.getCategory()));
+        var request = new HashMap<>() {{
+            put("label", question.getLabel());
+            put("answer", question.getAnswer());
+            put("category", question.getCategory());
+        }};
+
+        mockHttpPut(API_PATH + "/{id}", question.getId(), request)
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        objectMapper.writeValueAsString(question)));
+
     }
 
     @Test
@@ -108,7 +121,9 @@ class QuestionControllerTest extends AbstractTestContainersControllerTest {
         var question = createRandomQuestion();
         questionService.createQuestion(question);
 
-        mockHttpDelete(API_PATH + "/{id}", question.getId());
+        mockHttpDelete(API_PATH + "/{id}", question.getId()).andExpect(
+                status().isNoContent());
+
         assertThrows(EntityNotFoundException.class,
                 () -> questionService.findQuestionById(question.getId()));
     }

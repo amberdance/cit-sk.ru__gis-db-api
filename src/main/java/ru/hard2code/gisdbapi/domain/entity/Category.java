@@ -38,13 +38,12 @@ public class Category {
     @NotNull
     private String name;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE,
-            orphanRemoval = true)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.REMOVE)
     @ToString.Exclude
     @JsonIgnore
     private Set<Question> questions = new HashSet<>();
 
-    public Category(String name) {
+    public Category(@NotNull String name) {
         this.name = name;
     }
 

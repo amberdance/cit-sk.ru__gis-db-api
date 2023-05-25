@@ -60,8 +60,7 @@ public class User {
 
     @Column(name = "role", length = 32)
     @Enumerated(EnumType.STRING)
-    @Builder.Default
-    private Role role = Role.USER;
+    private Role role;
 
     @ToString.Exclude
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH,

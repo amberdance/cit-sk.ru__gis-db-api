@@ -1,6 +1,7 @@
 package ru.hard2code.gisdbapi.controller;
 
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,18 +14,17 @@ import ru.hard2code.gisdbapi.service.message.MessageService;
 import ru.hard2code.gisdbapi.service.user.UserService;
 import ru.hard2code.gisdbapi.system.Constants;
 
-import java.util.Collections;
-import java.util.Random;
+import java.util.HashMap;
 
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WithMockUser(authorities = {"write", "read"})
-class MessageControllerTest extends AbstractTestContainersControllerTest {
+class MessageControllerTest extends
+        AbstractControllerTestConfig {
 
     private static final String API_PATH = "/api" + Constants.Route.MESSAGES;
 
@@ -36,20 +36,20 @@ class MessageControllerTest extends AbstractTestContainersControllerTest {
 
     @BeforeAll
     static void setup() {
-        startContainer();
+        CONTAINER.start();
     }
 
-
-    private Message createMessage() {
-        var randomString = RandomStringUtils.random(32);
+    private Message getRandomMessage() {
+        var randomString = RandomStringUtils.randomAlphabetic(16);
         var randomChatId =
-                String.valueOf(new Random().nextLong(111111111, 999999999));
-        var message = Message.builder()
+                String.valueOf(RandomUtils.nextLong(100000000, 1000000000));
+
+        return Message.builder()
                 .answer(randomString)
                 .question(randomString)
                 .user(User.builder()
                         .chatId(randomChatId)
-                        .email("test@test" + randomChatId + ".com")
+                        .email("test@test" + randomChatId + ".ru")
                         .username(randomString)
                         .organization(Organization.builder()
                                 .name(randomString)
@@ -57,38 +57,38 @@ class MessageControllerTest extends AbstractTestContainersControllerTest {
                                 .build())
                         .build())
                 .build();
-
-        return messageService.createMessage(message);
     }
 
 
     @Test
     void testGetAll() throws Exception {
-        var messages = messageService.getAllMessages();
-        System.out.println(messages);
-        mockHttpGet(API_PATH).andExpect(
-                content().string(objectMapper.writeValueAsString(messages)));
+        var messages = messageService.findAllMessages();
+        mockHttpGet(API_PATH)
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        objectMapper.writeValueAsString(messages)));
     }
 
     @Test
     void testGetById() throws Exception {
-        var message = messageService.getMessageById(1L);
-        mockHttpGet(API_PATH + "/{id}", message.getId()).andExpect(
-                content().string(
+        var message = messageService.findMessageById(1);
+        mockHttpGet(API_PATH + "/{id}", message.getId())
+                .andExpect(status().isOk())
+                .andExpect(content().string(
                         objectMapper.writeValueAsString(message)));
     }
 
     @Test
-    void testCreateCascadeWithUser() throws Exception {
-        var message = createMessage();
-        mockHttpPost(API_PATH, message);
+    void testCreateCascade() throws Exception {
+        mockHttpPost(API_PATH, getRandomMessage()).andExpect(
+                status().isOk());
     }
 
 
     @Test
     void whenPassedExistingIdInPOST_ThenMessageShouldBeCreatedInsteadUpdate()
             throws Exception {
-        var existingMessage = messageService.getMessageById(1L);
+        var existingMessage = messageService.findMessageById(1L);
         var anotherMessage = Message.builder()
                 .id(existingMessage.getId())
                 .question("Another question")
@@ -96,62 +96,58 @@ class MessageControllerTest extends AbstractTestContainersControllerTest {
                 .build();
 
         mockHttpPost(API_PATH, anotherMessage)
+                .andExpect(status().isOk())
                 .andExpect(
                         jsonPath("$.id").value(not(existingMessage.getId())));
     }
 
     @Test
-    void whenPassedExistingUser_ThenOnlyMessageShouldCreatedNotCascade()
+    void whenPassedExistingUser_ThenOnlyMessageShouldCreated()
             throws Exception {
         var userFromDb = userService.findUserById(1L);
         var message = new Message(null, "Question", "Answer", userFromDb);
 
-        mockHttpPost(API_PATH, message);
+        mockHttpPost(API_PATH, message).andExpect(status().isOk());
     }
 
     @Test
-    void testUpdate() throws Exception {
-        var message = messageService.getMessageById(1L);
+    void testPatchUpdate() throws Exception {
+        var message = messageService.findMessageById(1L);
+
         message.setQuestion("NEW_QUESTION");
         message.setAnswer("NEW_ANSWER");
+        var request = new HashMap<>() {{
+            put("question", message.getQuestion());
+            put("answer", message.getAnswer());
+        }};
 
-        mockHttpPut(API_PATH + "/{id}", message.getId(), message)
-                .andExpect(jsonPath("$.question").value(message.getQuestion()))
-                .andExpect(jsonPath("$.answer").value(message.getAnswer()));
+        mockHttpPatch(API_PATH + "/{id}", message.getId(), request)
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        objectMapper.writeValueAsString(message)));
     }
 
     @Test
     void testDeleteById() throws Exception {
-        var message = createMessage();
+        var message = getRandomMessage();
+        messageService.createMessage(message);
 
-        mockHttpDelete(API_PATH + "/{id}", message.getId());
+        mockHttpDelete(API_PATH + "/{id}", message.getId()).andExpect(
+                status().isNoContent());
         assertThrows(EntityNotFoundException.class,
-                () -> messageService.getMessageById(message.getId()));
+                () -> messageService.findMessageById(message.getId()));
     }
 
-    @Test
-    void testPartialUpdate() throws Exception {
-        var message = messageService.getMessageById(1L);
-        message.setQuestion("updatedQuestion");
-        message.setAnswer("updatedAnswer");
 
-        mvc.perform(patch(API_PATH + "/{id}", message.getId())
-                        .contentType(CONTENT_TYPE)
-                        .content("{\"question\":\"" + message.getQuestion() + "\"," +
-                                "\"answer\":\"" + message.getAnswer() + "\"}")
-                        .accept(CONTENT_TYPE))
+    @Test
+    void testFindMessagesByChatId() throws Exception {
+        var chatId = userService.findUserById(1).getChatId();
+        var messages = messageService.findMessageByChatId(chatId);
+
+        mockHttpGet(API_PATH + "/user/{chatId}", chatId)
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.question").value(message.getQuestion()))
-                .andExpect(jsonPath("$.answer").value(message.getAnswer()));
-    }
-
-    @Test
-    void testFindMessagesByUserId() throws Exception {
-        var message = messageService.getMessageById(1L);
-
-        mockHttpGet(API_PATH + "/user/{chatId}", message.getUser().getChatId())
-                .andExpect(content().string(objectMapper.writeValueAsString(
-                        Collections.singletonList(message))));
+                .andExpect(content().string(
+                        objectMapper.writeValueAsString(messages)));
     }
 
 }

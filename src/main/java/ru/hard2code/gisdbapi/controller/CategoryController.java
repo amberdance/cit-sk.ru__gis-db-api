@@ -29,7 +29,7 @@ public class CategoryController {
 
     @GetMapping
     public List<Category> getAllCategories() {
-        return categoryService.findAll();
+        return categoryService.findAllCategories();
     }
 
     @PostMapping
@@ -40,7 +40,7 @@ public class CategoryController {
 
     @GetMapping("{id}")
     Category getCategoryById(@PathVariable("id") long id) {
-        return categoryService.findById(id);
+        return categoryService.findCategoryById(id);
     }
 
     @PutMapping("{id}")

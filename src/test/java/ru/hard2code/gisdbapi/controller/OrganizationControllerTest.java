@@ -11,13 +11,17 @@ import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.service.organization.OrganizationService;
 import ru.hard2code.gisdbapi.system.Constants;
 
+import java.util.HashMap;
+
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WithMockUser(authorities = {"write", "read"})
-class OrganizationControllerTest extends AbstractTestContainersControllerTest {
+class OrganizationControllerTest extends
+        AbstractControllerTestConfig {
 
     private static final String API_PATH =
             "/api" + Constants.Route.ORGANIZATIONS;
@@ -28,57 +32,69 @@ class OrganizationControllerTest extends AbstractTestContainersControllerTest {
 
     @BeforeAll
     static void setup() {
-        startContainer();
+        CONTAINER.start();
     }
 
     @Test
     void testFindAll() throws Exception {
-        var organizations = organizationService.findAll();
+        var organizations = organizationService.findAllOrganizations();
 
-        mockHttpGet(API_PATH).andExpect(content().string(
-                objectMapper.writeValueAsString(organizations)));
+        mockHttpGet(API_PATH)
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        objectMapper.writeValueAsString(organizations)));
     }
 
     @Test
     void testFindById() throws Exception {
-        var organization = organizationService.findById(1L);
+        var organization = organizationService.findOrganizationById(1);
 
-        mockHttpGet(API_PATH + "/{id}", 1L).andExpect(content().string(
-                objectMapper.writeValueAsString(organization)));
+        mockHttpGet(API_PATH + "/{id}", 1)
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        objectMapper.writeValueAsString(organization)));
     }
 
     @Test
     void testCreate() throws Exception {
-        var name = RandomStringUtils.random(32);
-        var organization = new Organization(name, name);
+        var organization = new Organization("Some name", "Some address");
 
-        mockHttpPost(API_PATH, organization);
+        mockHttpPost(API_PATH, organization).andExpect(status().isOk());
     }
 
     @Test
     void whenPassedExistingIdInPOST_ThenOrganizationShouldBeCreatedInsteadOfUpdate()
             throws Exception {
-        var existingOrganization = organizationService.findById(1);
+        var existingOrganization = organizationService.findOrganizationById(1);
         var anotherOrganization = Organization.builder()
                 .id(existingOrganization.getId())
                 .name("Another organization")
                 .build();
 
-        mockHttpPost(API_PATH, anotherOrganization).andExpect(
-                jsonPath("$.id").value(not(existingOrganization.getId())));
+        mockHttpPost(API_PATH, anotherOrganization)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(
+                        not(existingOrganization.getId())));
     }
 
     @Test
     void testUpdate() throws Exception {
-        var organization = organizationService.findById(1);
+        var organization = organizationService.findOrganizationById(1);
         organization.setAddress("new address");
         organization.setName("new name");
+        organization.setGovernment(false);
+
+        var request = new HashMap<>() {{
+            put("address", organization.getAddress());
+            put("name", organization.getName());
+            put("government", organization.isGovernment());
+        }};
 
         mockHttpPut(API_PATH + "/{id}", organization.getId(),
-                organization).andExpect(
-                        jsonPath("$.name").value("new name"))
-                .andExpect(
-                        jsonPath("$.address").value("new address"));
+                request)
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        objectMapper.writeValueAsString(organization)));
     }
 
     @Test
@@ -88,9 +104,12 @@ class OrganizationControllerTest extends AbstractTestContainersControllerTest {
 
         organizationService.createOrganization(organization);
 
-        mockHttpDelete(API_PATH + "/{id}", organization.getId());
+        mockHttpDelete(API_PATH + "/{id}", organization.getId()).andExpect(
+                status().isNoContent());
+
         assertThrows(EntityNotFoundException.class,
-                () -> organizationService.findById(organization.getId()));
+                () -> organizationService.findOrganizationById(
+                        organization.getId()));
     }
 
 }

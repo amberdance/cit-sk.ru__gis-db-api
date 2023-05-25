@@ -1,3 +1,4 @@
+
 INSERT INTO questions (label, answer, category_id)
 VALUES (md5(random()::text), md5(random()::text), 1);
 
