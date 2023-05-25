@@ -14,7 +14,7 @@ import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import java.util.Map;
 
 @ControllerAdvice
-public class GlobalDefaultExceptionHandler extends ResponseEntityExceptionHandler {
+public class CustomControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Map<String, Object>> handleNotFoundError(EntityNotFoundException e, HttpServletRequest request) {
