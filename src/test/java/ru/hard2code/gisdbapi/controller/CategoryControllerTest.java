@@ -1,7 +1,7 @@
 package ru.hard2code.gisdbapi.controller;
 
 
-import org.junit.jupiter.api.AfterAll;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,23 +10,17 @@ import ru.hard2code.gisdbapi.domain.entity.Category;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
 import ru.hard2code.gisdbapi.service.category.CategoryService;
 import ru.hard2code.gisdbapi.system.Constants;
-import ru.hard2code.gisdbapi.util.RandomString;
 
 import java.util.Collections;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WithMockUser(authorities = {"write", "read"})
-class CategoryControllerTest extends AbstractControllerTest {
+class CategoryControllerTest extends AbstractTestContainersControllerTest {
 
     private static final String API_PATH = "/api" + Constants.Route.CATEGORIES;
 
@@ -35,50 +29,33 @@ class CategoryControllerTest extends AbstractControllerTest {
     private CategoryService categoryService;
 
 
-    private Category getCategoryWithRandomName() {
-        return new Category(RandomString.generate());
-    }
-
     @BeforeAll
-    static void startContainer() {
-        init();
+    static void setup() {
+        startContainer();
     }
 
-    @AfterAll
-    static void stopContainer() {
-        shutdown();
+    private Category createRandomCategory() {
+        return categoryService.createCategory(
+                new Category(RandomStringUtils.random(32)));
     }
-
 
     @Test
     void testCreate() throws Exception {
-        var category = getCategoryWithRandomName();
-
-        mvc.perform(post(API_PATH)
-                        .contentType(CONTENT_TYPE)
-                        .content(objectMapper.writeValueAsString(category))
-                        .accept(CONTENT_TYPE))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(greaterThan(0)));
+        var category = new Category(RandomStringUtils.random(32));
+        mockHttpPost(API_PATH, category).andExpect(
+                jsonPath("$.id").value(greaterThan(0)));
     }
 
     @Test
     void whenPassedExistingIdInPOSTThenCategoryShouldBeCreatedInsteadUpdate()
             throws Exception {
-        var category = getCategoryWithRandomName();
-
-        categoryService.createCategory(new Category(RandomString.generate()));
-
+        var category = createRandomCategory();
         var anotherCategory =
                 new Category(category.getId(), "Another category",
                         Collections.emptySet());
 
-        mvc.perform(post(API_PATH)
-                        .contentType(CONTENT_TYPE)
-                        .content(objectMapper.writeValueAsString(anotherCategory))
-                        .accept(CONTENT_TYPE))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(not(category.getId())))
+        mockHttpPost(API_PATH, anotherCategory).andExpect(
+                        jsonPath("$.id").value(not(category.getId())))
                 .andExpect(jsonPath("$.name").value("Another category"));
     }
 
@@ -86,50 +63,35 @@ class CategoryControllerTest extends AbstractControllerTest {
     @Test
     void testFindAll() throws Exception {
         var categories = categoryService.findAll();
-
-        mvc.perform(get(API_PATH)
-                        .contentType(CONTENT_TYPE)
-                        .accept(CONTENT_TYPE))
-                .andExpect(status().isOk())
-                .andExpect(content().string(
-                        objectMapper.writeValueAsString(categories)));
+        mockHttpGet(API_PATH).andExpect(
+                content().string(objectMapper.writeValueAsString(categories)));
     }
 
     @Test
     void testFindById() throws Exception {
-        var category = categoryService.findById(4);
+        var category = categoryService.findById(1);
 
-        mvc.perform(get(API_PATH + "/{id}", category.getId())
-                        .contentType(CONTENT_TYPE)
-                        .accept(CONTENT_TYPE))
-                .andExpect(status().isOk())
-                .andExpect(content().string(
-                        objectMapper.writeValueAsString(category)));
+        mockHttpGet(API_PATH + "/{id}", category.getId()).andExpect(
+                content().string(objectMapper.writeValueAsString(category)));
     }
 
     @Test
     void testDeleteById() throws Exception {
-        var id = 1;
-        mvc.perform(delete(API_PATH + "/{id}", id)
-                        .contentType(CONTENT_TYPE)
-                        .accept(CONTENT_TYPE))
-                .andExpect(status().isNoContent());
+        var category = createRandomCategory();
+
+        mockHttpDelete(API_PATH + "/{id}", category.getId());
 
         assertThrows(EntityNotFoundException.class,
-                () -> categoryService.findById(id));
+                () -> categoryService.findById(category.getId()));
     }
 
     @Test
     void testUpdate() throws Exception {
-        var category = categoryService.findById(4);
+        var category = categoryService.findById(1);
         category.setName("NEW_NAME");
 
-        mvc.perform(put(API_PATH + "/{id}", category.getId())
-                        .contentType(CONTENT_TYPE)
-                        .content(objectMapper.writeValueAsString(category))
-                        .accept(CONTENT_TYPE))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("NEW_NAME"));
+        mockHttpPut(API_PATH + "/{id}", category.getId(), category).andExpect(
+                jsonPath("$.name").value("NEW_NAME"));
     }
 
 }
