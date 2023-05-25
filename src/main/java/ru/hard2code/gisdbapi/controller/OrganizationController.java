@@ -33,13 +33,13 @@ public class OrganizationController {
     @GetMapping
     public List<Organization> getAllOrganizations(@RequestParam(value =
             "isGovernment", required = false) Boolean isGovernment) {
-        return isGovernment == null ? organizationService.findAll() :
-                organizationService.findByType(isGovernment);
+        return isGovernment == null ? organizationService.findAllOrganizations() :
+                organizationService.findOrganizationsByType(isGovernment);
     }
 
     @GetMapping("{id}")
     public Organization getOrganizationById(@PathVariable("id") long id) {
-        return organizationService.findById(id);
+        return organizationService.findOrganizationById(id);
     }
 
     @PostMapping
@@ -52,13 +52,13 @@ public class OrganizationController {
     @Hidden
     public Organization updateOrganization(@PathVariable("id") long id,
                                            @RequestBody Organization organization) {
-        return organizationService.update(id, organization);
+        return organizationService.updateOrganization(id, organization);
     }
 
     @DeleteMapping("{id}")
     @Hidden
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateOrganization(@PathVariable("id") long id) {
-        organizationService.delete(id);
+        organizationService.deleteOrganizationById(id);
     }
 }

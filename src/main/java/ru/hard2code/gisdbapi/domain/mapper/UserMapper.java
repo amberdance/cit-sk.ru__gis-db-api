@@ -2,6 +2,7 @@ package ru.hard2code.gisdbapi.domain.mapper;
 
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
@@ -18,6 +19,7 @@ public interface UserMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy =
             NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(ignore = true, target = "id")
     User partialUpdate(UserDto userDto, @MappingTarget User user);
     
 }

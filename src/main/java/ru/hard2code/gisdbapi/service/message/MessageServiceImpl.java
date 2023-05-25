@@ -1,6 +1,5 @@
 package ru.hard2code.gisdbapi.service.message;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.hard2code.gisdbapi.domain.entity.Message;
@@ -21,18 +20,22 @@ public class MessageServiceImpl implements MessageService {
 
 
     @Override
-    public List<Message> getAllMessages() {
+    public List<Message> findAllMessages() {
         return messageRepository.findAll();
     }
 
     @Override
-    public Message getMessageById(long id) {
+    public Message findMessageById(long id) {
         return messageRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(Message.class, id));
     }
 
     @Override
-    @Transactional
+    public List<Message> findMessageByChatId(String chatId) {
+        return messageRepository.findByUser_ChatId(chatId);
+    }
+
+    @Override
     public Message createMessage(Message msg) {
         msg.setId(null);
         var user = msg.getUser();
@@ -45,21 +48,18 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void deleteAll() {
-        messageRepository.deleteAllInBatch();
-    }
-
-    @Override
-    public void deleteById(long id) {
-        messageRepository.deleteById(id);
-    }
-
-    @Override
     public Message updateMessage(long id, Message msg) {
-        var message = getMessageById(id)
+        var optional = messageRepository.findById(id);
+
+        if (optional.isEmpty()) {
+            return createMessage(msg);
+        }
+
+        var message = optional.get()
                 .toBuilder()
                 .question(msg.getQuestion())
                 .answer(msg.getAnswer())
+                .user(msg.getUser())
                 .build();
 
         return messageRepository.save(message);
@@ -69,13 +69,14 @@ public class MessageServiceImpl implements MessageService {
     public Message partialUpdateMessage(long id, Message msg) {
         var updatedMessage =
                 messageMapper.partialUpdate(messageMapper.toDto(msg),
-                        getMessageById(id));
+                        findMessageById(id));
         return messageRepository.save(updatedMessage);
     }
 
     @Override
-    public List<Message> findMessageByChatId(String chatId) {
-        return messageRepository.findByUser_ChatId(chatId);
+    public void deleteMessageById(long id) {
+        messageRepository.deleteById(id);
     }
+
 
 }

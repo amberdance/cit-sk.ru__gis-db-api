@@ -9,16 +9,14 @@ public interface CategoryService {
     String CACHE_NAME = "categories";
     String CACHE_LIST_KEY = "categoriesList";
 
+    List<Category> findAllCategories();
+
+    Category findCategoryById(long id);
+
     Category createCategory(Category gis);
-
-    List<Category> findAll();
-
-    Category findById(long id);
-
-    void deleteCategoryById(long id);
 
     Category updateCategory(long id, Category category);
 
+    void deleteCategoryById(long id);
 
-    void deleteAllCategories();
 }

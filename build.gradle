@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'ru.hard2code'
-version = '1.0.5'
+version = '1.0.6'
 sourceCompatibility = '17'
 archivesBaseName = rootProject.name
 
@@ -37,10 +37,10 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor "org.mapstruct:mapstruct-processor:$mapStructVersion"
 
-    testAnnotationProcessor "org.mapstruct:mapstruct-processor:$mapStructVersion"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
-    testImplementation "com.h2database:h2"
+    testImplementation "org.testcontainers:testcontainers:$testcontainersVersion"
+    testImplementation "org.testcontainers:postgresql:$testcontainersVersion"
 }
 
 test {

@@ -5,19 +5,19 @@ import ru.hard2code.gisdbapi.domain.entity.Message;
 import java.util.List;
 
 public interface MessageService {
-    List<Message> getAllMessages();
+    List<Message> findAllMessages();
 
-    Message getMessageById(long id);
+    Message findMessageById(long id);
+
+    List<Message> findMessageByChatId(String chatId);
 
     Message createMessage(Message msg);
-
-    void deleteAll();
-
-    void deleteById(long id);
 
     Message updateMessage(long id, Message msg);
 
     Message partialUpdateMessage(long id, Message msg);
 
-    List<Message> findMessageByChatId(String chatId);
+    void deleteMessageById(long id);
+
+
 }

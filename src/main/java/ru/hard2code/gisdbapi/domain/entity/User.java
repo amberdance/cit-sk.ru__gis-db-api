@@ -2,6 +2,7 @@ package ru.hard2code.gisdbapi.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,6 +10,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -57,21 +60,30 @@ public class User {
 
     @Column(name = "role", length = 32)
     @Enumerated(EnumType.STRING)
-    @Builder.Default
-    private Role role = Role.USER;
+    private Role role;
 
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
     @ToString.Exclude
-    @JsonIgnore
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.DETACH,
+            CascadeType.MERGE})
+    @JoinColumn(name = "organization_id")
+    @NotNull
+    private Organization organization;
+
+    @ToString.Exclude
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.REMOVE)
     @Builder.Default
+    @JsonIgnore
     private Set<Message> messages = new LinkedHashSet<>();
 
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o))
+        if (this == o) {
+            return true;
+        }
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) {
             return false;
+        }
         User user = (User) o;
         return getId() != null && Objects.equals(getId(), user.getId());
     }

@@ -40,8 +40,7 @@ public class Organization {
     private String address;
 
     @Column(name = "is_government", nullable = false)
-    @Builder.Default
-    private boolean isGovernment = true;
+    private boolean isGovernment;
 
     public Organization(@NotNull String name, String address) {
         this.name = name;

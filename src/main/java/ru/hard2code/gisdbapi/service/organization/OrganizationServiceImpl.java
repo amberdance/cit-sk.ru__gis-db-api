@@ -17,7 +17,7 @@ public class OrganizationServiceImpl implements OrganizationService {
 
 
     @Override
-    public List<Organization> findAll() {
+    public List<Organization> findAllOrganizations() {
         return organizationRepository.findAll();
     }
 
@@ -28,7 +28,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public Organization findById(long id) {
+    public Organization findOrganizationById(long id) {
         return organizationRepository.findById(id)
                 .orElseThrow(
                         () -> new EntityNotFoundException(Organization.class,
@@ -36,29 +36,31 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public Organization update(long id, Organization organization) {
-        var org = organizationRepository.findById(id)
-                .orElseGet(() -> createOrganization(organization)).toBuilder()
-                .name(organization.getName())
-                .address(organization.getAddress())
-                .isGovernment(organization.isGovernment())
+    public Organization updateOrganization(long id, Organization org) {
+        var optional = organizationRepository.findById(id);
+
+        if (optional.isEmpty()) {
+            return createOrganization(org);
+        }
+
+        var organization = optional.get()
+                .toBuilder()
+                .name(org.getName())
+                .address(org.getAddress())
+                .isGovernment(org.isGovernment())
                 .build();
 
-        return organizationRepository.save(org);
+        return organizationRepository.save(organization);
     }
 
     @Override
-    public void delete(long id) {
+    public void deleteOrganizationById(long id) {
         organizationRepository.deleteById(id);
     }
 
     @Override
-    public List<Organization> findByType(boolean isGovernment) {
+    public List<Organization> findOrganizationsByType(boolean isGovernment) {
         return organizationRepository.findByIsGovernment(isGovernment);
     }
 
-    @Override
-    public void deleteAll() {
-        organizationRepository.deleteAllInBatch();
-    }
 }

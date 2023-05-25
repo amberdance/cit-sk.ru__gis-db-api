@@ -30,12 +30,12 @@ public class MessageController {
 
     @GetMapping
     public List<Message> getAllMessages() {
-        return messageService.getAllMessages();
+        return messageService.findAllMessages();
     }
 
     @GetMapping("{id}")
     public Message getMessageById(@PathVariable("id") long id) {
-        return messageService.getMessageById(id);
+        return messageService.findMessageById(id);
     }
 
     @GetMapping("user/{chatId}")
@@ -65,7 +65,7 @@ public class MessageController {
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMessage(@PathVariable("id") long id) {
-        messageService.deleteById(id);
+        messageService.deleteMessageById(id);
     }
 
 

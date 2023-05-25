@@ -16,6 +16,7 @@ public interface MessageMapper {
     MessageDto toDto(Message message);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(ignore = true, target = "id")
     @Mapping(ignore = true, target = "user")
     Message partialUpdate(MessageDto messageDto, @MappingTarget Message message);
 }

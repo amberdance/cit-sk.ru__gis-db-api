@@ -21,5 +21,4 @@ public interface QuestionService {
 
     void deleteQuestionById(long id);
 
-    void deleteAllQuestions();
 }

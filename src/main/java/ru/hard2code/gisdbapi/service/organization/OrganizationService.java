@@ -5,17 +5,17 @@ import ru.hard2code.gisdbapi.domain.entity.Organization;
 import java.util.List;
 
 public interface OrganizationService {
-    List<Organization> findAll();
+    List<Organization> findAllOrganizations();
+
+    List<Organization> findOrganizationsByType(boolean isGovernment);
 
     Organization createOrganization(Organization organization);
 
-    Organization findById(long id);
+    Organization findOrganizationById(long id);
 
-    Organization update(long id, Organization organization);
+    Organization updateOrganization(long id, Organization organization);
 
-    void delete(long id);
+    void deleteOrganizationById(long id);
 
-    List<Organization> findByType(boolean isGovernment);
 
-    void deleteAll();
 }
