@@ -33,3 +33,6 @@ app:
       admin:
         name: admin
         password: pwd
+
+server:
+  port: 9000

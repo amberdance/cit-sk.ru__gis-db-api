@@ -26,7 +26,7 @@ import org.springframework.context.annotation.Profile;
                 ),
                 @Server(
                         description = "Local ENV",
-                        url = "http://localhost:${server.port:8080}"
+                        url = "http://localhost:${server.port:9000}"
                 )
         }
 )
