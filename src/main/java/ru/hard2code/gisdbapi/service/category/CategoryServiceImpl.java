@@ -5,8 +5,8 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import ru.hard2code.gisdbapi.domain.entity.Category;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
-import ru.hard2code.gisdbapi.model.Category;
 import ru.hard2code.gisdbapi.repository.CategoryRepository;
 
 import java.util.List;
@@ -21,20 +21,37 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Cacheable(key = "'" + CategoryService.CACHE_LIST_KEY + "'")
-    public List<Category> findAll() {
+    public List<Category> findAllCategories() {
         return categoryRepository.findAll();
     }
 
     @Override
-    @Cacheable(key = "#id")
-    public Category findById(long id) {
+    public Category findCategoryById(long id) {
         return categoryRepository.findById(id)
-                                 .orElseThrow(() -> new EntityNotFoundException(Category.class, id));
+                .orElseThrow(
+                        () -> new EntityNotFoundException(Category.class, id));
     }
 
     @Override
-    @CacheEvict(key = "#category.id")
+    @CacheEvict(allEntries = true)
     public Category createCategory(Category category) {
+        category.setId(null);
+        return categoryRepository.save(category);
+    }
+
+    @Override
+    @CacheEvict(allEntries = true)
+    public Category updateCategory(long id, Category cat) {
+        var optional = categoryRepository.findById(id);
+
+        if (optional.isEmpty()) {
+            return createCategory(cat);
+        }
+
+        var category = optional.get();
+        category.setName(cat.getName());
+        category.setQuestions(cat.getQuestions());
+
         return categoryRepository.save(category);
     }
 
@@ -44,20 +61,4 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.deleteById(id);
     }
 
-    @Override
-    @CacheEvict(key = "#id")
-    public Category updateCategory(long id, Category category) {
-        var cat = categoryRepository.findById(id)
-                                    .orElseGet(() -> categoryRepository.save(category));
-
-        cat.setName(category.getName());
-
-        return categoryRepository.save(cat);
-    }
-
-    @Override
-    @CacheEvict(allEntries = true)
-    public void deleteAllCategories() {
-        categoryRepository.deleteAll();
-    }
 }

@@ -3,8 +3,8 @@ package ru.hard2code.gisdbapi.service.organization;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.hard2code.gisdbapi.domain.entity.Organization;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
-import ru.hard2code.gisdbapi.model.Organization;
 import ru.hard2code.gisdbapi.repository.OrganizationRepository;
 
 import java.util.List;
@@ -17,44 +17,50 @@ public class OrganizationServiceImpl implements OrganizationService {
 
 
     @Override
-    public List<Organization> findAll() {
+    public List<Organization> findAllOrganizations() {
         return organizationRepository.findAll();
     }
 
     @Override
     public Organization createOrganization(Organization org) {
+        org.setId(null);
         return organizationRepository.save(org);
     }
 
     @Override
-    public Organization findById(long id) {
+    public Organization findOrganizationById(long id) {
         return organizationRepository.findById(id)
-                                     .orElseThrow(() -> new EntityNotFoundException(Organization.class, id));
+                .orElseThrow(
+                        () -> new EntityNotFoundException(Organization.class,
+                                id));
     }
 
     @Override
-    public Organization update(long id, Organization organization) {
-        var org = organizationRepository.findById(id)
-                                        .orElseGet(() -> createOrganization(organization));
-        org.setName(organization.getName());
-        org.setAddress(organization.getAddress());
-        org.setGovernment(org.isGovernment());
+    public Organization updateOrganization(long id, Organization org) {
+        var optional = organizationRepository.findById(id);
 
-        return organizationRepository.save(org);
+        if (optional.isEmpty()) {
+            return createOrganization(org);
+        }
+
+        var organization = optional.get()
+                .toBuilder()
+                .name(org.getName())
+                .address(org.getAddress())
+                .isGovernment(org.isGovernment())
+                .build();
+
+        return organizationRepository.save(organization);
     }
 
     @Override
-    public void delete(long id) {
+    public void deleteOrganizationById(long id) {
         organizationRepository.deleteById(id);
     }
 
     @Override
-    public List<Organization> findByType(boolean isGovernment) {
+    public List<Organization> findOrganizationsByType(boolean isGovernment) {
         return organizationRepository.findByIsGovernment(isGovernment);
     }
 
-    @Override
-    public void deleteAll() {
-        organizationRepository.deleteAllInBatch();
-    }
 }

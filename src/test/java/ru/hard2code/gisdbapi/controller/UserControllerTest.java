@@ -1,110 +1,160 @@
 package ru.hard2code.gisdbapi.controller;
 
 
-import org.junit.jupiter.api.AfterEach;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RandomUtils;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.test.context.support.WithMockUser;
-import ru.hard2code.gisdbapi.constants.Route;
+import ru.hard2code.gisdbapi.domain.entity.Organization;
+import ru.hard2code.gisdbapi.domain.entity.Role;
+import ru.hard2code.gisdbapi.domain.entity.User;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
-import ru.hard2code.gisdbapi.model.Role;
-import ru.hard2code.gisdbapi.model.User;
+import ru.hard2code.gisdbapi.service.organization.OrganizationService;
 import ru.hard2code.gisdbapi.service.user.UserService;
+import ru.hard2code.gisdbapi.system.Constants;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
 
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WithMockUser(authorities = {"write", "read"})
-class UserControllerTest extends AbstractControllerTest {
+class UserControllerTest extends
+        AbstractControllerTestConfig {
 
-    private static final String API_PATH = "/api/" + Route.USERS;
-    private final User TEST_USER = new User("123456789", "userName",
-            "test@test.ru", Role.USER, Collections.emptySet());
+    private static final String API_PATH = "/api" + Constants.Route.USERS;
 
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private OrganizationService organizationService;
 
-    @AfterEach
-    void cleanup() {
-        userService.deleteAllUsers();
+
+    private User getRandomUser() {
+        var randomString = RandomStringUtils.randomAlphabetic(16);
+        var randomChatId =
+                String.valueOf(RandomUtils.nextLong(100000000, 1000000000));
+
+        return User.builder()
+                .chatId(randomChatId)
+                .username(randomString)
+                .email("test@test" + randomString + ".ru")
+                .role(Role.ADMIN)
+                .organization(new Organization(randomString, randomString))
+                .build();
+    }
+
+    @BeforeAll
+    static void setup() {
+        CONTAINER.start();
     }
 
     @Test
     void testFindById() throws Exception {
-        userService.createUser(TEST_USER);
-        mvc.perform(get(API_PATH + "/{id}", TEST_USER.getId()).accept(CONTENT_TYPE))
-           .andExpect(status().isOk())
-           .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(TEST_USER)));
+        var user = userService.findUserById(1L);
+        mockHttpGet(API_PATH + "/{id}", user.getId())
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        objectMapper.writeValueAsString(user)));
     }
 
     @Test
     void testFindAll() throws Exception {
-        var users = List.of(
-                new User("123123123", "username1", "test@test1.ru",
-                        Role.ADMIN, Collections.emptySet()),
-                new User("432432432", "username2", "test@test2.ru",
-                        Role.USER, Collections.emptySet())
-        );
-
-        userService.createUser(users.get(0));
-        userService.createUser(users.get(1));
-
-        mvc.perform(get(API_PATH).accept(CONTENT_TYPE))
-           .andExpect(status().isOk())
-           .andExpect(content().string(OBJECT_MAPPER.writeValueAsString(users)));
+        var users = userService.findAllUsers();
+        mockHttpGet(API_PATH)
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        objectMapper.writeValueAsString(users)));
     }
 
     @Test
     void testDeleteById() throws Exception {
-        userService.createUser(TEST_USER);
+        var user = userService.createUser(getRandomUser());
 
-        mvc.perform(delete(API_PATH + "/{id}", TEST_USER.getId()).accept(CONTENT_TYPE))
-           .andExpect(status().isNoContent());
-
+        mockHttpDelete(API_PATH + "/{id}", user.getId()).andExpect(
+                status().isNoContent());
         assertThrows(EntityNotFoundException.class,
-                () -> userService.findUserById(TEST_USER.getId()));
+                () -> userService.findUserById(user.getId())
+        );
     }
 
     @Test
-    void testCreate() throws Exception {
-        mvc.perform(post(API_PATH).contentType(CONTENT_TYPE)
-                                  .content(OBJECT_MAPPER.writeValueAsString(TEST_USER))
-                                  .accept(CONTENT_TYPE)).andExpect(status().isOk());
+    void testCreateCascade() throws Exception {
+        mockHttpPost(API_PATH, getRandomUser()).andExpect(status().isOk());
+    }
+
+    @Test
+    void testCreateWithExistingOrganization() throws Exception {
+        var user = getRandomUser();
+        user.setOrganization(organizationService.findOrganizationById(2));
+
+        mockHttpPost(API_PATH, user).andExpect(status().isOk());
+    }
+
+    @Test
+    void whenPassedExistingIdInPOST_ThenMessageShouldBeCreatedInsteadUpdate()
+            throws Exception {
+        var existingUser = userService.findUserById(1L);
+        var anotherUserWithSameId = getRandomUser().toBuilder()
+                .id(existingUser.getId())
+                .build();
+
+        mockHttpPost(API_PATH, anotherUserWithSameId)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(not(existingUser.getId())));
     }
 
     @Test
     void testUpdate() throws Exception {
-        var user = userService.createUser(TEST_USER);
+        var user = userService.createUser(getRandomUser());
+        user = user.toBuilder()
+                .chatId("98989796959")
+                .email("some@email.mail")
+                .username("ambr")
+                .role(Role.USER)
+                .build();
 
-        user.setChatId("999999999");
-        user.setRole(Role.ADMIN);
-        user.setUserName("newUserName");
-        user.setEmail("newemail@test.com");
-
-        mvc.perform(put(API_PATH + "/{id}", user.getId())
-                   .contentType(CONTENT_TYPE)
-                   .content(OBJECT_MAPPER.writeValueAsString(user))
-                   .accept(CONTENT_TYPE))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath("$.chatId").value(user.getChatId()))
-           .andExpect(jsonPath("$.role").value(user.getRole().toString()))
-           .andExpect(jsonPath("$.userName").value(user.getUserName()))
-           .andExpect(jsonPath("$.email").value(user.getEmail()));
+        mockHttpPut(API_PATH + "/{id}", user.getId(), user)
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        objectMapper.writeValueAsString(user)));
     }
 
     @Test
     void testValidation() throws Exception {
-        var wrongUser = new User("chatId", "username", "email", Role.ADMIN,
-                Collections.emptySet());
+        var wrongUser = User.builder()
+                .chatId("not_valid_param")
+                .email("not_valid_param")
+                .organization(new Organization("Organization", "Address"))
+                .build();
 
-        mvc.perform(post(API_PATH).contentType(CONTENT_TYPE)
-                                  .content(OBJECT_MAPPER.writeValueAsString(wrongUser))
-                                  .accept(CONTENT_TYPE)).andExpect(status().isBadRequest());
+        mockHttpPost(API_PATH, wrongUser).andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testPartialUpdate() throws Exception {
+        var user = userService.findUserById(1);
+
+        user.setChatId("1231457892");
+        user.setEmail("email@nothere.ru");
+        user.setOrganization(organizationService.findOrganizationById(2));
+        var request = new HashMap<>() {{
+            put("chatId", user.getChatId());
+            put("email", user.getEmail());
+            put("organization", user.getOrganization());
+        }};
+
+        mockHttpPatch(API_PATH + "/{id}", user.getId(), request)
+                .andExpect(status().isOk())
+                .andExpect(content().string(
+                        objectMapper.writeValueAsString(user)));
+
     }
 
 }

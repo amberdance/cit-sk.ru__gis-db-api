@@ -1,7 +1,7 @@
 package ru.hard2code.gisdbapi.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.hard2code.gisdbapi.model.Organization;
+import ru.hard2code.gisdbapi.domain.entity.Organization;
 
 import java.util.List;
 

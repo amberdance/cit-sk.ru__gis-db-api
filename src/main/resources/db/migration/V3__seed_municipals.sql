@@ -7,7 +7,7 @@ values ('Апанасенковский муниципальный округ', 
 insert into organizations (name, is_government)
 values ('Арзгирский муниципальный округ', false);
 insert into organizations (name, is_government)
-values ('Благодарненский городской округ ', false);
+values ('Благодарненский городской округ', false);
 insert into organizations (name, is_government)
 values ('Будённовский муниципальный округ', false);
 insert into organizations (name, is_government)

@@ -2,8 +2,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5430/test_db
-    username: usr
-    password: pwd
+    username: postgres
+    password: postgres
 
   flyway:
     enabled: true
@@ -11,6 +11,7 @@ spring:
 
   jpa:
     show-sql: true
+
     hibernate:
       ddl-auto: validate
     properties:

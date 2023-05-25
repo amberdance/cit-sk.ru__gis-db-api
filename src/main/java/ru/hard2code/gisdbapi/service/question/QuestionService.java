@@ -1,12 +1,13 @@
 package ru.hard2code.gisdbapi.service.question;
 
-import ru.hard2code.gisdbapi.model.Question;
+import ru.hard2code.gisdbapi.domain.entity.Question;
 
 import java.util.List;
 
 public interface QuestionService {
     String CACHE_NAME = "questions";
-    String CACHE_LIST_KEY = "questionList";
+    String CACHE_LIST_KEY = "all";
+    String CACHE_LIST_BY_CATEGORY_KEY = "list_by_category";
 
     List<Question> findAllQuestions();
 
@@ -20,5 +21,4 @@ public interface QuestionService {
 
     void deleteQuestionById(long id);
 
-    void deleteAllQuestions();
 }

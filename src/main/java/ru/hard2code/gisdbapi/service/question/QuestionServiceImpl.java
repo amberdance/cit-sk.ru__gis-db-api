@@ -6,11 +6,10 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import ru.hard2code.gisdbapi.domain.entity.Question;
 import ru.hard2code.gisdbapi.exception.EntityNotFoundException;
-import ru.hard2code.gisdbapi.model.Category;
-import ru.hard2code.gisdbapi.model.Question;
-import ru.hard2code.gisdbapi.repository.CategoryRepository;
 import ru.hard2code.gisdbapi.repository.QuestionRepository;
+import ru.hard2code.gisdbapi.service.category.CategoryService;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ import java.util.List;
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
 
     @Override
@@ -31,14 +30,14 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    @Cacheable(key = "#id")
     public Question findQuestionById(long id) {
-        return questionRepository.findById(id)
-                                 .orElseThrow(() -> new EntityNotFoundException(Question.class, id));
+        return questionRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException(Question.class, id));
     }
 
     @Override
-    @Cacheable(key = "#id")
+    @Cacheable(key = "'" + QuestionService.CACHE_LIST_BY_CATEGORY_KEY +
+            "_'+#id")
     public List<Question> findQuestionsByCategoryId(long id) {
         return questionRepository.findByCategory_Id(id);
     }
@@ -46,25 +45,34 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @CacheEvict(allEntries = true)
     public Question createQuestion(Question question) {
-        if (question.getCategory().getId() != null)
-            question.setCategory(categoryRepository.findById(question.getCategory().getId())
-                                                   .orElseThrow(() -> new EntityNotFoundException(Category.class, question.getCategory().getId())));
+        question.setId(null);
+
+        if (question.getCategory().getId() != null &&
+                question.getCategory().getId() != 0) {
+            question.setCategory(
+                    categoryService.findCategoryById(
+                            question.getCategory().getId()));
+        }
+
         return questionRepository.save(question);
     }
 
     @Override
     @CacheEvict(allEntries = true)
-    public Question updateQuestion(long id, Question question) {
-        var q = questionRepository.findById(id)
-                                  .orElseGet(() -> questionRepository.save(question));
-        var category = question.getCategory();
+    public Question updateQuestion(long id, Question q) {
+        var optional = questionRepository.findById(id);
 
-        q.setLabel(question.getLabel());
-        q.setAnswer(question.getAnswer());
-        q.setCategory(categoryRepository.findById(category.getId())
-                                        .orElseThrow(() -> new EntityNotFoundException(category)));
+        if (optional.isEmpty()) {
+            return createQuestion(q);
+        }
 
-        return questionRepository.save(q);
+        var question = optional.get().toBuilder()
+                .answer(q.getAnswer())
+                .category(q.getCategory())
+                .label(q.getLabel())
+                .build();
+
+        return questionRepository.save(question);
     }
 
     @Override
@@ -73,9 +81,4 @@ public class QuestionServiceImpl implements QuestionService {
         questionRepository.deleteById(id);
     }
 
-    @Override
-    @CacheEvict(allEntries = true)
-    public void deleteAllQuestions() {
-        questionRepository.deleteAll();
-    }
 }

@@ -1,28 +1,31 @@
 package ru.hard2code.gisdbapi.exception;
 
 import org.springframework.util.ClassUtils;
-import ru.hard2code.gisdbapi.model.AbstractEntity;
 
 public class EntityNotFoundException extends RuntimeException {
-    private static final String MESSAGE = "Unable to find entity %s with id" +
-            " %d";
+
+    private static final String MESSAGE_DEFAULT = "Requested %s entity was " +
+            "not found";
+
+    private static final String MESSAGE_CONCRETE_ENTITY = "Unable to find " +
+            "entity %s with id %d";
+
 
     public EntityNotFoundException() {
-        super("Requested entity was not found");
+        super(String.format(MESSAGE_DEFAULT, ""));
     }
-
 
     public EntityNotFoundException(String message) {
         super(message);
     }
 
-    public EntityNotFoundException(AbstractEntity abstractEntity) {
-        super(String.format(MESSAGE, ClassUtils.getShortName(abstractEntity.getClass()), abstractEntity.getId()));
+    public EntityNotFoundException(Class<?> clazz) {
+        super(String.format(MESSAGE_DEFAULT, ClassUtils.getShortName(clazz)));
     }
 
-    public EntityNotFoundException(Class<? extends AbstractEntity> clazz,
-                                   long id) {
-        super(String.format(MESSAGE, ClassUtils.getShortName(clazz), id));
+    public EntityNotFoundException(Class<?> clazz, long id) {
+        super(String.format(MESSAGE_CONCRETE_ENTITY,
+                ClassUtils.getShortName(clazz), id));
     }
 
 }

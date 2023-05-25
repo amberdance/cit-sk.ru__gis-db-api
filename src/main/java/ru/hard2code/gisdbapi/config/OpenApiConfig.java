@@ -1,25 +1,35 @@
 package ru.hard2code.gisdbapi.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Contact;
+import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.servers.Server;
-import org.springdoc.core.models.GroupedOpenApi;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
 @Profile({"prod", "dev"})
-@OpenAPIDefinition(servers = {@Server(url = "/", description = "${app.name}")})
-
+@OpenAPIDefinition(
+        info = @Info(
+                title = "OpenApi specification",
+                description = "${app.name}",
+                contact = @Contact(
+                        name = "Amberdance",
+                        email = "amberdance@yandex.run",
+                        url = "https://hard2code.ru"
+                )
+        ),
+        servers = {
+                @Server(
+                        description = "PROD ENV",
+                        url = "${app.url}"
+                ),
+                @Server(
+                        description = "Local ENV",
+                        url = "http://localhost:${server.port:8080}"
+                )
+        }
+)
 public class OpenApiConfig {
 
-    @Bean
-    public GroupedOpenApi publicApi(@Value("${app.name}") String appName) {
-        return GroupedOpenApi.builder()
-                .group(appName)
-                .displayName(appName)
-                .packagesToScan("ru.hard2code.gisdbapi.controller")
-                .build();
-    }
 }
