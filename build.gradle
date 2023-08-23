@@ -60,8 +60,6 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 jib {
-    container.creationTime = 'USE_CURRENT_TIMESTAMP'
-
     from {
         image = 'bellsoft/liberica-openjdk-alpine-musl:17'
     }
