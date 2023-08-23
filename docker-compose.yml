@@ -19,7 +19,7 @@ services:
     ports:
       - "${SPRING_PROXY_PORT}:${SPRING_SERVER_PORT}"
     depends_on:
-      - db
+      - postgres-db
     environment:
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
