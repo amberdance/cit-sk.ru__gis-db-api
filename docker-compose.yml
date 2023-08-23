@@ -2,7 +2,7 @@ version: '3'
 
 services:
   db:
-    container_name: pg-gis-docker
+    container_name: postgres-db
     image: postgres:13
     restart: always
     environment:
@@ -10,11 +10,11 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "${POSTGRES_PROXY_PORT}:5432"
+      - "${DB_PROXY_PORT}:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
   app:
-    container_name: spring-gis-docker
+    container_name: spring-app
     image: amberdance/gisapi:latest
     ports:
       - "${SPRING_PROXY_PORT}:${SPRING_SERVER_PORT}"
