@@ -39,8 +39,8 @@ out/
 
 ### OTHER ###
 application-prod.yml
-/.jpb/
 /src/main/resources/db/migration/V4__seed_questions.sql
 gitlab.properties
+docker.properties
 /src/main/generated/
-/.jpb/
+.jpb

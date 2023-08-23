@@ -68,14 +68,14 @@ jib {
 
     to {
         tags = [project.version.toString()]
-        image = 'registry.gitlab.com/hard2code/gis-api'
+        image = 'registry.hub.docker.com/amberdance/gisapi'
 
         def props = new Properties()
-        file('gitlab.properties').withInputStream { props.load(it) }
+        file('docker.properties').withInputStream { props.load(it) }
 
         auth {
-            username = props.getProperty("CI_REGISTRY_USERNAME")
-            password = props.getProperty("CI_REGISTRY_PASSWORD")
+            username = props.getProperty("DOCKER_REGISTRY_USERNAME")
+            password = props.getProperty("DOCKER_REGISTRY_PASSWORD")
         }
     }
 }
