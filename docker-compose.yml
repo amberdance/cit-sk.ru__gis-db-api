@@ -1,25 +1,27 @@
 version: '3'
 
 services:
-  postgres-db:
+  db:
     container_name: postgres-db
     image: postgres:13
     restart: always
     environment:
-      POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
       - "${DB_PROXY_PORT}:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
-  spring-app:
+
+  app:
+    depends_on:
+      - db
+
     container_name: spring-app
     image: amberdance/gisapi:latest
     ports:
       - "${SPRING_PROXY_PORT}:${SPRING_SERVER_PORT}"
-    depends_on:
-      - postgres-db
     environment:
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
       SPRING_DATASOURCE_USERNAME: ${DB_USER}
