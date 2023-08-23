@@ -68,7 +68,7 @@ jib {
 
     to {
         tags = [project.version.toString()]
-        image = 'registry.hub.docker.com/amberdance/gisapi'
+        image = 'amberdance/gisapi'
 
         def props = new Properties()
         file('docker.properties').withInputStream { props.load(it) }
