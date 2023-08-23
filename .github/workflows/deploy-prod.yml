@@ -21,12 +21,8 @@ jobs:
           distribution: liberica
           cache: 'gradle'
 
-
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-#      - name: Run tests
-#        run: ./gradlew test
-
-      - name: Build image and pull to docker registry
-        run: ./gradlew jib
+      - name: Run tests
+        run: ./gradlew test
