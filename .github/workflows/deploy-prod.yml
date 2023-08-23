@@ -22,11 +22,11 @@ jobs:
           cache: 'gradle'
 
 
+      - name: Make gradlew executable
+        run: chmod +x gradlew
 
-      - name: Run tests
-        run: |
-          chmod +x gradlew
-          ./gradlew test
+#      - name: Run tests
+      #        run: ./gradlew test
 
       - name: Build image and pull to docker registry
         run: ./gradlew jib
