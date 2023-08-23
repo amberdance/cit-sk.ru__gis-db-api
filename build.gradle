@@ -69,7 +69,7 @@ jib {
         image = 'amberdance/gisapi'
 
 //        print(System.getenv("TEST"));
-        print(System.getenv("secrets.DOCKER_PASSWORD"));
+        print(System.getenv());
 //
 //        auth {
 //            username = System.getenv("secrets.DOCKER_USERNAME") ?: ""
