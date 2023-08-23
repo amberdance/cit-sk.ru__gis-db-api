@@ -15,9 +15,9 @@ services:
       - db-data:/var/lib/postgresql/data
   app:
     container_name: spring-gis-docker
-    image: registry.gitlab.com/hard2code/gis-api:1.0.2
+    image: amberdance/gisapi:1.0.6
     ports:
-      - "9090:8080"
+      - "3001:8080"
     depends_on:
       - db
     environment:
