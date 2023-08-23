@@ -44,3 +44,4 @@ gitlab.properties
 docker.properties
 /src/main/generated/
 .jpb
+.env
