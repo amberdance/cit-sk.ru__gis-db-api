@@ -15,7 +15,7 @@ services:
       - db-data:/var/lib/postgresql/data
   app:
     container_name: spring-gis-docker
-    image: amberdance/gisapi:1.0.6
+    image: amberdance/gisapi:latest
     ports:
       - "${SPRING_PROXY_PORT}:${SPRING_SERVER_PORT}"
     depends_on:
