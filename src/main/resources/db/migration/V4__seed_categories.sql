@@ -10,3 +10,5 @@ insert into categories (name)
 values ('Платформа государственных сервисов');
 insert into categories (name)
 values ('ГИС ТОР СЭД');
+insert into categories (name)
+values ('ПГС');
