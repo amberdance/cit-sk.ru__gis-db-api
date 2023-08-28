@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'ru.hard2code'
-version = '1.0.6'
+version = '1.0.7'
 sourceCompatibility = '17'
 archivesBaseName = rootProject.name
 
@@ -68,12 +68,12 @@ jib {
         tags = [project.version.toString()]
         image = 'amberdance/gisapi'
 
-//        print(System.getenv("TEST"));
-        print(System.getenv());
-//
-//        auth {
-//            username = System.getenv("secrets.DOCKER_USERNAME") ?: ""
-//            password = System.getenv("secrets.DOCKER_PASSWORD") ?: ""
-//        }
+        def props = new Properties()
+        file('docker.properties').withInputStream { props.load(it) }
+
+        auth {
+            username = props.getProperty("DOCKER_REGISTRY_USERNAME")
+            password = props.getProperty("DOCKER_REGISTRY_PASSWORD")
+        }
     }
 }
